@@ -8,6 +8,8 @@ android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
 
+
+
     defaultConfig {
         applicationId "com.example.instatagg"
         minSdkVersion 21
@@ -31,8 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility "1.8"
-        targetCompatibility kotlin_version
+
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        //sourceCompatibility "1.8"
+        //targetCompatibility kotlin_version
     }
     kotlinOptions {
         jvmTarget = '1.8'
