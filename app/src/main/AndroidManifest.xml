@@ -15,7 +15,7 @@
 
 
 
-        <activity android:name="MainActivity"
+        <activity android:name=".data.ui.MainActivity"
             tools:ignore="MissingClass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
