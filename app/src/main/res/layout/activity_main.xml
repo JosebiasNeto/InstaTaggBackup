@@ -46,8 +46,8 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/chose_tagg_button"
         android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="35dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="40dp"
         android:textColor="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
