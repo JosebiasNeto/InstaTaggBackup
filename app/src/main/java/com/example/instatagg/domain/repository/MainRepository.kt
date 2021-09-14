@@ -1,7 +1,7 @@
-package com.example.instatagg.presentation.viewmodel
+package com.example.instatagg.domain.repository
 
+import com.example.instatagg.data.db.PhotosDBDataSource
 import com.example.instatagg.domain.model.PhotoEntity
-import com.example.instatagg.domain.repository.PhotosDBDataSource
 
 class MainRepository(
     private val photosDb: PhotosDBDataSource

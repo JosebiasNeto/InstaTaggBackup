@@ -55,5 +55,18 @@
         tools:background="@color/white"
         tools:text="Família" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_change_tagg"
+        android:layout_width="110dp"
+        android:layout_height="120dp"
+        tools:itemCount="5"
+        tools:listitem="@layout/tagg_item"
+        app:layout_constraintEnd_toEndOf="@id/chose_tagg_button"
+        app:layout_constraintBottom_toTopOf="@id/chose_tagg_button"
+        android:layout_marginEnd="-5dp"
+        android:layout_marginBottom="10dp"
+        />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

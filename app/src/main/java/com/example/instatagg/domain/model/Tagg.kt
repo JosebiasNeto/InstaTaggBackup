@@ -1,6 +1,6 @@
 package com.example.instatagg.domain.model
 
-class Tagg (
-    val name: String,
-    val color: String,
+data class Tagg (
+    var name: String,
+    var color: String,
         )

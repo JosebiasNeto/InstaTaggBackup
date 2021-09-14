@@ -8,15 +8,15 @@ object Converters {
     fun toPhotoEntity(photo: Photo): PhotoEntity {
         return PhotoEntity(
             path = photo.path,
-            name = photo.tagg.name,
-            color = photo.tagg.color,
+            name = photo.tagg?.name,
+            color = photo.tagg?.color,
             id = null
         )
     }
     fun toPhoto(photoEntity: PhotoEntity): Photo{
         return Photo(
             path = photoEntity.path,
-            tagg = Tagg(photoEntity.name, photoEntity.color),
+            tagg = photoEntity.name?.let { photoEntity.color?.let { it1 -> Tagg(it, it1) } },
             id = photoEntity.id
         )
     }

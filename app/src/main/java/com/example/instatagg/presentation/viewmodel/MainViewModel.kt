@@ -3,6 +3,7 @@ package com.example.instatagg.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.example.instatagg.domain.model.PhotoEntity
+import com.example.instatagg.domain.repository.MainRepository
 import kotlinx.coroutines.Dispatchers
 
 class MainViewModel(

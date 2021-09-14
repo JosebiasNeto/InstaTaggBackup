@@ -54,21 +54,11 @@ class MainActivity : AppCompatActivity() {
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
-        setupObserver()
     }
 
-    private fun setupObserver() {
-    val photo: Photo = Photo("", Tagg("",""),null)
-        viewModel.insert(photoEntity = Converters.toPhotoEntity(photo)).observe(this, {
-        })
-    }
-
-    private fun setPhoto(photoFile: File): Photo {
-        return Photo(
-            path = photoFile.path,
-            id = null,
-            tagg = setTagg()
-        )
+    private fun insertPhoto(photoFile: File, tagg: Tagg) {
+    val photo: Photo = Photo(photoFile.path, tagg,null)
+        viewModel.insert(photoEntity = Converters.toPhotoEntity(photo))
     }
 
     private fun setTagg(): Tagg {
@@ -122,6 +112,7 @@ class MainActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
+                    insertPhoto(photoFile, setTagg())
                 }
             })
     }

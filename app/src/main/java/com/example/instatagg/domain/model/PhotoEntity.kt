@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "photos")
-class PhotoEntity (
+data class PhotoEntity (
     @PrimaryKey(autoGenerate = true)
-    val id: Long?,
-    val path: String,
-    val name: String,
-    val color: String
+    var id: Long?,
+    var path: String?,
+    var name: String?,
+    var color: String?
         )
