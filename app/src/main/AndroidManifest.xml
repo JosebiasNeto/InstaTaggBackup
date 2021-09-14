@@ -4,6 +4,8 @@
     package="com.example.instatagg">
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <application
 
         android:allowBackup="true"
@@ -15,7 +17,7 @@
 
 
 
-        <activity android:name=".data.ui.MainActivity"
+        <activity android:name=".presentation.ui.MainActivity"
             tools:ignore="MissingClass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
