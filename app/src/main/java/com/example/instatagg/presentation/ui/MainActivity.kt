@@ -15,10 +15,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityMainBinding
+import com.example.instatagg.domain.model.Photo
+import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.domain.repository.Converters
+import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.utils.Constants.FILENAME_FORMAT
 import com.example.instatagg.utils.Constants.REQUEST_CODE_PERMISSIONS
 import com.example.instatagg.utils.Constants.REQUIRED_PERMISSIONS
 import com.example.instatagg.utils.Constants.TAG
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,10 +31,13 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -46,6 +54,25 @@ class MainActivity : AppCompatActivity() {
         binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
+        setupObserver()
+    }
+
+    private fun setupObserver() {
+    val photo: Photo = Photo("", Tagg("",""),null)
+        viewModel.insert(photoEntity = Converters.toPhotoEntity(photo)).observe(this, {
+        })
+    }
+
+    private fun setPhoto(photoFile: File): Photo {
+        return Photo(
+            path = photoFile.path,
+            id = null,
+            tagg = setTagg()
+        )
+    }
+
+    private fun setTagg(): Tagg {
+        TODO()
     }
 
     private fun startCamera() {

@@ -3,7 +3,7 @@ package com.example.instatagg.domain.repository
 import com.example.instatagg.data.db.PhotosDao
 import com.example.instatagg.domain.model.PhotoEntity
 
-class DBDataSource (
+class PhotosDBDataSource (
     private val photosDao: PhotosDao
         ) : PhotosDao{
     override fun insert(photoEntity: PhotoEntity) {

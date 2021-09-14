@@ -9,6 +9,8 @@ import com.example.instatagg.domain.model.PhotoEntity
 @Database(entities = [PhotoEntity::class], version = 1)
 abstract class PhotosDatabase : RoomDatabase() {
 
+    abstract fun photosDao(): PhotosDao
+
     companion object {
         @Volatile
         private var INSTANCE: PhotosDatabase? = null
