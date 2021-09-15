@@ -1,4 +1,4 @@
-package com.example.instatagg.data.db
+package com.example.instatagg.data.dbPhotos
 
 import com.example.instatagg.domain.model.PhotoEntity
 

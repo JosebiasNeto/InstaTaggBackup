@@ -65,6 +65,7 @@
         app:layout_constraintBottom_toTopOf="@id/chose_tagg_button"
         android:layout_marginEnd="-5dp"
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         />
 
 

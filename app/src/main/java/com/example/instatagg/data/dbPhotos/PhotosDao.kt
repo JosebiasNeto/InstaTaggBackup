@@ -1,4 +1,4 @@
-package com.example.instatagg.data.db
+package com.example.instatagg.data.dbPhotos
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -16,10 +16,10 @@ interface PhotosDao {
     @Query("UPDATE photos SET name = :newTagg WHERE name = :name")
     fun changeTagg(name: String, newTagg: String)
 
-    @Query("DELETE FROM photos WHERE :id")
+    @Query("DELETE FROM photos WHERE id = :id")
     fun delPhoto(id: Int)
 
-    @Query("DELETE FROM photos WHERE :name")
+    @Query("DELETE FROM photos WHERE name = :name")
     fun clearTagg(name: String)
 
     @Query("UPDATE photos SET name = :name WHERE id = :id")

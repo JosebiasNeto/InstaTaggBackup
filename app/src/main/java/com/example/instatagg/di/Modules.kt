@@ -1,7 +1,7 @@
 package com.example.instatagg.di
 
-import com.example.instatagg.data.db.PhotosDatabase
-import com.example.instatagg.data.db.PhotosDBDataSource
+import com.example.instatagg.data.dbPhotos.PhotosDatabase
+import com.example.instatagg.data.dbPhotos.PhotosDBDataSource
 import com.example.instatagg.domain.repository.MainRepository
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import org.koin.android.ext.koin.androidApplication

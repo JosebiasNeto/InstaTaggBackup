@@ -1,6 +1,6 @@
 package com.example.instatagg.domain.repository
 
-import com.example.instatagg.data.db.PhotosDBDataSource
+import com.example.instatagg.data.dbPhotos.PhotosDBDataSource
 import com.example.instatagg.domain.model.PhotoEntity
 
 class MainRepository(

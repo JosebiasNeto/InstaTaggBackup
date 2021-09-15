@@ -9,5 +9,6 @@ data class PhotoEntity (
     var id: Long?,
     var path: String?,
     var name: String?,
-    var color: String?
+    var color: Int?,
+    var taggid: Long?
         )

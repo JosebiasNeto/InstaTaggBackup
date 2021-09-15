@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -13,16 +14,20 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityMainBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.domain.repository.Converters
+import com.example.instatagg.presentation.adapter.TaggsAdapter
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.utils.Constants.FILENAME_FORMAT
 import com.example.instatagg.utils.Constants.REQUEST_CODE_PERMISSIONS
 import com.example.instatagg.utils.Constants.REQUIRED_PERMISSIONS
 import com.example.instatagg.utils.Constants.TAG
+import com.example.instatagg.utils.OnItemClickListener
+import com.example.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -36,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var adapter: TaggsAdapter
+    private lateinit var currentTagg: Tagg
 
     private val viewModel: MainViewModel by viewModel()
 
@@ -51,19 +58,40 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
-        binding.cameraCaptureButton.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        binding.choseTaggButton.setOnClickListener {
+            binding.rvChangeTagg.isVisible = binding.rvChangeTagg.isVisible == false
+        }
+
+        adapter = TaggsAdapter(arrayListOf())
+        binding.rvChangeTagg.adapter = adapter
+        binding.rvChangeTagg.addOnItemClickListener(object: OnItemClickListener{
+            override fun onItemClicked(position: Int, view: View) {
+               choseTagg(position)
+            }
+        })
+        binding.cameraCaptureButton.setOnClickListener {
+            if(adapter.itemCount == 0){
+                Toast.makeText(this, "Add a Tagg first!", Toast.LENGTH_SHORT).show()
+            } else takePhoto()
+        }
     }
 
     private fun insertPhoto(photoFile: File, tagg: Tagg) {
-    val photo: Photo = Photo(photoFile.path, tagg,null)
+    val photo = Photo(photoFile.path, tagg,null)
         viewModel.insert(photoEntity = Converters.toPhotoEntity(photo))
     }
 
-    private fun setTagg(): Tagg {
-        TODO()
+    private fun choseTagg(position: Int) {
+        val tagg = adapter.getTagg(position)
+        binding.choseTaggButton.text = tagg.name
+        binding.choseTaggButton.setBackgroundColor(tagg.color)
+        binding.rvChangeTagg.isVisible = false
+        currentTagg = tagg
     }
+
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -89,19 +117,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-
         val imageCapture = imageCapture ?: return
-        // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
             SimpleDateFormat(
                 FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
-        // Create output options object which contains file + metadata
+            ).format(System.currentTimeMillis()) + ".jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        // Set up image capture listener, which is triggered after photo has
-        // been taken
         imageCapture.takePicture(
             outputOptions, ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
@@ -112,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
-                    insertPhoto(photoFile, setTagg())
+                    insertPhoto(photoFile, currentTagg)
                 }
             })
     }
