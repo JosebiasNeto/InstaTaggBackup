@@ -22,7 +22,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>):
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaggsHolder =
         TaggsHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.tagg_item, parent, false))
+            .inflate(R.layout.tagg_item_rv, parent, false))
 
     override fun onBindViewHolder(holder: TaggsHolder, position: Int) =
         holder.bind(taggs[position])
