@@ -4,21 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ui.TaggsActivity"
-    >
+    tools:context=".presentation.ui.TaggsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_taggs"
-        android:background="@color/gray_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/tagg_item"
-        tools:itemCount="12"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        android:background="@color/gray_light"
         android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:spanCount="3"
+        tools:itemCount="12"
+        tools:listitem="@layout/tagg_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_baseline_add_24"
+        app:fabCustomSize="80dp"
+        app:fabSize="normal"
+        app:maxImageSize="70dp"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

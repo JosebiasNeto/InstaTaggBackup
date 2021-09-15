@@ -86,4 +86,7 @@ dependencies {
     testImplementation "io.insert-koin:koin-test:$koin_version"
     // Koin main features for Android (Scope,ViewModel ...)
     implementation "io.insert-koin:koin-android:$koin_version"
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

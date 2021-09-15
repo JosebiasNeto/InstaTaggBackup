@@ -7,7 +7,7 @@
 
 
         <ImageView
-            android:id="@+id/iv_tagg"
+            android:id="@+id/iv_photo"
             android:layout_width="135dp"
             android:layout_height="135dp"
             tools:src="@tools:sample/avatars"

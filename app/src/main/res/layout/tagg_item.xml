@@ -22,7 +22,7 @@
         android:id="@+id/iv_tagg"
         android:layout_width="130dp"
         android:layout_height="130dp"
-        android:src="@drawable/ae8ac2fa217d23aadcc913989fcc34a2"
+        android:src="@drawable/tagg_empty"
         android:scaleType="centerCrop"
         />
         <CheckBox
