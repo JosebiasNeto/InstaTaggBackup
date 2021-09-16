@@ -1,5 +1,6 @@
 package com.example.instatagg.presentation.ui
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -76,6 +77,9 @@ class MainActivity : AppCompatActivity() {
             if(adapter.itemCount == 0){
                 Toast.makeText(this, "Add a Tagg first!", Toast.LENGTH_SHORT).show()
             } else takePhoto()
+        }
+        binding.openGaleryButton.setOnClickListener {
+            startActivity(Intent(this, TaggsActivity::class.java))
         }
     }
 

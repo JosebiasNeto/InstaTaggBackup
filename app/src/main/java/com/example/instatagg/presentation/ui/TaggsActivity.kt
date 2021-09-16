@@ -10,5 +10,10 @@ class TaggsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTaggsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.btnCreateTagg.setOnClickListener {
+            val createTaggFragment = CreateTaggFragment()
+            createTaggFragment.show(supportFragmentManager,"createTagg")
+        }
     }
 }

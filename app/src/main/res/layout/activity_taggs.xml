@@ -20,6 +20,7 @@
         tools:listitem="@layout/tagg_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_create_tagg"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_margin="20dp"
