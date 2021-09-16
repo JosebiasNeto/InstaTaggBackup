@@ -1,21 +1,25 @@
-package com.example.instatagg.data.dbTaggs
+package com.example.instatagg.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.instatagg.data.dbPhotos.PhotosDao
+import com.example.instatagg.data.dbTaggs.TaggsDao
+import com.example.instatagg.domain.model.PhotoEntity
 import com.example.instatagg.domain.model.Tagg
 
-@Database(entities = [Tagg::class], version = 1)
-abstract class TaggsDatabase : RoomDatabase() {
+@Database(version = 1, entities = [PhotoEntity::class, Tagg::class])
+abstract class MainDatabase : RoomDatabase() {
 
+    abstract fun photosDao(): PhotosDao
     abstract fun taggsDao(): TaggsDao
 
     companion object {
         @Volatile
-        private var INSTANCE: TaggsDatabase? = null
+        private var INSTANCE: MainDatabase? = null
 
-        fun getDatabase(context: Context): TaggsDatabase {
+        fun getDatabase(context: Context): MainDatabase {
             val tempInstance = INSTANCE
             if(tempInstance != null){
                 return tempInstance
@@ -23,8 +27,8 @@ abstract class TaggsDatabase : RoomDatabase() {
             synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    TaggsDatabase::class.java,
-                    "photos_database"
+                    MainDatabase::class.java,
+                    "main_database"
                 ).build()
                 INSTANCE = instance
                 return instance

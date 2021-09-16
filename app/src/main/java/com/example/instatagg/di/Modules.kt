@@ -1,6 +1,6 @@
 package com.example.instatagg.di
 
-import com.example.instatagg.data.dbPhotos.PhotosDatabase
+import com.example.instatagg.data.MainDatabase
 import com.example.instatagg.data.dbPhotos.PhotosDBDataSource
 import com.example.instatagg.domain.repository.MainRepository
 import com.example.instatagg.presentation.viewmodel.MainViewModel
@@ -13,7 +13,7 @@ object Modules {
         viewModel {
             MainViewModel(
                 MainRepository(
-                PhotosDBDataSource(PhotosDatabase.getDatabase(androidApplication()).photosDao())
+                PhotosDBDataSource(MainDatabase.getDatabase(androidApplication()).photosDao())
                 )
             )
         }

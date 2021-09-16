@@ -5,23 +5,23 @@ import com.example.instatagg.domain.model.Tagg
 class TaggsDBDataSource(
     private val taggsDao: TaggsDao
 ){
-    fun insert(tagg: Tagg) {
-        taggsDao.insert(tagg)
+    suspend fun insertTagg(tagg: Tagg) {
+        taggsDao.insertTagg(tagg)
     }
 
-    fun getTaggs(): List<Tagg> {
+    suspend fun getTaggs(): List<Tagg> {
         return taggsDao.getTaggs()
     }
 
-    fun changeName(name: String, newTagg: String) {
-        taggsDao.changeName(name, newTagg)
+    suspend fun changeTaggName(name: String, newTagg: String) {
+        taggsDao.changeTaggName(name, newTagg)
     }
 
-    fun delTagg(id: Int) {
+    suspend fun delTagg(id: Int) {
         taggsDao.delTagg(id)
     }
 
-    fun clearTaggs() {
+    suspend fun clearTaggs() {
         taggsDao.clearTaggs()
     }
 }

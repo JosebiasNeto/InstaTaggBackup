@@ -1,13 +1,16 @@
 package com.example.instatagg.domain.repository
 
 import com.example.instatagg.data.dbPhotos.PhotosDBDataSource
+import com.example.instatagg.data.dbTaggs.TaggsDBDataSource
 import com.example.instatagg.domain.model.PhotoEntity
+import com.example.instatagg.domain.model.Tagg
 
 class MainRepository(
-    private val photosDb: PhotosDBDataSource
+    private val photosDb: PhotosDBDataSource,
+    private val taggsDb: TaggsDBDataSource
 ) {
-    suspend fun insert(photoEntity: PhotoEntity) {
-        photosDb.insert(photoEntity)
+    suspend fun insertPhoto(photoEntity: PhotoEntity) {
+        photosDb.insertPhoto(photoEntity)
     }
 
     suspend fun getPhotos(name: String): List<PhotoEntity> {
@@ -32,5 +35,20 @@ class MainRepository(
 
     suspend fun importPhoto(path: String, name: String, color: String) {
         photosDb.importPhoto(path, name, color)
+    }
+    suspend fun insertTagg(tagg: Tagg){
+        taggsDb.insertTagg(tagg)
+    }
+    suspend fun getTaggs(): List<Tagg> {
+        return taggsDb.getTaggs()
+    }
+    suspend fun changeTaggName(name: String, newTagg: String){
+        taggsDb.changeTaggName(name, newTagg)
+    }
+    suspend fun delTagg(id: Int){
+        taggsDb.delTagg(id)
+    }
+    suspend fun clearTaggs(){
+        taggsDb.clearTaggs()
     }
 }
