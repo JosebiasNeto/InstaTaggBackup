@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun insertPhoto(photoFile: File, tagg: Tagg) {
     val photo = Photo(photoFile.path, tagg,null)
-        viewModel.insert(photoEntity = Converters.toPhotoEntity(photo))
+        viewModel.insertPhoto(photoEntity = Converters.toPhotoEntity(photo))
     }
 
     private fun choseTagg(position: Int) {
