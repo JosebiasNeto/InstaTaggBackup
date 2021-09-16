@@ -7,35 +7,22 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
 import com.example.instatagg.databinding.CreateTaggBinding
+import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
-import com.github.dhaval2404.colorpicker.model.ColorShape
-import com.github.dhaval2404.colorpicker.model.ColorSwatch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class CreateTaggFragment : DialogFragment() {
 
-    private lateinit var binding: CreateTaggBinding
+    private var _binding: CreateTaggBinding? = null
+    private val binding get() = _binding
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        binding = CreateTaggBinding.inflate(layoutInflater)
         return activity.let {
+            _binding = CreateTaggBinding.inflate(layoutInflater)
             val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater
-            binding.btnChoseColor.setOnClickListener {
-                activity?.let { it1 ->
-                    MaterialColorPickerDialog
-                        .Builder(it1.applicationContext)        					// Pass Activity Instance
-                        .setTitle("Pick Theme")           		// Default "Choose Color"
-                        .setColorShape(ColorShape.SQAURE)   	// Default ColorShape.CIRCLE
-                        .setColorSwatch(ColorSwatch._300)   	// Default ColorSwatch._500
-                        .setDefaultColor(R.color.gray) 		// Pass Default Color
-                        .setColorListener { color, colorHex ->
-                        }
-                        .show()
-                }
-            }
-            builder.setView(inflater.inflate(R.layout.create_tagg, null))
+            builder.setView(binding?.root)
                 .setPositiveButton(R.string.txt_create,
                     DialogInterface.OnClickListener { dialog, id ->
 
@@ -44,7 +31,31 @@ class CreateTaggFragment : DialogFragment() {
                 DialogInterface.OnClickListener { dialog, id ->
                     getDialog()?.cancel()
                 })
+            binding?.btnChoseColor?.setOnClickListener {
+                choseColor()
+            }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
+    private fun changeColor(color: Int){
+        _binding?.btnChoseColor?.setBackgroundColor(color)
+    }
+    private fun choseColor(){
+        activity?.let {
+            MaterialColorPickerDialog.Builder(it.applicationContext)
+                .setTitle(R.string.txt_chose_color)
+                .setColorListener { color, colorHex ->
+                    changeColor(color)
+                }
+                .setDefaultColor(R.color.white)
+                .setTickColorPerCard(false)
+                .show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

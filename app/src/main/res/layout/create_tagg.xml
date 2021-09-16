@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="10dp"/>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/btn_chose_color"
         android:layout_width="50dp"
         android:layout_height="50dp"

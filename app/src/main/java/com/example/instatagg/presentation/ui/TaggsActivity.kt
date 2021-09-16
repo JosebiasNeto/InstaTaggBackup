@@ -18,5 +18,6 @@ class TaggsActivity : AppCompatActivity() {
             val createTaggFragment = CreateTaggFragment()
             createTaggFragment.show(supportFragmentManager,"createTagg")
         }
+
     }
 }
