@@ -36,10 +36,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>):
 
     fun getTagg(position: Int) = taggs[position]
 
-    fun addTagg(tagg: Tagg){
-        this.taggs.add(tagg)
-    }
-    fun removeTagg(tagg: Tagg){
-        this.taggs.remove(tagg)
+    fun addTaggs(taggs: List<Tagg>){
+        this.taggs.addAll(taggs)
     }
 }
