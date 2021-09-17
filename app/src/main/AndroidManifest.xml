@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaTagg">
-        <activity android:name=".presentation.ui.PhotosActivity"></activity>
+        <activity android:name=".presentation.ui.PhotosActivity" />
         <activity android:name=".presentation.ui.TaggsActivity" />
         <activity
             android:name=".presentation.ui.MainActivity"

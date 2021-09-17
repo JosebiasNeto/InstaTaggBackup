@@ -21,19 +21,20 @@ class CreateTaggFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
             _binding = CreateTaggBinding.inflate(layoutInflater)
+            binding?.btnChoseColor?.setOnClickListener {
+                choseColor()
+            }
             val builder = AlertDialog.Builder(it)
             builder.setView(binding?.root)
                 .setPositiveButton(R.string.txt_create,
                     DialogInterface.OnClickListener { dialog, id ->
 
-                })
+                    })
                 .setNegativeButton(R.string.txt_cancel,
-                DialogInterface.OnClickListener { dialog, id ->
-                    getDialog()?.cancel()
-                })
-            binding?.btnChoseColor?.setOnClickListener {
-                choseColor()
-            }
+                    DialogInterface.OnClickListener { dialog, id ->
+                        getDialog()?.cancel()
+                    })
+
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
@@ -42,7 +43,7 @@ class CreateTaggFragment : DialogFragment() {
     }
     private fun choseColor(){
         activity?.let {
-            MaterialColorPickerDialog.Builder(it.applicationContext)
+            MaterialColorPickerDialog.Builder(it)
                 .setTitle(R.string.txt_chose_color)
                 .setColorListener { color, colorHex ->
                     changeColor(color)
