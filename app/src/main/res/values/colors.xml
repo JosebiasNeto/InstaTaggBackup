@@ -7,8 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="gray">#7F7F7F</color>
-    <color name="gray_light">#DAD8D8</color>
+    <color name="gray">#3F3F3F</color>
+    <color name="gray_light">#9B9B9A</color>
+    <color name="orange">#F2B41E</color>
     <color name="positiveButtonTextColor">#FFFFFF</color>
     <color name="negativeButtonTextColor">#FFFFFF</color>
     <color name="bottomSheetDividerColor">#F5F5F5</color>
