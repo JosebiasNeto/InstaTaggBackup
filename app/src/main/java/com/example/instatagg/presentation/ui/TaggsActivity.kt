@@ -1,5 +1,6 @@
 package com.example.instatagg.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -37,7 +38,7 @@ class TaggsActivity : AppCompatActivity() {
 
         binding.rvTaggs.addOnItemClickListener(object : OnItemClickListener{
             override fun onItemClicked(position: Int, view: View) {
-                openPhotosActivity()
+                openPhotosActivity(position)
             }
 
         })
@@ -50,7 +51,10 @@ class TaggsActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPhotosActivity() {
-
+    private fun openPhotosActivity(idTagg: Int) {
+        val intentPhotosActivity = Intent(this, PhotosActivity::class.java)
+        val tagg: Tagg = adapter.getTagg(idTagg)
+        intentPhotosActivity.putExtra("tagg", tagg)
+        startActivity(intentPhotosActivity)
     }
 }
