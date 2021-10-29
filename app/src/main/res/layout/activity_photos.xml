@@ -8,25 +8,42 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_photos"
-        android:background="@color/gray_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/photo_item"
-        tools:itemCount="12"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        android:background="@color/gray_light"
         android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:spanCount="3"
-        />
+        tools:itemCount="12"
+        tools:listitem="@layout/photo_item" />
+
     <ImageView
         android:id="@+id/iv_no_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/photoiconsad"
         android:visibility="gone"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_tagg_edit"
+        style="@style/style_fab_secondary"
+        android:src="@drawable/ic_baseline_edit_24"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_tagg_delete"
+        style="@style/style_fab_secondary"
+        android:src="@drawable/outline_delete_24"
+        tools:ignore="MissingConstraints" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_tagg_options"
+        style="@style/style_fab_main"
+        android:src="@drawable/ic_baseline_settings_24"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
