@@ -20,8 +20,9 @@ class MainViewModel(
     fun getPhotos(name: String): LiveData<List<PhotoEntity>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getPhotos(name))
     }
-    fun changeTagg(name: String, newTagg:String) = liveData(Dispatchers.IO){
-        emit(mainRepository.changeTagg(name, newTagg))
+    fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long)
+    = liveData(Dispatchers.IO){ emit(mainRepository.changeTagg(
+        newTaggName, newTaggColor, newTaggId, currentTaggId))
     }
     fun delPhoto(id: Int) = liveData(Dispatchers.IO) {
         emit(mainRepository.delPhoto(id))
@@ -45,13 +46,17 @@ class MainViewModel(
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
     }
-    fun changeTaggName(name: String, newTagg: String) = liveData(Dispatchers.IO){
-        emit(mainRepository.changeTaggName(name, newTagg))
+    fun changeTaggName(id: Long, newTagg: String) = liveData(Dispatchers.IO){
+        emit(mainRepository.changeTaggName(id, newTagg))
     }
     fun delTagg(id: Long){
         viewModelScope.launch(Dispatchers.IO) { mainRepository.delTagg(id) }
     }
     fun clearTaggs() = liveData(Dispatchers.IO){
         emit(mainRepository.clearTaggs())
+    }
+    fun changeTaggColor(id: Long, newColor: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.changeTaggColor(id, newColor) }
     }
 }

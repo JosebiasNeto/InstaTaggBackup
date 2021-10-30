@@ -12,7 +12,6 @@ import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.utils.OnItemClickListener
 import com.example.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.Serializable
 
 class TaggsActivity : AppCompatActivity() {
 
@@ -55,7 +54,7 @@ class TaggsActivity : AppCompatActivity() {
     private fun openPhotosActivity(idTagg: Int) {
         val PhotosActivity = Intent(this, PhotosActivity::class.java)
         val tagg: Tagg = adapter.getTagg(idTagg)
-        PhotosActivity.putExtra("tagg", tagg as Serializable)
+        PhotosActivity.putExtra("tagg", tagg)
         startActivity(PhotosActivity)
     }
 }

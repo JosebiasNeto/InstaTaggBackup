@@ -18,11 +18,13 @@ class PhotosActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val tagg = intent.getParcelableExtra<Tagg>("tagg")
         val fabTaggEdit = binding.fabTaggEdit
         val fabTaggDelete = binding.fabTaggDelete
-        fabTaggDelete.setOnClickListener { deleteTagg() }
-
+        if(tagg != null) {
+            fabTaggDelete.setOnClickListener { deleteTagg(tagg) }
+            fabTaggEdit.setOnClickListener { editTagg(tagg) }
+        }
         binding.fabTaggOptions.setOnClickListener {
             if(!isFABOpen){
                 showFABMenu(fabTaggEdit, fabTaggDelete)
@@ -39,10 +41,14 @@ class PhotosActivity : AppCompatActivity() {
         fabTaggEdit.animate().translationY(0F)
         fabTaggDelete.animate().translationY(0F)
     }
-    fun deleteTagg(){
-        val tagg = intent.extras?.get("tagg") as Tagg
+    fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
         val TaggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(TaggsActivity)
     }
+    fun editTagg(tagg: Tagg){
+        val editTaggFragment = EditTaggFragment(tagg)
+        editTaggFragment.show(supportFragmentManager,"editTagg")
+    }
+
 }

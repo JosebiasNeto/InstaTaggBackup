@@ -17,8 +17,8 @@ class MainRepository(
         return photosDb.getPhotos(name)
     }
 
-    suspend fun changeTagg(name: String, newTagg: String) {
-        photosDb.changeTagg(name, newTagg)
+    suspend fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long) {
+        photosDb.changeTagg(newTaggName, newTaggColor, newTaggId, currentTaggId)
     }
 
     suspend fun delPhoto(id: Int) {
@@ -42,8 +42,8 @@ class MainRepository(
     suspend fun getTaggs(): List<Tagg> {
         return taggsDb.getTaggs()
     }
-    suspend fun changeTaggName(name: String, newTagg: String){
-        taggsDb.changeTaggName(name, newTagg)
+    suspend fun changeTaggName(id: Long, newTagg: String){
+        taggsDb.changeTaggName(id, newTagg)
     }
     suspend fun delTagg(id: Long){
         taggsDb.delTagg(id)
@@ -51,4 +51,8 @@ class MainRepository(
     suspend fun clearTaggs(){
         taggsDb.clearTaggs()
     }
+    suspend fun changeTaggColor(id: Long, newColor: Int){
+        taggsDb.changeTaggColor(id, newColor)
+    }
+
 }

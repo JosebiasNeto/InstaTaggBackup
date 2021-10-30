@@ -13,13 +13,16 @@ interface TaggsDao {
     @Query("SELECT * FROM taggs")
     fun getTaggs(): List<Tagg>
 
-    @Query("UPDATE taggs SET name = :newTagg WHERE name = :name")
-    fun changeTaggName(name: String, newTagg: String)
+    @Query("UPDATE taggs SET name = :newTagg WHERE id = :id")
+    fun changeTaggName(id: Long, newTagg: String)
 
     @Query("DELETE FROM taggs WHERE id = :id")
     fun delTagg(id: Long)
 
     @Query("DELETE FROM taggs")
     fun clearTaggs()
+
+    @Query("UPDATE taggs SET color = :newColor WHERE id = :id")
+    fun changeTaggColor(id: Long, newColor: Int)
 
 }

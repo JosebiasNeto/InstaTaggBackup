@@ -13,8 +13,8 @@ class TaggsDBDataSource(
         return taggsDao.getTaggs()
     }
 
-    fun changeTaggName(name: String, newTagg: String) {
-        taggsDao.changeTaggName(name, newTagg)
+    fun changeTaggName(id: Long, newTagg: String) {
+        taggsDao.changeTaggName(id, newTagg)
     }
 
     fun delTagg(id: Long) {
@@ -23,5 +23,8 @@ class TaggsDBDataSource(
 
     fun clearTaggs() {
         taggsDao.clearTaggs()
+    }
+    fun changeTaggColor(id: Long, newColor: Int){
+        taggsDao.changeTaggColor(id, newColor)
     }
 }

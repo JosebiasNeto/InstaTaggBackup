@@ -13,8 +13,8 @@ class PhotosDBDataSource (
         return photosDao.getPhotos(name)
     }
 
-    suspend fun changeTagg(name: String, newTagg: String) {
-        photosDao.changeTagg(name, newTagg)
+    suspend fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long) {
+        photosDao.changeTagg(newTaggName, newTaggColor, newTaggId, currentTaggId)
     }
 
     suspend fun delPhoto(id: Int) {

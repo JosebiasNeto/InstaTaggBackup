@@ -13,8 +13,8 @@ interface PhotosDao {
     @Query("SELECT * FROM photos WHERE name = :name")
     fun getPhotos(name: String): List<PhotoEntity>
 
-    @Query("UPDATE photos SET name = :newTagg WHERE name = :name")
-    fun changeTagg(name: String, newTagg: String)
+    @Query("UPDATE photos SET name = :newTaggName, color = :newTaggColor, taggid = :newTaggId WHERE taggid = :currentTaggId")
+    fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long)
 
     @Query("DELETE FROM photos WHERE id = :id")
     fun delPhoto(id: Int)
