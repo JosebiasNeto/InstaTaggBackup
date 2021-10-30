@@ -40,7 +40,7 @@ class CreateTaggFragment : DialogFragment() {
                                     binding?.btnChoseColor!!.currentHintTextColor
                                 )
                             )
-                            startActivity(activity!!.intent)
+                            startActivity(requireActivity().intent)
                         }
                     })
                 .setNegativeButton(R.string.txt_cancel,

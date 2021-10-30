@@ -48,8 +48,8 @@ class MainViewModel(
     fun changeTaggName(name: String, newTagg: String) = liveData(Dispatchers.IO){
         emit(mainRepository.changeTaggName(name, newTagg))
     }
-    fun delTagg(id: Int) = liveData(Dispatchers.IO){
-        emit(mainRepository.delTagg(id))
+    fun delTagg(id: Long){
+        viewModelScope.launch(Dispatchers.IO) { mainRepository.delTagg(id) }
     }
     fun clearTaggs() = liveData(Dispatchers.IO){
         emit(mainRepository.clearTaggs())

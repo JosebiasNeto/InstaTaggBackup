@@ -17,7 +17,7 @@ class TaggsDBDataSource(
         taggsDao.changeTaggName(name, newTagg)
     }
 
-    fun delTagg(id: Int) {
+    fun delTagg(id: Long) {
         taggsDao.delTagg(id)
     }
 

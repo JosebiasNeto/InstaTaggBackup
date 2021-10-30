@@ -17,7 +17,7 @@ interface TaggsDao {
     fun changeTaggName(name: String, newTagg: String)
 
     @Query("DELETE FROM taggs WHERE id = :id")
-    fun delTagg(id: Int)
+    fun delTagg(id: Long)
 
     @Query("DELETE FROM taggs")
     fun clearTaggs()

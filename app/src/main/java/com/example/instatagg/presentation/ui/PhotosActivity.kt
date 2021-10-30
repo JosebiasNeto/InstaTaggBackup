@@ -1,9 +1,11 @@
 package com.example.instatagg.presentation.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityPhotosBinding
+import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,6 +21,7 @@ class PhotosActivity : AppCompatActivity() {
 
         val fabTaggEdit = binding.fabTaggEdit
         val fabTaggDelete = binding.fabTaggDelete
+        fabTaggDelete.setOnClickListener { deleteTagg() }
 
         binding.fabTaggOptions.setOnClickListener {
             if(!isFABOpen){
@@ -35,5 +38,11 @@ class PhotosActivity : AppCompatActivity() {
         isFABOpen = false
         fabTaggEdit.animate().translationY(0F)
         fabTaggDelete.animate().translationY(0F)
+    }
+    fun deleteTagg(){
+        val tagg = intent.extras?.get("tagg") as Tagg
+        tagg.id?.let { viewModel.delTagg(it) }
+        val TaggsActivity = Intent(this, TaggsActivity::class.java)
+        startActivity(TaggsActivity)
     }
 }

@@ -45,7 +45,7 @@ class MainRepository(
     suspend fun changeTaggName(name: String, newTagg: String){
         taggsDb.changeTaggName(name, newTagg)
     }
-    suspend fun delTagg(id: Int){
+    suspend fun delTagg(id: Long){
         taggsDb.delTagg(id)
     }
     suspend fun clearTaggs(){
