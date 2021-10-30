@@ -16,12 +16,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityMainBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
-import com.example.instatagg.domain.repository.Converters
-import com.example.instatagg.presentation.adapter.TaggsAdapter
+import com.example.instatagg.presentation.adapter.MainAdapter
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.utils.Constants.FILENAME_FORMAT
 import com.example.instatagg.utils.Constants.REQUEST_CODE_PERMISSIONS
@@ -42,8 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var adapter: TaggsAdapter
-    private lateinit var currentTagg: Tagg
+    private lateinit var adapter: MainAdapter
 
     private val viewModel: MainViewModel by viewModel()
 
@@ -61,13 +60,17 @@ class MainActivity : AppCompatActivity() {
         }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
-
+        binding.rvChangeTagg.isVisible = false
         binding.choseTaggButton.setOnClickListener {
-            binding.rvChangeTagg.isVisible = binding.rvChangeTagg.isVisible == false
+            binding.rvChangeTagg.isVisible = !binding.rvChangeTagg.isVisible
         }
 
-        adapter = TaggsAdapter(arrayListOf())
+        adapter = MainAdapter(arrayListOf())
         binding.rvChangeTagg.adapter = adapter
+        binding.rvChangeTagg.layoutManager = LinearLayoutManager(this)
+        viewModel.getTaggs().observe(this, {
+            refreshAdapter(it)
+        })
         binding.rvChangeTagg.addOnItemClickListener(object: OnItemClickListener{
             override fun onItemClicked(position: Int, view: View) {
                choseTagg(position)
@@ -83,11 +86,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun insertPhoto(photoFile: File, tagg: Tagg) {
     val photo = Photo(photoFile.path, tagg,null)
-        viewModel.insertPhoto(photoEntity = Converters.toPhotoEntity(photo))
+        viewModel.insertPhoto(photo)
+    }
+    private fun refreshAdapter(taggs: List<Tagg>){
+        adapter.apply {
+            addTaggs(taggs)
+            notifyDataSetChanged()
+        }
     }
 
     private fun choseTagg(position: Int) {
@@ -95,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         binding.choseTaggButton.text = tagg.name
         binding.choseTaggButton.setBackgroundColor(tagg.color)
         binding.rvChangeTagg.isVisible = false
-        currentTagg = tagg
+        viewModel.setTagg(tagg)
     }
 
 
@@ -140,7 +147,7 @@ class MainActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
-                    insertPhoto(photoFile, currentTagg)
+                    insertPhoto(photoFile, viewModel.getTagg())
                 }
             })
     }

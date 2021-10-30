@@ -1,4 +1,4 @@
-package com.example.instatagg.data
+package com.example.instatagg.data.database
 
 import android.content.Context
 import androidx.room.Database

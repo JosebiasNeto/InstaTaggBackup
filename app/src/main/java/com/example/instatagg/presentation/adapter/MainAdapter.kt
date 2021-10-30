@@ -29,13 +29,10 @@ class MainAdapter(private val taggs: ArrayList<Tagg>):
 
     override fun getItemCount(): Int = taggs.size
 
-    fun getTaggRv(position: Int) = taggs[position]
+    fun getTagg(position: Int) = taggs[position]
 
-    fun addTaggRv(tagg: Tagg){
-        this.taggs.add(tagg)
-    }
-    fun removeTaggRv(tagg: Tagg){
-        this.taggs.remove(tagg)
+    fun addTaggs(taggs: List<Tagg>){
+        this.taggs.addAll(taggs)
     }
 
 }

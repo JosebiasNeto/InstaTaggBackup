@@ -1,7 +1,8 @@
 package com.example.instatagg.domain.repository
 
-import com.example.instatagg.data.PhotosDao
-import com.example.instatagg.data.TaggsDao
+import com.example.instatagg.data.database.PhotosDao
+import com.example.instatagg.data.database.TaggsDao
+import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.PhotoEntity
 import com.example.instatagg.domain.model.Tagg
 
@@ -9,8 +10,8 @@ class MainRepository(
     private val photosDao: PhotosDao,
     private val taggsDao: TaggsDao
 ) {
-    suspend fun insertPhoto(photoEntity: PhotoEntity) {
-        photosDao.insert(photoEntity)
+    suspend fun insertPhoto(photo: Photo) {
+        photosDao.insert(Converters.toPhotoEntity(photo))
     }
 
     suspend fun getPhotos(name: String): List<PhotoEntity> {

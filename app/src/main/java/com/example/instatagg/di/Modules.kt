@@ -1,6 +1,6 @@
 package com.example.instatagg.di
 
-import com.example.instatagg.data.MainDatabase
+import com.example.instatagg.data.database.MainDatabase
 import com.example.instatagg.domain.repository.MainRepository
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
