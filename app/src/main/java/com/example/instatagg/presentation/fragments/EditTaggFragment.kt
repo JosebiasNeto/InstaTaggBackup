@@ -1,4 +1,4 @@
-package com.example.instatagg.presentation.ui
+package com.example.instatagg.presentation.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
 import com.example.instatagg.databinding.CreateTaggBinding
 import com.example.instatagg.domain.model.Tagg
-import com.example.instatagg.presentation.viewmodel.MainViewModel
+import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -17,7 +17,7 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
 
     private var _binding: CreateTaggBinding? = null
     private val binding get() = _binding
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: PhotosViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {

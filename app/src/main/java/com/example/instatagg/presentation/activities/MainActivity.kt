@@ -1,4 +1,4 @@
-package com.example.instatagg.presentation.ui
+package com.example.instatagg.presentation.activities
 
 import android.content.Intent
 import android.content.pm.PackageManager

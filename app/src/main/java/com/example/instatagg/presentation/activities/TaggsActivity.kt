@@ -1,4 +1,4 @@
-package com.example.instatagg.presentation.ui
+package com.example.instatagg.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.instatagg.databinding.ActivityTaggsBinding
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.presentation.adapter.TaggsAdapter
-import com.example.instatagg.presentation.viewmodel.MainViewModel
+import com.example.instatagg.presentation.fragments.CreateTaggFragment
+import com.example.instatagg.presentation.viewmodel.TaggsViewModel
 import com.example.instatagg.utils.OnItemClickListener
 import com.example.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -16,7 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class TaggsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTaggsBinding
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: TaggsViewModel by viewModel()
     private lateinit var adapter: TaggsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

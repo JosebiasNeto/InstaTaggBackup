@@ -1,4 +1,4 @@
-package com.example.instatagg.data.dbPhotos
+package com.example.instatagg.data
 
 import androidx.room.Dao
 import androidx.room.Insert

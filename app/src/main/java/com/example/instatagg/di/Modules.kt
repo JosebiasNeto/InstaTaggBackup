@@ -1,10 +1,10 @@
 package com.example.instatagg.di
 
 import com.example.instatagg.data.MainDatabase
-import com.example.instatagg.data.dbPhotos.PhotosDBDataSource
-import com.example.instatagg.data.dbTaggs.TaggsDBDataSource
 import com.example.instatagg.domain.repository.MainRepository
 import com.example.instatagg.presentation.viewmodel.MainViewModel
+import com.example.instatagg.presentation.viewmodel.PhotosViewModel
+import com.example.instatagg.presentation.viewmodel.TaggsViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -14,8 +14,24 @@ object Modules {
         viewModel {
             MainViewModel(
                 MainRepository(
-                    PhotosDBDataSource(MainDatabase.getDatabase(androidApplication()).photosDao()),
-                    TaggsDBDataSource(MainDatabase.getDatabase(androidApplication()).taggsDao())
+                    MainDatabase.getDatabase(androidApplication()).photosDao(),
+                    MainDatabase.getDatabase(androidApplication()).taggsDao()
+                )
+            )
+        }
+        viewModel {
+            TaggsViewModel(
+                MainRepository(
+                    MainDatabase.getDatabase(androidApplication()).photosDao(),
+                    MainDatabase.getDatabase(androidApplication()).taggsDao()
+                )
+            )
+        }
+        viewModel {
+            PhotosViewModel(
+                MainRepository(
+                    MainDatabase.getDatabase(androidApplication()).photosDao(),
+                    MainDatabase.getDatabase(androidApplication()).taggsDao()
                 )
             )
         }

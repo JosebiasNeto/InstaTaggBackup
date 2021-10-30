@@ -1,4 +1,4 @@
-package com.example.instatagg.presentation.ui
+package com.example.instatagg.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,13 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityPhotosBinding
 import com.example.instatagg.domain.model.Tagg
-import com.example.instatagg.presentation.viewmodel.MainViewModel
+import com.example.instatagg.presentation.fragments.EditTaggFragment
+import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: PhotosViewModel by viewModel()
     private var isFABOpen: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

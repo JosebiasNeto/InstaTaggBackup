@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.instatagg.data.dbPhotos.PhotosDao
-import com.example.instatagg.data.dbTaggs.TaggsDao
 import com.example.instatagg.domain.model.PhotoEntity
 import com.example.instatagg.domain.model.Tagg
 
