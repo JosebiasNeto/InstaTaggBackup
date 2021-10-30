@@ -8,21 +8,21 @@ import com.example.instatagg.domain.model.Tagg
 @Dao
 interface TaggsDao {
     @Insert
-    fun insertTagg(tagg: Tagg)
+    suspend fun insertTagg(tagg: Tagg)
 
     @Query("SELECT * FROM taggs")
-    fun getTaggs(): List<Tagg>
+    suspend fun getTaggs(): List<Tagg>
 
     @Query("UPDATE taggs SET name = :newTagg WHERE id = :id")
-    fun changeTaggName(id: Long, newTagg: String)
+    suspend fun changeTaggName(id: Long, newTagg: String)
 
     @Query("DELETE FROM taggs WHERE id = :id")
-    fun delTagg(id: Long)
+    suspend fun delTagg(id: Long)
 
     @Query("DELETE FROM taggs")
-    fun clearTaggs()
+    suspend fun clearTaggs()
 
     @Query("UPDATE taggs SET color = :newColor WHERE id = :id")
-    fun changeTaggColor(id: Long, newColor: Int)
+    suspend fun changeTaggColor(id: Long, newColor: Int)
 
 }

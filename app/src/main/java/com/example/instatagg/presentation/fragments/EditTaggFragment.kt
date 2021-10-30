@@ -3,12 +3,14 @@ package com.example.instatagg.presentation.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
 import com.example.instatagg.databinding.CreateTaggBinding
 import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.presentation.activities.TaggsActivity
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -22,8 +24,9 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
             _binding = CreateTaggBinding.inflate(layoutInflater)
-            binding?.etTaggName!!.hint = tagg.name
+            binding?.etTaggName!!.text = Editable.Factory.getInstance().newEditable(tagg.name)
             binding?.btnChoseColor!!.setBackgroundColor(tagg.color)
+            binding?.btnChoseColor!!.setHintTextColor(tagg.color)
             binding?.btnChoseColor?.setOnClickListener {
                 choseColor()
             }
@@ -33,20 +36,18 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
                     R.string.txt_edit,
                     DialogInterface.OnClickListener { dialog, id ->
 
-                                    if (binding!!.etTaggName.text != Editable.Factory.getInstance()
-                                            .newEditable(tagg.name)
-                                    )
-                                        viewModel.changeTaggName(
-                                            tagg.id!!,
-                                            binding!!.etTaggName.text.toString()
-                                        )
+                        if (binding!!.etTaggName.text.toString() != tagg.name) {
+                            viewModel.changeTaggName(
+                                tagg.id!!,
+                                binding!!.etTaggName.text.toString())
 
-                                if (binding!!.btnChoseColor.currentHintTextColor != tagg.color)
-                                    viewModel.changeTaggColor(
-                                        tagg.id!!,
-                                        binding!!.btnChoseColor.currentHintTextColor
-                                    )
-                                startActivity(requireActivity().intent)
+                        }
+                        if (binding!!.btnChoseColor.currentHintTextColor != tagg.color) {
+                            viewModel.changeTaggColor(
+                                tagg.id!!,
+                                binding!!.btnChoseColor.currentHintTextColor)
+                        }
+                        startActivity(Intent(activity, TaggsActivity::class.java))
 
                     })
                 .setNegativeButton(
@@ -58,11 +59,13 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
-    private fun changeColor(color: Int){
+
+    private fun changeColor(color: Int) {
         _binding?.btnChoseColor?.setBackgroundColor(color)
         _binding?.btnChoseColor?.setHintTextColor(color)
     }
-    private fun choseColor(){
+
+    private fun choseColor() {
         activity?.let {
             MaterialColorPickerDialog.Builder(it)
                 .setTitle(R.string.txt_chose_color)
