@@ -3,9 +3,12 @@ package com.example.instatagg.presentation.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityPhotosBinding
+import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.presentation.adapter.PhotosAdapter
 import com.example.instatagg.presentation.fragments.EditTaggFragment
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,6 +18,8 @@ class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
     private var isFABOpen: Boolean = false
+    private lateinit var adapter: PhotosAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotosBinding.inflate(layoutInflater)
@@ -30,6 +35,22 @@ class PhotosActivity : AppCompatActivity() {
             if(!isFABOpen){
                 showFABMenu(fabTaggEdit, fabTaggDelete)
             } else closeFABMenu(fabTaggEdit, fabTaggDelete)
+        }
+        adapter = PhotosAdapter(arrayListOf())
+        binding.rvPhotos.adapter = adapter
+        binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
+        if (tagg != null) {
+            tagg.id?.let {
+                viewModel.getPhotos(it).observe(this, {
+                    refreshAdapter(it)
+                })
+            }
+        }
+    }
+    private fun refreshAdapter(photos: List<Photo>){
+        adapter.apply {
+            addPhotos(photos)
+            notifyDataSetChanged()
         }
     }
     fun showFABMenu(fabTaggEdit: FloatingActionButton, fabTaggDelete: FloatingActionButton){

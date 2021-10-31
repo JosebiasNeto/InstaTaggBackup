@@ -3,7 +3,6 @@ package com.example.instatagg.domain.repository
 import com.example.instatagg.data.database.PhotosDao
 import com.example.instatagg.data.database.TaggsDao
 import com.example.instatagg.domain.model.Photo
-import com.example.instatagg.domain.model.PhotoEntity
 import com.example.instatagg.domain.model.Tagg
 
 class MainRepository(
@@ -14,8 +13,10 @@ class MainRepository(
         photosDao.insert(Converters.toPhotoEntity(photo))
     }
 
-    suspend fun getPhotos(name: String): List<PhotoEntity> {
-        return photosDao.getPhotos(name)
+    suspend fun getPhotos(id: Long): List<Photo> {
+        return photosDao.getPhotos(id).map {
+            Converters.toPhoto(it)
+        }
     }
 
     suspend fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long) {

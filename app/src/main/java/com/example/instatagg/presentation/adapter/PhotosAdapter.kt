@@ -9,31 +9,34 @@ import com.example.instatagg.R
 import com.example.instatagg.domain.model.Photo
 import com.squareup.picasso.Picasso
 
-class PhotosAdapter(private val photos: ArrayList<Photo>):
+class PhotosAdapter(private val photos: ArrayList<Photo>) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
+
     class PhotosHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(photo: Photo){
-            Picasso.get().load(photo.path).into(itemView.findViewById<ImageView>(R.id.iv_photo))
+        fun bind(photo: Photo) {
+            Picasso.get().load(photo.path)
+                .into(itemView.findViewById<ImageView>(R.id.iv_photo))
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosHolder =
         PhotosHolder(
             LayoutInflater.from(parent.context)
-            .inflate(R.layout.tagg_item_rv, parent, false))
+                .inflate(R.layout.photo_item, parent, false)
+        )
 
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) =
         holder.bind(photos[position])
 
     override fun getItemCount(): Int = photos.size
 
-    fun getTaggRv(position: Int) = photos[position]
+    fun getPhoto(position: Int) = photos[position]
 
-    fun addTaggRv(photo: Photo){
-        this.photos.add(photo)
-    }
-    fun removeTaggRv(photo: Photo){
-        this.photos.remove(photo)
+    fun addPhotos(photos: List<Photo>) {
+        this.photos.apply {
+            clear()
+            addAll(photos)
+        }
     }
 
 }

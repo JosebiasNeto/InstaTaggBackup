@@ -10,11 +10,11 @@ import com.example.instatagg.R
 import com.example.instatagg.domain.model.Tagg
 import com.squareup.picasso.Picasso
 
-class TaggsAdapter(private val taggs: ArrayList<Tagg>):
-    RecyclerView.Adapter<TaggsAdapter.TaggsHolder>(){
+class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
+    RecyclerView.Adapter<TaggsAdapter.TaggsHolder>() {
 
     class TaggsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(tagg: Tagg){
+        fun bind(tagg: Tagg) {
             itemView.apply {
                 findViewById<TextView>(R.id.tv_name_tagg).text = tagg.name
                 findViewById<TextView>(R.id.tv_name_tagg).setTextColor(tagg.color)
@@ -27,7 +27,8 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>):
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaggsHolder =
         TaggsHolder(
             LayoutInflater.from(parent.context)
-            .inflate(R.layout.tagg_item, parent, false))
+                .inflate(R.layout.tagg_item, parent, false)
+        )
 
     override fun onBindViewHolder(holder: TaggsHolder, position: Int) =
         holder.bind(taggs[position])
@@ -36,7 +37,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>):
 
     fun getTagg(position: Int) = taggs[position]
 
-    fun addTaggs(taggs: List<Tagg>){
+    fun addTaggs(taggs: List<Tagg>) {
         this.taggs.addAll(taggs)
     }
 }
