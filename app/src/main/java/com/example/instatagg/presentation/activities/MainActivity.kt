@@ -91,6 +91,12 @@ class MainActivity : AppCompatActivity() {
         binding.openGaleryButton.setOnClickListener {
             startActivity(Intent(this, TaggsActivity::class.java))
         }
+        if(viewModel.getTagg() != null) {
+            viewModel.setTagg(viewModel.getTagg()!!)
+        } else {
+            val taggs = viewModel.getTaggs().value
+            taggs?.get(0)?.let { viewModel.setTagg(it) }
+        }
     }
 
     private fun insertPhoto(photoFile: File, tagg: Tagg) {
@@ -153,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
-                    insertPhoto(photoFile, viewModel.getTagg())
+                    viewModel.getTagg()?.let { insertPhoto(photoFile, it) }
                 }
             })
     }

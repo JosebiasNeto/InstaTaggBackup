@@ -10,7 +10,7 @@
             android:id="@+id/iv_photo"
             android:layout_width="135dp"
             android:layout_height="135dp"
-            android:src="@drawable/ic_launcher_background"
+            tools:src="@tools:sample/avatars"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             />
