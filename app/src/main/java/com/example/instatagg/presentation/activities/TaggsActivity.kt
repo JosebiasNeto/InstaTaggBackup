@@ -58,4 +58,8 @@ class TaggsActivity : AppCompatActivity() {
         PhotosActivity.putExtra("tagg", tagg)
         startActivity(PhotosActivity)
     }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
 }

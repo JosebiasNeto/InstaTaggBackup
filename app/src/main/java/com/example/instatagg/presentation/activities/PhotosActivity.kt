@@ -73,4 +73,8 @@ class PhotosActivity : AppCompatActivity() {
         editTaggFragment.show(supportFragmentManager,"editTagg")
     }
 
+    override fun onBackPressed() {
+        startActivity(Intent(this, TaggsActivity::class.java))
+    }
+
 }

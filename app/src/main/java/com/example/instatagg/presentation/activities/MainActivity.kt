@@ -194,4 +194,8 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
+
+    override fun onBackPressed() {
+        this.finishAffinity()
+    }
 }
