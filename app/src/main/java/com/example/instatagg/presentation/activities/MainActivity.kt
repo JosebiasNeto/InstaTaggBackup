@@ -60,27 +60,34 @@ class MainActivity : AppCompatActivity() {
         }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
+
+        adapter = MainAdapter(arrayListOf())
+        val llm = LinearLayoutManager(this)
+        llm.reverseLayout = true
+
         binding.rvChangeTagg.isVisible = false
-        binding.choseTaggButton.setOnClickListener {
+        binding.rvChangeTagg.adapter = adapter
+        binding.rvChangeTagg.layoutManager = llm
+        binding.rvChangeTagg.addOnItemClickListener(object: OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View) {
+                choseTagg(position)
+            }
+        })
+
+        binding.choseTaggColor.setOnClickListener {
             binding.rvChangeTagg.isVisible = !binding.rvChangeTagg.isVisible
         }
 
-        adapter = MainAdapter(arrayListOf())
-        binding.rvChangeTagg.adapter = adapter
-        binding.rvChangeTagg.layoutManager = LinearLayoutManager(this)
         viewModel.getTaggs().observe(this, {
             refreshAdapter(it)
         })
-        binding.rvChangeTagg.addOnItemClickListener(object: OnItemClickListener{
-            override fun onItemClicked(position: Int, view: View) {
-               choseTagg(position)
-            }
-        })
+
         binding.cameraCaptureButton.setOnClickListener {
             if(adapter.itemCount == 0){
                 Toast.makeText(this, "Add a Tagg first!", Toast.LENGTH_SHORT).show()
             } else takePhoto()
         }
+
         binding.openGaleryButton.setOnClickListener {
             startActivity(Intent(this, TaggsActivity::class.java))
         }
@@ -99,12 +106,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun choseTagg(position: Int) {
         val tagg = adapter.getTagg(position)
-        binding.choseTaggButton.text = tagg.name
-        binding.choseTaggButton.setBackgroundColor(tagg.color)
+        binding.choseTaggText.text = tagg.name
+        binding.choseTaggColor.setBackgroundColor(tagg.color)
         binding.rvChangeTagg.isVisible = false
         viewModel.setTagg(tagg)
     }
-
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)

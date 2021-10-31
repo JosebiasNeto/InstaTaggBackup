@@ -43,8 +43,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/chose_tagg_button"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/chose_tagg_color"
         android:layout_width="100dp"
         android:layout_height="25dp"
         android:layout_marginBottom="40dp"
@@ -53,7 +53,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/camera_capture_button"
         tools:background="@color/white"
-        tools:text="Família" />
+        tools:text="Família" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/chose_tagg_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray"
+                tools:text="Família"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_change_tagg"
@@ -61,8 +80,8 @@
         android:layout_height="240dp"
         tools:itemCount="5"
         tools:listitem="@layout/tagg_item_rv"
-        app:layout_constraintEnd_toEndOf="@id/chose_tagg_button"
-        app:layout_constraintBottom_toTopOf="@id/chose_tagg_button"
+        app:layout_constraintEnd_toEndOf="@id/chose_tagg_color"
+        app:layout_constraintBottom_toTopOf="@id/chose_tagg_color"
         android:layout_marginEnd="-5dp"
         android:layout_marginBottom="10dp"
         />
