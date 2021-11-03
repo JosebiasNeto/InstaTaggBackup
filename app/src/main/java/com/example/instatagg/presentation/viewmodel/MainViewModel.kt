@@ -1,6 +1,9 @@
 package com.example.instatagg.presentation.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.domain.repository.MainRepository
@@ -17,14 +20,4 @@ class MainViewModel(
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
     }
-
-    var currentTagg = MutableLiveData<Tagg>()
-
-    fun setTagg(tagg: Tagg){
-        currentTagg.value = tagg
-    }
-    fun getTagg(): Tagg? {
-        return currentTagg.value
-    }
-
 }

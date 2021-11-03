@@ -1,5 +1,6 @@
 package com.example.instatagg.presentation.activities
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -91,12 +92,9 @@ class MainActivity : AppCompatActivity() {
         binding.openGaleryButton.setOnClickListener {
             startActivity(Intent(this, TaggsActivity::class.java))
         }
-        if(viewModel.getTagg() != null) {
-            viewModel.setTagg(viewModel.getTagg()!!)
-        } else {
-            val taggs = viewModel.getTaggs().value
-            taggs?.get(0)?.let { viewModel.setTagg(it) }
-        }
+
+        setCurrentTagg(getCurrentTagg())
+
     }
 
     private fun insertPhoto(photoFile: File, tagg: Tagg) {
@@ -110,12 +108,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun choseTagg(position: Int) {
-        val tagg = adapter.getTagg(position)
+    private fun setCurrentTagg(tagg: Tagg){
         binding.choseTaggText.text = tagg.name
         binding.choseTaggColor.setBackgroundColor(tagg.color)
+    }
+
+    private fun choseTagg(position: Int) {
+        val tagg = adapter.getTagg(position)
+        setCurrentTagg(tagg)
         binding.rvChangeTagg.isVisible = false
-        viewModel.setTagg(tagg)
+        saveCurrentTagg(tagg)
     }
 
     private fun startCamera() {
@@ -159,7 +161,12 @@ class MainActivity : AppCompatActivity() {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(TAG, msg)
-                    viewModel.getTagg()?.let { insertPhoto(photoFile, it) }
+                    if(getCurrentTagg().name.isEmpty()){
+                        Toast.makeText(applicationContext,"Photo capture failed!",Toast.LENGTH_SHORT).show()
+                    } else {
+                        insertPhoto(photoFile, getCurrentTagg())
+                        Toast.makeText(applicationContext, "Photo capture success!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
     }
@@ -174,6 +181,25 @@ class MainActivity : AppCompatActivity() {
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else filesDir
     }
+
+    private fun saveCurrentTagg(tagg: Tagg){
+        val currentTagg = this.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
+        val save = currentTagg.edit()
+        tagg.id?.let { save.putLong("currentTaggId", it) }
+        tagg.name?.let { save.putString("currentTaggName", it) }
+        tagg.color?.let { save.putInt("currentTaggColor", it) }
+        save.apply()
+    }
+
+    private fun getCurrentTagg(): Tagg{
+        val currentTagg = this.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
+        val tagg: Tagg = Tagg(0,"", R.color.white)
+        tagg.id = currentTagg.getLong("currentTaggId", 0)
+        tagg.name = currentTagg.getString("currentTaggName", "")!!
+        tagg.color = currentTagg.getInt("currentTaggColor", R.color.white)
+        return tagg
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
