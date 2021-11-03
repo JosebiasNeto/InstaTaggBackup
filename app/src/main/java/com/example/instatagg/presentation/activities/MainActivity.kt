@@ -97,8 +97,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun insertPhoto(photoFile: File, tagg: Tagg) {
-    val photo = Photo(photoFile.path, tagg,null)
+    private fun insertPhoto(photoFile: String, tagg: Tagg) {
+    val photo = Photo(photoFile, tagg,null)
         viewModel.insertPhoto(photo)
     }
     private fun refreshAdapter(taggs: List<Tagg>){
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                     if(getCurrentTagg().name.isEmpty()){
                         Toast.makeText(applicationContext,"Photo capture failed!",Toast.LENGTH_SHORT).show()
                     } else {
-                        insertPhoto(photoFile, getCurrentTagg())
+                        savedUri.toString().let { insertPhoto(it, getCurrentTagg()) }
                         Toast.makeText(applicationContext, "Photo capture success!", Toast.LENGTH_SHORT).show()
                     }
                 }

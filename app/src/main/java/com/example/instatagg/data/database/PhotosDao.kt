@@ -10,7 +10,7 @@ interface PhotosDao {
     @Insert
     suspend fun insert(photoEntity: PhotoEntity)
 
-    @Query("SELECT * FROM photos WHERE id = :id")
+    @Query("SELECT * FROM photos WHERE taggid = :id")
     suspend fun getPhotos(id: Long): List<PhotoEntity>
 
     @Query("UPDATE photos SET name = :newTaggName, color = :newTaggColor, taggid = :newTaggId WHERE taggid = :currentTaggId")
