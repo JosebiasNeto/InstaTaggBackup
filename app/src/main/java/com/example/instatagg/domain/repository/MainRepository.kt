@@ -27,8 +27,8 @@ class MainRepository(
         photosDao.delPhoto(id)
     }
 
-    suspend fun clearTagg(name: String) {
-        photosDao.clearTagg(name)
+    suspend fun clearTagg(id: Long) {
+        photosDao.clearTagg(id)
     }
 
     suspend fun movePhoto(name: String, id: Int) {

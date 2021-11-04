@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/tagg_edit"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:visible="true"
+        tools:ignore="MenuTitle"
+        app:showAsAction="always"/>
+    <item android:id="@+id/clear_tagg"
+        android:title="@string/txt_clear_tagg"/>
+    <item android:id="@+id/delete_tagg"
+        android:title="@string/txt_delete_tagg"/>
+</menu>

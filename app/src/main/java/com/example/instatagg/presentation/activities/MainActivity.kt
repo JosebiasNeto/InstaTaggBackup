@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.openGaleryButton.setOnClickListener {
             startActivity(Intent(this, TaggsActivity::class.java))
+            overridePendingTransition(0,0)
         }
 
         setCurrentTagg(getCurrentTagg())

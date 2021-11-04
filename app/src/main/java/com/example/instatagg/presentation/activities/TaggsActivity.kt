@@ -57,6 +57,7 @@ class TaggsActivity : AppCompatActivity() {
         val tagg: Tagg = adapter.getTagg(idTagg)
         PhotosActivity.putExtra("tagg", tagg)
         startActivity(PhotosActivity)
+        overridePendingTransition(0,0)
     }
 
     override fun onBackPressed() {

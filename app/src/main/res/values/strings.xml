@@ -9,4 +9,6 @@
     <string name="txt_create">Create</string>
     <string name="txt_cancel">Cancel</string>
     <string name="txt_edit">Edit</string>
+    <string name="txt_clear_tagg">Clear Tagg</string>
+    <string name="txt_delete_tagg">Delete Tagg</string>
 </resources>

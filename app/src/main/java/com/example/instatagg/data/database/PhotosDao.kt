@@ -19,8 +19,8 @@ interface PhotosDao {
     @Query("DELETE FROM photos WHERE id = :id")
     suspend fun delPhoto(id: Int)
 
-    @Query("DELETE FROM photos WHERE name = :name")
-    suspend fun clearTagg(name: String)
+    @Query("DELETE FROM photos WHERE taggid = :id")
+    suspend fun clearTagg(id: Long)
 
     @Query("UPDATE photos SET name = :name WHERE id = :id")
     suspend fun movePhoto(name: String, id: Int)

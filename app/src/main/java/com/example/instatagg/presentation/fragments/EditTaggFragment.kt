@@ -3,14 +3,12 @@ package com.example.instatagg.presentation.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
 import com.example.instatagg.databinding.CreateTaggBinding
 import com.example.instatagg.domain.model.Tagg
-import com.example.instatagg.presentation.activities.TaggsActivity
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,7 +45,13 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
                                 tagg.id!!,
                                 binding!!.btnChoseColor.currentHintTextColor)
                         }
-                        startActivity(Intent(activity, TaggsActivity::class.java))
+                        tagg.name = binding!!.etTaggName.text.toString()
+                        tagg.color = binding!!.btnChoseColor.currentHintTextColor
+                        activity?.intent?.putExtra("tagg", tagg)
+                        activity?.finish()
+                        activity?.overridePendingTransition(0,0)
+                        startActivity(activity?.intent)
+                        activity?.overridePendingTransition(0,0)
 
                     })
                 .setNegativeButton(
