@@ -41,10 +41,9 @@ class TaggsActivity : AppCompatActivity() {
             override fun onItemClicked(position: Int, view: View) {
                 openPhotosActivity(position)
             }
-
         })
-
     }
+
     private fun refreshAdapter(taggs: List<Tagg>){
         adapter.apply {
             addTaggs(taggs)
@@ -54,7 +53,7 @@ class TaggsActivity : AppCompatActivity() {
 
     private fun openPhotosActivity(idTagg: Int) {
         val PhotosActivity = Intent(this, PhotosActivity::class.java)
-        val tagg: Tagg = adapter.getTagg(idTagg)
+        val tagg = adapter.getTagg(idTagg)
         PhotosActivity.putExtra("tagg", tagg)
         startActivity(PhotosActivity)
         overridePendingTransition(0,0)

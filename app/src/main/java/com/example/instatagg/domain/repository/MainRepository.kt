@@ -50,11 +50,11 @@ class MainRepository(
     suspend fun delTagg(id: Long){
         taggsDao.delTagg(id)
     }
-    suspend fun clearTaggs(){
-        taggsDao.clearTaggs()
-    }
     suspend fun changeTaggColor(id: Long, newColor: Int){
         taggsDao.changeTaggColor(id, newColor)
+    }
+    suspend fun getTagg(id: Long): Tagg{
+        return taggsDao.getTagg(id)
     }
 
 }

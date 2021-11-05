@@ -18,11 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaTagg">
-        <activity android:name=".presentation.activities.PhotosActivity"/>
+        <activity
+            android:name=".presentation.activities.FullscreanPhotoActivity"
+            android:exported="false" />
+        <activity android:name=".presentation.activities.PhotosActivity" />
         <activity android:name=".presentation.activities.TaggsActivity" />
         <activity
             android:name=".presentation.activities.MainActivity"
-            tools:ignore="MissingClass">
+            tools:ignore="MissingClass"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

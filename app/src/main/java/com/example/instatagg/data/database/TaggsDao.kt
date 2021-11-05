@@ -25,4 +25,6 @@ interface TaggsDao {
     @Query("UPDATE taggs SET color = :newColor WHERE id = :id")
     suspend fun changeTaggColor(id: Long, newColor: Int)
 
+    @Query("SELECT * FROM taggs WHERE id = :id")
+    suspend fun getTagg(id: Long): Tagg
 }

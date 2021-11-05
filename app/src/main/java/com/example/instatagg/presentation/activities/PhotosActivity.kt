@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.instatagg.R
@@ -14,6 +15,8 @@ import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.presentation.adapter.PhotosAdapter
 import com.example.instatagg.presentation.fragments.EditTaggFragment
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
+import com.example.instatagg.utils.OnItemClickListener
+import com.example.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PhotosActivity : AppCompatActivity() {
@@ -42,7 +45,21 @@ class PhotosActivity : AppCompatActivity() {
                 })
             }
         }
+        binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View) {
+                openFullscrean(position)
+            }
+        })
     }
+
+    private fun openFullscrean(position: Int) {
+        val FullscreanPhotoActivity = Intent(this, FullscreanPhotoActivity::class.java)
+        val photo = adapter.getPhoto(position)
+        FullscreanPhotoActivity.putExtra("photo", photo)
+        startActivity(FullscreanPhotoActivity)
+        overridePendingTransition(0,0)
+    }
+
     private fun refreshAdapter(photos: List<Photo>){
         adapter.apply {
             addPhotos(photos)
