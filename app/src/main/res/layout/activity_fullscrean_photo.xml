@@ -21,6 +21,7 @@
         android:id="@+id/iv_fullscrean_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerInside"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

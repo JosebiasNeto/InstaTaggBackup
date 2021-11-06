@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:spanCount="3"
         tools:itemCount="12"
-        tools:listitem="@layout/photo_item" />
+        tools:listitem="@layout/photo_item"
+        />
 
     <ImageView
         android:id="@+id/iv_no_photos"

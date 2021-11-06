@@ -14,7 +14,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>) :
 
     class PhotosHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(photo: Photo) {
-            Picasso.get().load(photo.path).noFade()
+            Picasso.get().load(photo.path).noFade().resize(235,235)
                 .into(itemView.findViewById<ImageView>(R.id.iv_photo))
         }
     }

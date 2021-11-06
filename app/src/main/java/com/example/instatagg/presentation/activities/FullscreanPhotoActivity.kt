@@ -16,6 +16,7 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val photo = intent.getParcelableExtra<Photo>("photo")!!
-        Picasso.get().load(photo.path).noFade().into(binding.ivFullscreanPhoto)
+        Picasso.get().load(photo.path).noFade().resize(1440,1920)
+            .into(binding.ivFullscreanPhoto)
     }
 }
