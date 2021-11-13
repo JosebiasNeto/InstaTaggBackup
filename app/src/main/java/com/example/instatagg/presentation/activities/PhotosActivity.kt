@@ -53,10 +53,10 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     private fun openFullscrean(position: Int) {
-        val FullscreanPhotoActivity = Intent(this, FullscreanPhotoActivity::class.java)
+        val fullscreanPhotoActivity = Intent(this, FullscreanPhotoActivity::class.java)
         val photo = adapter.getPhoto(position)
-        FullscreanPhotoActivity.putExtra("photo", photo)
-        startActivity(FullscreanPhotoActivity)
+        fullscreanPhotoActivity.putExtra("photo", photo)
+        startActivity(fullscreanPhotoActivity)
         overridePendingTransition(0,0)
     }
 
@@ -75,8 +75,8 @@ class PhotosActivity : AppCompatActivity() {
 
     fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
-        val TaggsActivity = Intent(this, TaggsActivity::class.java)
-        startActivity(TaggsActivity)
+        val taggsActivity = Intent(this, TaggsActivity::class.java)
+        startActivity(taggsActivity)
     }
     fun editTagg(tagg: Tagg){
         val editTaggFragment = EditTaggFragment(tagg)

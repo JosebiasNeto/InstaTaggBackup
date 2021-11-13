@@ -52,10 +52,10 @@ class TaggsActivity : AppCompatActivity() {
     }
 
     private fun openPhotosActivity(idTagg: Int) {
-        val PhotosActivity = Intent(this, PhotosActivity::class.java)
+        val photosActivity = Intent(this, PhotosActivity::class.java)
         val tagg = adapter.getTagg(idTagg)
-        PhotosActivity.putExtra("tagg", tagg)
-        startActivity(PhotosActivity)
+        photosActivity.putExtra("tagg", tagg)
+        startActivity(photosActivity)
         overridePendingTransition(0,0)
     }
 

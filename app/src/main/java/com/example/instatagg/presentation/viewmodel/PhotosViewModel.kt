@@ -38,9 +38,10 @@ class PhotosViewModel(
         emit(mainRepository.getTagg(id))
     }
 
-    fun delPhoto(id: Int) = liveData(Dispatchers.IO) {
-        emit(mainRepository.delPhoto(id))
+    fun delPhoto(id: Long){
+        viewModelScope.launch { mainRepository.delPhoto(id) }
     }
+
     fun clearTagg(id: Long) {
         viewModelScope.launch { mainRepository.clearTagg(id) }
     }

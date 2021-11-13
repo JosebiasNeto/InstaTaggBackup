@@ -23,7 +23,7 @@ class MainRepository(
         photosDao.changeTagg(newTaggName, newTaggColor, newTaggId, currentTaggId)
     }
 
-    suspend fun delPhoto(id: Int) {
+    suspend fun delPhoto(id: Long) {
         photosDao.delPhoto(id)
     }
 

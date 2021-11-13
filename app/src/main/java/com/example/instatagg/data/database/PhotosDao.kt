@@ -17,7 +17,7 @@ interface PhotosDao {
     suspend fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long)
 
     @Query("DELETE FROM photos WHERE id = :id")
-    suspend fun delPhoto(id: Int)
+    suspend fun delPhoto(id: Long)
 
     @Query("DELETE FROM photos WHERE taggid = :id")
     suspend fun clearTagg(id: Long)

@@ -2,6 +2,7 @@ package com.example.instatagg.di
 
 import com.example.instatagg.data.database.MainDatabase
 import com.example.instatagg.domain.repository.MainRepository
+import com.example.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
 import com.example.instatagg.presentation.viewmodel.MainViewModel
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.example.instatagg.presentation.viewmodel.TaggsViewModel
@@ -29,6 +30,14 @@ object Modules {
         }
         viewModel {
             PhotosViewModel(
+                MainRepository(
+                    MainDatabase.getDatabase(androidApplication()).photosDao(),
+                    MainDatabase.getDatabase(androidApplication()).taggsDao()
+                )
+            )
+        }
+        viewModel {
+            FullscreanPhotoViewModel(
                 MainRepository(
                     MainDatabase.getDatabase(androidApplication()).photosDao(),
                     MainDatabase.getDatabase(androidApplication()).taggsDao()
