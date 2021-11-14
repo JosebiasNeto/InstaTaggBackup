@@ -3,8 +3,13 @@ package com.example.instatagg.presentation.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityFullscreanPhotoBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
@@ -49,5 +54,32 @@ class FullscreanPhotoActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(shareIntent, "shareImage"))
         }
+        registerForContextMenu(binding.ibMore)
+        binding.ibMore.setOnClickListener { openContextMenu(it) }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.photos_option_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        when (item.itemId) {
+            R.id.move_to_tagg -> {
+
+                return true
+            }
+            R.id.copy_to_tagg -> {
+
+                return true
+            }
+        }
+        return super.onContextItemSelected(item)
     }
 }
