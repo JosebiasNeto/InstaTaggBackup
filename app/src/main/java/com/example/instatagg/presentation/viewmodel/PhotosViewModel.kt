@@ -46,10 +46,6 @@ class PhotosViewModel(
         viewModelScope.launch { mainRepository.clearTagg(id) }
     }
 
-    fun movePhoto(name: String, id: Int) = liveData(Dispatchers.IO) {
-        emit(mainRepository.movePhoto(name, id))
-    }
-
     fun importPhoto(path: String, name: String, color: String) = liveData(Dispatchers.IO) {
         emit(mainRepository.importPhoto(path, name, color))
     }

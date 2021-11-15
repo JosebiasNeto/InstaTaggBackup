@@ -9,10 +9,16 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityFullscreanPhotoBinding
 import com.example.instatagg.domain.model.Photo
+import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.presentation.adapter.MainAdapter
 import com.example.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
+import com.example.instatagg.utils.OnItemClickListener
+import com.example.instatagg.utils.addOnItemClickListener
 import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -21,6 +27,7 @@ class FullscreanPhotoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFullscreanPhotoBinding
     private val viewModel: FullscreanPhotoViewModel by viewModel()
+    private lateinit var adapter: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +37,10 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         val photo = intent.getParcelableExtra<Photo>("photo")!!
         Picasso.get().load(photo.path).noFade().resize(1440,1920)
             .into(binding.ivFullscreanPhoto)
+
+        adapter = MainAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = adapter
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
 
         binding.ibDelete.setOnClickListener {
             photo.id?.let { it -> viewModel.delPhoto(it) }
@@ -56,6 +67,16 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         }
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
+
+        viewModel.getTaggs().observe(this, {
+            refreshAdapter(it)
+        })
+    }
+    private fun refreshAdapter(taggs: List<Tagg>){
+        adapter.apply {
+            addTaggs(taggs)
+            notifyDataSetChanged()
+        }
     }
 
     override fun onCreateContextMenu(
@@ -72,7 +93,14 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         val photo = intent.getParcelableExtra<Photo>("photo")!!
         when (item.itemId) {
             R.id.move_to_tagg -> {
-
+                binding.rvChooseTagg.isVisible = true
+                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+                    override fun onItemClicked(position: Int, view: View) {
+                        val tagg = adapter.getTagg(position)
+                        moveToTagg(tagg)
+                        binding.rvChooseTagg.setVisibility(View.GONE)
+                    }
+                })
                 return true
             }
             R.id.copy_to_tagg -> {
@@ -81,5 +109,15 @@ class FullscreanPhotoActivity : AppCompatActivity() {
             }
         }
         return super.onContextItemSelected(item)
+    }
+    fun moveToTagg(tagg: Tagg){
+        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        val photoOld = photo
+        viewModel.movePhoto(tagg.id!!, photo.id!!)
+        val photosActivity = Intent(this, PhotosActivity::class.java)
+        photosActivity.putExtra("tagg", photoOld.tagg)
+        this.finish()
+        this.overridePendingTransition(0,0)
+        startActivity(photosActivity)
     }
 }

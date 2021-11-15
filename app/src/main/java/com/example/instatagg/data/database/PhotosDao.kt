@@ -22,8 +22,8 @@ interface PhotosDao {
     @Query("DELETE FROM photos WHERE taggid = :id")
     suspend fun clearTagg(id: Long)
 
-    @Query("UPDATE photos SET name = :name WHERE id = :id")
-    suspend fun movePhoto(name: String, id: Int)
+    @Query("UPDATE photos SET taggid = :newTaggId WHERE id = :id")
+    suspend fun movePhoto(newTaggId: Long, id: Long)
 
     @Query("INSERT INTO photos (path, name, color) VALUES (:path, :name, :color)")
     suspend fun importPhoto(path: String, name: String, color: String)

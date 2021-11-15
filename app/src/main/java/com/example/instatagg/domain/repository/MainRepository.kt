@@ -31,8 +31,8 @@ class MainRepository(
         photosDao.clearTagg(id)
     }
 
-    suspend fun movePhoto(name: String, id: Int) {
-        photosDao.movePhoto(name, id)
+    suspend fun movePhoto(newTaggId: Long, id: Long) {
+        photosDao.movePhoto(newTaggId, id)
     }
 
     suspend fun importPhoto(path: String, name: String, color: String) {
