@@ -116,7 +116,7 @@ class FullscreanPhotoActivity : AppCompatActivity() {
     }
     fun moveToTagg(tagg: Tagg){
         val photo = intent.getParcelableExtra<Photo>("photo")!!
-        viewModel.movePhoto(tagg.id!!, photo.id!!)
+        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
     }
     override fun onBackPressed() {
         val photosActivity = Intent(this, PhotosActivity::class.java)
