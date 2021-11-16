@@ -35,7 +35,7 @@ class PhotosActivity : AppCompatActivity() {
         supportActionBar!!.setTitle(tagg.name)
         binding.toolbar.setBackgroundColor(tagg.color)
 
-            adapter = PhotosAdapter(arrayListOf())
+        adapter = PhotosAdapter(arrayListOf())
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
         if (tagg != null) {
@@ -48,6 +48,7 @@ class PhotosActivity : AppCompatActivity() {
         binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
                 openFullscrean(position)
+                this@PhotosActivity.finish()
             }
         })
     }

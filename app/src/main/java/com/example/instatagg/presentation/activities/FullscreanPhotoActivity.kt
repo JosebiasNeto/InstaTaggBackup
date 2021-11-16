@@ -97,8 +97,12 @@ class FullscreanPhotoActivity : AppCompatActivity() {
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
                         val tagg = adapter.getTagg(position)
+                        val photo = intent.getParcelableExtra<Photo>("photo")!!
+                        val photosActivity = Intent(this@FullscreanPhotoActivity, PhotosActivity::class.java)
+                        val oldTagg = photo.tagg
                         moveToTagg(tagg)
-                        binding.rvChooseTagg.setVisibility(View.GONE)
+                        photosActivity.putExtra("tagg", oldTagg)
+                        startActivity(photosActivity)
                     }
                 })
                 return true
@@ -112,12 +116,13 @@ class FullscreanPhotoActivity : AppCompatActivity() {
     }
     fun moveToTagg(tagg: Tagg){
         val photo = intent.getParcelableExtra<Photo>("photo")!!
-        val photoOld = photo
         viewModel.movePhoto(tagg.id!!, photo.id!!)
+    }
+    override fun onBackPressed() {
         val photosActivity = Intent(this, PhotosActivity::class.java)
-        photosActivity.putExtra("tagg", photoOld.tagg)
-        this.finish()
-        this.overridePendingTransition(0,0)
+        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        photosActivity.putExtra("tagg", photo.tagg)
         startActivity(photosActivity)
+        overridePendingTransition(0,0)
     }
 }
