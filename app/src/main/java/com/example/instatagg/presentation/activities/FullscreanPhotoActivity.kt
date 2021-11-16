@@ -108,7 +108,19 @@ class FullscreanPhotoActivity : AppCompatActivity() {
                 return true
             }
             R.id.copy_to_tagg -> {
-
+                binding.rvChooseTagg.isVisible = true
+                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+                    override fun onItemClicked(position: Int, view: View) {
+                        val photo = intent.getParcelableExtra<Photo>("photo")!!
+                        val oldTagg = photo.tagg
+                        val tagg = adapter.getTagg(position)
+                        photo.tagg = tagg
+                        val photosActivity = Intent(this@FullscreanPhotoActivity, PhotosActivity::class.java)
+                        viewModel.insertPhoto(photo)
+                        photosActivity.putExtra("tagg", oldTagg)
+                        startActivity(photosActivity)
+                    }
+                })
                 return true
             }
         }
