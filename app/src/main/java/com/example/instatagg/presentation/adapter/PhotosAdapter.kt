@@ -33,6 +33,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, private val activity: 
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
             PhotosAdapter(photos, activity).changeCheckBoxVisibility()
+            photos[position].checked = true
             notifyDataSetChanged()
             true }
     }

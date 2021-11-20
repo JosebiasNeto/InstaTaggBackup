@@ -21,9 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
-    private var isFABOpen: Boolean = false
     private lateinit var adapter: PhotosAdapter
-    private lateinit var holder: PhotosAdapter.PhotosHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +47,8 @@ class PhotosActivity : AppCompatActivity() {
                 if(view.findViewById<CheckBox>(R.id.checkBox).isVisible){
                     view.findViewById<CheckBox>(R.id.checkBox).isChecked =
                             !view.findViewById<CheckBox>(R.id.checkBox).isChecked
+                   adapter.getPhoto(position).checked =
+                           !adapter.getPhoto(position).checked
                 } else {
                     openFullscrean(position)
                     this@PhotosActivity.finish()
@@ -56,7 +56,14 @@ class PhotosActivity : AppCompatActivity() {
             }
         })
         binding.ibDelete.setOnClickListener {
-
+            for(i in 0 until adapter.itemCount){
+                if(adapter.getPhoto(i).checked) adapter.getPhoto(i).id?.let {
+                    it1 -> viewModel.delPhoto(it1) }
+            }
+            finish()
+            overridePendingTransition(0,0)
+            startActivity(intent)
+            overridePendingTransition(0,0)
         }
 
         binding.ibShare.setOnClickListener {
