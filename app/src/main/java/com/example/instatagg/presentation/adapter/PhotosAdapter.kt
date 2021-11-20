@@ -3,7 +3,9 @@ package com.example.instatagg.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instatagg.R
 import com.example.instatagg.domain.model.Photo
@@ -16,17 +18,24 @@ class PhotosAdapter(private val photos: ArrayList<Photo>) :
         fun bind(photo: Photo) {
             Picasso.get().load(photo.path).noFade().resize(235,235)
                 .into(itemView.findViewById<ImageView>(R.id.iv_photo))
+            itemView.findViewById<CheckBox>(R.id.checkBox).isVisible = photo.checkboxVisibility
+            itemView.findViewById<CheckBox>(R.id.checkBox).isChecked = photo.checked
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosHolder =
-        PhotosHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapter.PhotosHolder =
+        PhotosAdapter.PhotosHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.photo_item, parent, false)
         )
 
-    override fun onBindViewHolder(holder: PhotosHolder, position: Int) =
+    override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
+        holder.itemView.setOnLongClickListener {
+            PhotosAdapter(photos).changeCheckBoxVisibility()
+            notifyDataSetChanged()
+            true }
+    }
 
     override fun getItemCount(): Int = photos.size
 
@@ -38,5 +47,10 @@ class PhotosAdapter(private val photos: ArrayList<Photo>) :
             addAll(photos)
         }
     }
-
+    fun changeCheckBoxVisibility(){
+        if(getPhoto(0).checkboxVisibility) {
+            photos.map { it.checkboxVisibility = false}
+        } else photos.map { it.checkboxVisibility = true
+        it.checked = false}
+    }
 }

@@ -7,5 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Photo (
     var path: String?,
     var tagg: Tagg?,
-    var id: Long?
+    var id: Long?,
+    var checked: Boolean = false,
+    var checkboxVisibility : Boolean = false
         ): Parcelable

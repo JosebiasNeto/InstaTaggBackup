@@ -6,7 +6,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityPhotosBinding
@@ -24,6 +26,7 @@ class PhotosActivity : AppCompatActivity() {
     private val viewModel: PhotosViewModel by viewModel()
     private var isFABOpen: Boolean = false
     private lateinit var adapter: PhotosAdapter
+    private lateinit var holder: PhotosAdapter.PhotosHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +37,6 @@ class PhotosActivity : AppCompatActivity() {
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         supportActionBar!!.setTitle(tagg.name)
         binding.toolbar.setBackgroundColor(tagg.color)
-
         adapter = PhotosAdapter(arrayListOf())
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
@@ -47,8 +49,13 @@ class PhotosActivity : AppCompatActivity() {
         }
         binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
-                openFullscrean(position)
-                this@PhotosActivity.finish()
+                if(view.findViewById<CheckBox>(R.id.checkBox).isVisible){
+                    view.findViewById<CheckBox>(R.id.checkBox).isChecked =
+                            !view.findViewById<CheckBox>(R.id.checkBox).isChecked
+                } else {
+                    openFullscrean(position)
+                    this@PhotosActivity.finish()
+                }
             }
         })
     }
@@ -96,9 +103,7 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
-
         when (item.itemId) {
             R.id.tagg_edit -> {
                 editTagg(tagg)
