@@ -9,11 +9,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instatagg.R
 import com.example.instatagg.domain.model.Photo
+import com.example.instatagg.presentation.activities.PhotosActivity
 import com.squareup.picasso.Picasso
 
-class PhotosAdapter(private val photos: ArrayList<Photo>) :
+class PhotosAdapter(private val photos: ArrayList<Photo>, private val activity: PhotosActivity) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
-
     class PhotosHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(photo: Photo) {
             Picasso.get().load(photo.path).noFade().resize(235,235)
@@ -32,7 +32,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>) :
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
-            PhotosAdapter(photos).changeCheckBoxVisibility()
+            PhotosAdapter(photos, activity).changeCheckBoxVisibility()
             notifyDataSetChanged()
             true }
     }
@@ -52,5 +52,6 @@ class PhotosAdapter(private val photos: ArrayList<Photo>) :
             photos.map { it.checkboxVisibility = false}
         } else photos.map { it.checkboxVisibility = true
         it.checked = false}
+        activity.changeBottomOptionsVisibility()
     }
 }

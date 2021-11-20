@@ -2,10 +2,7 @@ package com.example.instatagg.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -37,7 +34,7 @@ class PhotosActivity : AppCompatActivity() {
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         supportActionBar!!.setTitle(tagg.name)
         binding.toolbar.setBackgroundColor(tagg.color)
-        adapter = PhotosAdapter(arrayListOf())
+        adapter = PhotosAdapter(arrayListOf(), this)
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
         if (tagg != null) {
@@ -58,6 +55,19 @@ class PhotosActivity : AppCompatActivity() {
                 }
             }
         })
+        binding.ibDelete.setOnClickListener {
+
+        }
+
+        binding.ibShare.setOnClickListener {
+
+        }
+        registerForContextMenu(binding.ibMore)
+        binding.ibMore.setOnClickListener { openContextMenu(it) }
+    }
+
+    fun changeBottomOptionsVisibility(){
+        binding.cvBottom.isVisible = !binding.cvBottom.isVisible
     }
 
     private fun openFullscrean(position: Int) {
@@ -75,13 +85,13 @@ class PhotosActivity : AppCompatActivity() {
         }
     }
 
-    fun clearTagg(tagg: Tagg){
+    private fun clearTagg(tagg: Tagg){
         tagg.id?.let { viewModel.clearTagg(it) }
         finish()
         startActivity(intent)
     }
 
-    fun deleteTagg(tagg: Tagg){
+    private fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
@@ -119,5 +129,42 @@ class PhotosActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    override fun onCreateContextMenu(
+            menu: ContextMenu?,
+            v: View?,
+            menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.photos_option_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        when (item.itemId) {
+            R.id.move_to_tagg -> {
+                binding.rvChooseTagg.isVisible = true
+                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+                    override fun onItemClicked(position: Int, view: View) {
+
+                    }
+                })
+                return true
+            }
+            R.id.copy_to_tagg -> {
+                binding.rvChooseTagg.isVisible = true
+                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+                    override fun onItemClicked(position: Int, view: View) {
+
+                    }
+                })
+                return true
+            }
+        }
+        return super.onContextItemSelected(item)
+    }
+    fun moveToTagg(tagg: Tagg){
+
     }
 }
