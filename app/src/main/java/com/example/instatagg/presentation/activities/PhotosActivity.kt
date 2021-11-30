@@ -1,10 +1,12 @@
 package com.example.instatagg.presentation.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +21,7 @@ import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.example.instatagg.utils.OnItemClickListener
 import com.example.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
@@ -73,7 +76,23 @@ class PhotosActivity : AppCompatActivity() {
         }
 
         binding.ibShare.setOnClickListener {
-
+            val contentUris = arrayListOf<Uri>()
+            for(i in 0 until adapter.itemCount){
+                var uri = FileProvider.getUriForFile(
+                    applicationContext,
+                    "com.example.instatagg.fileprovider",
+                    File(Uri.parse(adapter.getPhoto(i).path).path))
+                if(adapter.getPhoto(i).checked){
+                    contentUris.add(uri)
+                }
+            }
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND_MULTIPLE
+                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUris)
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                type = "image/jpg"
+            }
+            startActivity(Intent.createChooser(shareIntent, "shareImage"))
         }
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
