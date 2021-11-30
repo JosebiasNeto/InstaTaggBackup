@@ -7,10 +7,12 @@ import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityPhotosBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.presentation.adapter.MainAdapter
 import com.example.instatagg.presentation.adapter.PhotosAdapter
 import com.example.instatagg.presentation.fragments.EditTaggFragment
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
@@ -22,6 +24,7 @@ class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
     private lateinit var adapter: PhotosAdapter
+    private lateinit var adapterMain: MainAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +60,11 @@ class PhotosActivity : AppCompatActivity() {
         })
         binding.ibDelete.setOnClickListener {
             for(i in 0 until adapter.itemCount){
-                if(adapter.getPhoto(i).checked) adapter.getPhoto(i).id?.let {
-                    it1 -> viewModel.delPhoto(it1) }
+                if(adapter.getPhoto(i).checked) {
+                    adapter.getPhoto(i).id?.let { it1 -> viewModel.delPhoto(it1) }
+                    applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                        .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+                }
             }
             finish()
             overridePendingTransition(0,0)
@@ -71,6 +77,10 @@ class PhotosActivity : AppCompatActivity() {
         }
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
+
+        adapterMain = MainAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = adapterMain
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
     }
 
     fun changeBottomOptionsVisibility(){
@@ -148,13 +158,12 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val photo = intent.getParcelableExtra<Photo>("photo")!!
         when (item.itemId) {
             R.id.move_to_tagg -> {
                 binding.rvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
-
+                        
                     }
                 })
                 return true

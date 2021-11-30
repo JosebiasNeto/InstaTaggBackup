@@ -44,6 +44,8 @@ class FullscreanPhotoActivity : AppCompatActivity() {
 
         binding.ibDelete.setOnClickListener {
             photo.id?.let { it -> viewModel.delPhoto(it) }
+            applicationContext.deleteFile(photo.path!!
+                .substring(photo.path!!.lastIndexOf("/")+1))
             val photosActivity = Intent(this, PhotosActivity::class.java)
             photosActivity.putExtra("tagg", photo.tagg)
             this.finish()
