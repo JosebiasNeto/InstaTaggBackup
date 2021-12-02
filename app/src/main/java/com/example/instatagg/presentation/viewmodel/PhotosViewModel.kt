@@ -30,10 +30,11 @@ class PhotosViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.changeTaggColor(id, newColor) }
     }
-    fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long)
-            = liveData(Dispatchers.IO){ emit(mainRepository.changeTagg(
-        newTaggName, newTaggColor, newTaggId, currentTaggId))
+
+    fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long){
+        viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id) }
     }
+
     fun getTagg(id: Long): LiveData<Tagg> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTagg(id))
     }
@@ -48,6 +49,10 @@ class PhotosViewModel(
 
     fun importPhoto(path: String, name: String, color: String) = liveData(Dispatchers.IO) {
         emit(mainRepository.importPhoto(path, name, color))
+    }
+
+    fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
+        emit(mainRepository.getTaggs())
     }
 
 }

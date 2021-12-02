@@ -19,10 +19,6 @@ class MainRepository(
         }
     }
 
-    suspend fun changeTagg(newTaggName: String, newTaggColor: Int, newTaggId: Long, currentTaggId: Long) {
-        photosDao.changeTagg(newTaggName, newTaggColor, newTaggId, currentTaggId)
-    }
-
     suspend fun delPhoto(id: Long) {
         photosDao.delPhoto(id)
     }

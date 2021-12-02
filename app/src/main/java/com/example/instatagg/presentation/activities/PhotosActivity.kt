@@ -100,6 +100,9 @@ class PhotosActivity : AppCompatActivity() {
         adapterMain = MainAdapter(arrayListOf())
         binding.rvChooseTagg.adapter = adapterMain
         binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
+        viewModel.getTaggs().observe(this, {
+            refreshAdapterMain(it)
+        })
     }
 
     fun changeBottomOptionsVisibility(){
@@ -175,6 +178,12 @@ class PhotosActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.photos_option_menu, menu)
     }
+    private fun refreshAdapterMain(taggs: List<Tagg>){
+        adapterMain.apply {
+            addTaggs(taggs)
+            notifyDataSetChanged()
+        }
+    }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -182,7 +191,12 @@ class PhotosActivity : AppCompatActivity() {
                 binding.rvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
-                        
+                        for(i in 0 until adapter.itemCount){
+                            if(adapter.getPhoto(i).checked)
+                                moveToTagg(adapterMain.getTagg(position), adapter.getPhoto(i))
+                        }
+                        finish()
+                        startActivity(intent)
                     }
                 })
                 return true
@@ -199,7 +213,7 @@ class PhotosActivity : AppCompatActivity() {
         }
         return super.onContextItemSelected(item)
     }
-    fun moveToTagg(tagg: Tagg){
-
+    fun moveToTagg(tagg: Tagg, photo: Photo){
+        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
     }
 }
