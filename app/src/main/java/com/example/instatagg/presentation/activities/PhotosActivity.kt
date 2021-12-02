@@ -205,7 +205,14 @@ class PhotosActivity : AppCompatActivity() {
                 binding.rvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
-
+                        for(i in 0 until adapter.itemCount){
+                            if(adapter.getPhoto(i).checked) {
+                                adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
+                                viewModel.insertPhoto(adapter.getPhoto(i))
+                            }
+                        }
+                        finish()
+                        startActivity(intent)
                     }
                 })
                 return true

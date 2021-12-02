@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.domain.repository.MainRepository
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,9 @@ class PhotosViewModel(
 
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
+    }
+    fun insertPhoto(photo: Photo){
+        viewModelScope.launch { mainRepository.insertPhoto(photo) }
     }
 
 }
