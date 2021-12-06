@@ -11,43 +11,49 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityFullscreanPhotoBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
+import com.example.instatagg.presentation.adapter.FullscreenPhotoAdapter
 import com.example.instatagg.presentation.adapter.MainAdapter
 import com.example.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
 import com.example.instatagg.utils.OnItemClickListener
 import com.example.instatagg.utils.addOnItemClickListener
-import com.squareup.picasso.Picasso
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class FullscreanPhotoActivity : AppCompatActivity() {
+class FullscreenPhotoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFullscreanPhotoBinding
     private val viewModel: FullscreanPhotoViewModel by viewModel()
-    private lateinit var adapter: MainAdapter
+    private lateinit var mainAdapter: MainAdapter
+    private lateinit var pageAdapter: FullscreenPhotoAdapter
+    private lateinit var viewPager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFullscreanPhotoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val photo = intent.getParcelableExtra<Photo>("photo")!!
-        Picasso.get().load(photo.path).noFade().resize(1440,1920)
-            .into(binding.ivFullscreanPhoto)
-
-        adapter = MainAdapter(arrayListOf())
-        binding.rvChooseTagg.adapter = adapter
+        val firstPhoto = intent.getParcelableExtra<Photo>("photo")!!
+        val position = intent.getIntExtra("position", 0)
+        pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
+        viewPager = binding.vpFullscreenPhoto
+        viewPager.adapter = pageAdapter
+        viewPager.post { viewPager.currentItem = position }
+        mainAdapter = MainAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = mainAdapter
         binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
-
+        viewModel.getPhotos(firstPhoto.tagg!!.id!!).observe(this, {
+            refreshPagerAdapter(it)
+        })
         binding.ibDelete.setOnClickListener {
-            photo.id?.let { it -> viewModel.delPhoto(it) }
-            applicationContext.deleteFile(photo.path!!
-                .substring(photo.path!!.lastIndexOf("/")+1))
+            getPhotoFullscreen().id?.let { it -> viewModel.delPhoto(it) }
+            applicationContext.deleteFile(getPhotoFullscreen().path!!
+                .substring(getPhotoFullscreen().path!!.lastIndexOf("/")+1))
             val photosActivity = Intent(this, PhotosActivity::class.java)
-            photosActivity.putExtra("tagg", photo.tagg)
+            photosActivity.putExtra("tagg", getPhotoFullscreen().tagg)
             this.finish()
             this.overridePendingTransition(0,0)
             startActivity(photosActivity)
@@ -57,7 +63,7 @@ class FullscreanPhotoActivity : AppCompatActivity() {
             val contentUri = FileProvider.getUriForFile(
                 applicationContext,
                 "com.example.instatagg.fileprovider",
-                File(Uri.parse(photo.path).path)
+                File(Uri.parse(getPhotoFullscreen().path).path)
             )
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -71,12 +77,24 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         binding.ibMore.setOnClickListener { openContextMenu(it) }
 
         viewModel.getTaggs().observe(this, {
-            refreshAdapter(it)
+            refreshMainAdapter(it)
         })
+
     }
-    private fun refreshAdapter(taggs: List<Tagg>){
-        adapter.apply {
+
+    private fun getPhotoFullscreen(): Photo {
+        return pageAdapter.photos[viewPager.currentItem]
+    }
+
+    private fun refreshMainAdapter(taggs: List<Tagg>){
+        mainAdapter.apply {
             addTaggs(taggs)
+            notifyDataSetChanged()
+        }
+    }
+    private fun refreshPagerAdapter(photos: List<Photo>){
+        pageAdapter.apply {
+            addPhotos(photos)
             notifyDataSetChanged()
         }
     }
@@ -92,15 +110,14 @@ class FullscreanPhotoActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        val photo = getPhotoFullscreen()
         when (item.itemId) {
             R.id.move_to_tagg -> {
                 binding.rvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
-                        val tagg = adapter.getTagg(position)
-                        val photo = intent.getParcelableExtra<Photo>("photo")!!
-                        val photosActivity = Intent(this@FullscreanPhotoActivity, PhotosActivity::class.java)
+                        val tagg = mainAdapter.getTagg(position)
+                        val photosActivity = Intent(this@FullscreenPhotoActivity, PhotosActivity::class.java)
                         val oldTagg = photo.tagg
                         moveToTagg(tagg)
                         photosActivity.putExtra("tagg", oldTagg)
@@ -113,11 +130,10 @@ class FullscreanPhotoActivity : AppCompatActivity() {
                 binding.rvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
-                        val photo = intent.getParcelableExtra<Photo>("photo")!!
                         val oldTagg = photo.tagg
-                        val tagg = adapter.getTagg(position)
+                        val tagg = mainAdapter.getTagg(position)
                         photo.tagg = tagg
-                        val photosActivity = Intent(this@FullscreanPhotoActivity, PhotosActivity::class.java)
+                        val photosActivity = Intent(this@FullscreenPhotoActivity, PhotosActivity::class.java)
                         viewModel.insertPhoto(photo)
                         photosActivity.putExtra("tagg", oldTagg)
                         startActivity(photosActivity)
@@ -129,12 +145,12 @@ class FullscreanPhotoActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
     fun moveToTagg(tagg: Tagg){
-        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        val photo = getPhotoFullscreen()
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
     }
     override fun onBackPressed() {
         val photosActivity = Intent(this, PhotosActivity::class.java)
-        val photo = intent.getParcelableExtra<Photo>("photo")!!
+        val photo = getPhotoFullscreen()
         photosActivity.putExtra("tagg", photo.tagg)
         startActivity(photosActivity)
         overridePendingTransition(0,0)

@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
-import com.example.instatagg.databinding.CreateTaggBinding
+import com.example.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.presentation.viewmodel.PhotosViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
@@ -15,13 +15,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
 
-    private var _binding: CreateTaggBinding? = null
+    private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
     private val viewModel: PhotosViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
-            _binding = CreateTaggBinding.inflate(layoutInflater)
+            _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
             binding?.etTaggName!!.text = Editable.Factory.getInstance().newEditable(tagg.name)
             binding?.btnChoseColor!!.setBackgroundColor(tagg.color)
             binding?.btnChoseColor!!.setHintTextColor(tagg.color)

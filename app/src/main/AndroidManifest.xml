@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaTagg">
         <activity
-            android:name=".presentation.activities.FullscreanPhotoActivity"
+            android:name=".presentation.activities.FullscreenPhotoActivity"
             android:exported="false" />
         <activity android:name=".presentation.activities.PhotosActivity" />
         <activity android:name=".presentation.activities.TaggsActivity" />

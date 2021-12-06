@@ -26,4 +26,7 @@ class FullscreanPhotoViewModel(
     fun insertPhoto(photo: Photo){
         viewModelScope.launch { mainRepository.insertPhoto(photo) }
     }
+    fun getPhotos(id: Long) = liveData(Dispatchers.IO) {
+        emit(mainRepository.getPhotos(id))
+    }
 }

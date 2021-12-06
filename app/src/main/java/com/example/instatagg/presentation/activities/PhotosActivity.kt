@@ -56,7 +56,7 @@ class PhotosActivity : AppCompatActivity() {
                    adapter.getPhoto(position).checked =
                            !adapter.getPhoto(position).checked
                 } else {
-                    openFullscrean(position)
+                    openFullscreen(position)
                     this@PhotosActivity.finish()
                 }
             }
@@ -109,11 +109,12 @@ class PhotosActivity : AppCompatActivity() {
         binding.cvBottom.isVisible = !binding.cvBottom.isVisible
     }
 
-    private fun openFullscrean(position: Int) {
-        val fullscreanPhotoActivity = Intent(this, FullscreanPhotoActivity::class.java)
+    private fun openFullscreen(position: Int) {
+        val fullscreenPhotoActivity = Intent(this, FullscreenPhotoActivity::class.java)
         val photo = adapter.getPhoto(position)
-        fullscreanPhotoActivity.putExtra("photo", photo)
-        startActivity(fullscreanPhotoActivity)
+        fullscreenPhotoActivity.putExtra("photo", photo)
+        fullscreenPhotoActivity.putExtra("position", position)
+        startActivity(fullscreenPhotoActivity)
         overridePendingTransition(0,0)
     }
 

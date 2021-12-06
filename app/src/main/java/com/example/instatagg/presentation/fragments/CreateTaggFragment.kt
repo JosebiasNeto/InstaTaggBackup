@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
-import com.example.instatagg.databinding.CreateTaggBinding
+import com.example.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.example.instatagg.domain.model.Tagg
 import com.example.instatagg.presentation.viewmodel.TaggsViewModel
 import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
@@ -16,13 +16,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateTaggFragment : DialogFragment() {
 
-    private var _binding: CreateTaggBinding? = null
+    private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
     private val viewModel: TaggsViewModel by viewModel()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity.let {
-            _binding = CreateTaggBinding.inflate(layoutInflater)
+            _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
             binding?.btnChoseColor?.setOnClickListener {
                 choseColor()
             }

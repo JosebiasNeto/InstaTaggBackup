@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.activities.FullscreanPhotoActivity">
+    tools:context=".presentation.activities.FullscreenPhotoActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_bottom"
@@ -49,13 +49,11 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/iv_fullscrean_photo"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_fullscreen_photo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        tools:layout_editor_absoluteX="-141dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:layout_height="match_parent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_choose_tagg"
         android:layout_width="110dp"
