@@ -1,18 +1,18 @@
 package com.example.instatagg.presentation.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
+import androidx.camera.core.ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -37,6 +37,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var adapter: MainAdapter
-
+    private var camera: Camera? = null
     private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -93,9 +94,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, TaggsActivity::class.java))
             overridePendingTransition(0,0)
         }
-
         setCurrentTagg(getCurrentTagg())
-
     }
 
     private fun insertPhoto(photoFile: String, tagg: Tagg) {
@@ -121,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         saveCurrentTagg(tagg)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
@@ -132,16 +132,25 @@ class MainActivity : AppCompatActivity() {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
             imageCapture = ImageCapture.Builder()
+                .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build()
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
-            } catch(exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
-            }
         }, ContextCompat.getMainExecutor(this))
+        binding.viewFinder.setOnTouchListener { view, motionEvent ->
+            val scaleGestureDetector = ScaleGestureDetector(this, listener)
+            scaleGestureDetector.onTouchEvent(motionEvent)
+            return@setOnTouchListener true
+        }
+    }
+    val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+                val scale = detector.scaleFactor
+                camera!!.cameraControl.setLinearZoom(scale)
+            return true
+        }
     }
 
     private fun takePhoto() {
