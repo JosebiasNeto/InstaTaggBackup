@@ -139,16 +139,16 @@ class MainActivity : AppCompatActivity() {
                 camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
         }, ContextCompat.getMainExecutor(this))
+        val scaleGestureDetector = ScaleGestureDetector(this, listener)
         binding.viewFinder.setOnTouchListener { view, motionEvent ->
-            val scaleGestureDetector = ScaleGestureDetector(this, listener)
             scaleGestureDetector.onTouchEvent(motionEvent)
             return@setOnTouchListener true
         }
     }
     val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-                val scale = detector.scaleFactor
-                camera!!.cameraControl.setLinearZoom(scale)
+                val scale = detector.scaleFactor * camera!!.cameraInfo.zoomState.value!!.zoomRatio
+                camera!!.cameraControl.setZoomRatio(scale)
             return true
         }
     }
