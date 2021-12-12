@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.ScaleGestureDetector
 import android.view.View
@@ -36,6 +38,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -175,10 +180,17 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(applicationContext,"Photo capture failed!",Toast.LENGTH_SHORT).show()
                     } else {
                         savedUri.toString().let { insertPhoto(it, getCurrentTagg()) }
-                        Toast.makeText(applicationContext, "Photo capture success!", Toast.LENGTH_SHORT).show()
+                        MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
+                        flashEffect()
                     }
                 }
             })
+    }
+    private fun flashEffect(){
+        binding.flashScreen.visibility = View.VISIBLE
+        Handler().postDelayed({
+            binding.flashScreen.visibility = View.GONE
+        }, 100)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
