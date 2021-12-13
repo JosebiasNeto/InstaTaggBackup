@@ -57,9 +57,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         if (allPermissionsGranted()) {
-            startCamera()
+            startCamera(getCurrentCamera())
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
@@ -84,6 +83,19 @@ class MainActivity : AppCompatActivity() {
         binding.choseTaggColor.setOnClickListener {
             binding.rvChangeTagg.isVisible = !binding.rvChangeTagg.isVisible
         }
+        binding.openSettingsButton.setOnClickListener {
+            binding.btnFlipCamera.isVisible = !binding.btnFlipCamera.isVisible
+        }
+        binding.btnFlipCamera.setOnClickListener {
+            if(getCurrentCamera() == CameraSelector.DEFAULT_BACK_CAMERA){
+                saveCurrentCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
+                startCamera(getCurrentCamera())
+            } else {
+                saveCurrentCamera(CameraSelector.DEFAULT_BACK_CAMERA)
+                startCamera(getCurrentCamera())
+            }
+            removeSettingsVisibility()
+        }
 
         viewModel.getTaggs().observe(this, {
             refreshAdapter(it)
@@ -100,6 +112,13 @@ class MainActivity : AppCompatActivity() {
             overridePendingTransition(0,0)
         }
         setCurrentTagg(getCurrentTagg())
+    }
+
+    private fun removeSettingsVisibility() {
+        binding.btnFlipCamera.isVisible = false
+        binding.btnFlashAuto.isVisible = false
+        binding.btnFlashOff.isVisible = false
+        binding.btnFlashOn.isVisible = false
     }
 
     private fun insertPhoto(photoFile: String, tagg: Tagg) {
@@ -126,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun startCamera() {
+    private fun startCamera(cameraSelector: CameraSelector) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
 
@@ -139,7 +158,6 @@ class MainActivity : AppCompatActivity() {
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build()
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
                 cameraProvider.unbindAll()
                 camera = cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture)
@@ -218,6 +236,23 @@ class MainActivity : AppCompatActivity() {
         tagg.color = currentTagg.getInt("currentTaggColor", R.color.white)
         return tagg
     }
+    private fun saveCurrentCamera(cameraSelector: CameraSelector){
+        var defaultCamera : Boolean
+        val currentCamera = this.getSharedPreferences("currentCamera", Context.MODE_PRIVATE)
+        val save = currentCamera.edit()
+        defaultCamera = cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
+        save.putBoolean("currentCamera", defaultCamera)
+        save.apply()
+    }
+
+    private fun getCurrentCamera(): CameraSelector{
+        var defaultCamera : Boolean
+        val currentCamera = this.getSharedPreferences("currentCamera", Context.MODE_PRIVATE)
+        val get = currentCamera.getBoolean("currentCamera", true)
+        return if (get){
+            CameraSelector.DEFAULT_BACK_CAMERA
+        } else CameraSelector.DEFAULT_FRONT_CAMERA
+    }
 
 
     override fun onRequestPermissionsResult(
@@ -226,7 +261,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                startCamera()
+                startCamera(getCurrentCamera())
             } else {
                 Toast.makeText(this,
                     "Permissions not granted by the user.",
