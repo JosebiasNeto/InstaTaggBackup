@@ -155,6 +155,13 @@ class PhotosActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         when (item.itemId) {
+            R.id.from_tagg_to_camera -> {
+                val mainActivity = Intent(this, MainActivity::class.java)
+                mainActivity.putExtra("tagg", tagg)
+                startActivity(mainActivity)
+                overridePendingTransition(0,0)
+                return true
+            }
             R.id.tagg_edit -> {
                 editTagg(tagg)
                 return true

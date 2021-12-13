@@ -111,6 +111,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, TaggsActivity::class.java))
             overridePendingTransition(0,0)
         }
+        val tagg : Tagg? = intent.getParcelableExtra<Tagg>("tagg")
+        if (tagg != null) {
+            saveCurrentTagg(tagg)
+        }
         setCurrentTagg(getCurrentTagg())
     }
 
@@ -219,7 +223,7 @@ class MainActivity : AppCompatActivity() {
        return filesDir
     }
 
-    private fun saveCurrentTagg(tagg: Tagg){
+    fun saveCurrentTagg(tagg: Tagg){
         val currentTagg = this.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
         val save = currentTagg.edit()
         tagg.id?.let { save.putLong("currentTaggId", it) }
@@ -237,19 +241,17 @@ class MainActivity : AppCompatActivity() {
         return tagg
     }
     private fun saveCurrentCamera(cameraSelector: CameraSelector){
-        var defaultCamera : Boolean
         val currentCamera = this.getSharedPreferences("currentCamera", Context.MODE_PRIVATE)
         val save = currentCamera.edit()
-        defaultCamera = cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
+        val defaultCamera : Boolean = cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
         save.putBoolean("currentCamera", defaultCamera)
         save.apply()
     }
 
     private fun getCurrentCamera(): CameraSelector{
-        var defaultCamera : Boolean
         val currentCamera = this.getSharedPreferences("currentCamera", Context.MODE_PRIVATE)
-        val get = currentCamera.getBoolean("currentCamera", true)
-        return if (get){
+        val defaultCamera = currentCamera.getBoolean("currentCamera", true)
+        return if (defaultCamera){
             CameraSelector.DEFAULT_BACK_CAMERA
         } else CameraSelector.DEFAULT_FRONT_CAMERA
     }
