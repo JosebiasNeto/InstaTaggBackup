@@ -43,6 +43,55 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btn_flip_camera"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="20dp"
+        android:background="@null"
+        android:src="@drawable/ic_baseline_flip_camera_ios_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_flash_on"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:background="@null"
+        android:src="@drawable/ic_baseline_flash_on_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_flash_auto"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:background="@null"
+        android:src="@drawable/ic_baseline_flash_auto_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_flash_off"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="20dp"
+        android:background="@null"
+        android:src="@drawable/ic_baseline_flash_off_24"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/chose_tagg_color"
         android:layout_width="100dp"
@@ -53,22 +102,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/camera_capture_button"
         tools:background="@color/white"
-        tools:text="Família" >
+        tools:text="Família">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/chose_tagg_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray"
-                tools:text="Família"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Família" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,23 +127,21 @@
         android:id="@+id/rv_change_tagg"
         android:layout_width="110dp"
         android:layout_height="240dp"
-        tools:itemCount="5"
-        tools:listitem="@layout/tagg_item_rv"
-        app:layout_constraintEnd_toEndOf="@id/chose_tagg_color"
-        app:layout_constraintBottom_toTopOf="@id/chose_tagg_color"
         android:layout_marginEnd="-5dp"
         android:layout_marginBottom="10dp"
-        />
+        app:layout_constraintBottom_toTopOf="@id/chose_tagg_color"
+        app:layout_constraintEnd_toEndOf="@id/chose_tagg_color"
+        tools:itemCount="5"
+        tools:listitem="@layout/tagg_item_rv" />
+
     <LinearLayout
         android:id="@+id/flash_screen"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white"
+        android:orientation="horizontal"
         android:visibility="gone"
-        />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
