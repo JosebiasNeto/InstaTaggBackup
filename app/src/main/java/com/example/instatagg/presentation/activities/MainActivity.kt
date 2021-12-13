@@ -85,7 +85,22 @@ class MainActivity : AppCompatActivity() {
         }
         binding.openSettingsButton.setOnClickListener {
             binding.btnFlipCamera.isVisible = !binding.btnFlipCamera.isVisible
+            when(getCurrentFlash()){
+                ImageCapture.FLASH_MODE_ON -> binding.btnFlashOn.isVisible = !binding.btnFlashOn.isVisible
+                ImageCapture.FLASH_MODE_AUTO -> binding.btnFlashAuto.isVisible = !binding.btnFlashAuto.isVisible
+                ImageCapture.FLASH_MODE_OFF -> binding.btnFlashOff.isVisible = !binding.btnFlashOff.isVisible
+            }
         }
+        binding.btnFlashOn.setOnClickListener { setCurrentFlash(ImageCapture.FLASH_MODE_AUTO)
+                                                binding.btnFlashOn.visibility = View.GONE
+                                                binding.btnFlashAuto.visibility = View.VISIBLE}
+        binding.btnFlashAuto.setOnClickListener { setCurrentFlash(ImageCapture.FLASH_MODE_OFF)
+                                                binding.btnFlashAuto.visibility = View.GONE
+                                                binding.btnFlashOff.visibility = View.VISIBLE}
+        binding.btnFlashOff.setOnClickListener { setCurrentFlash(ImageCapture.FLASH_MODE_ON)
+                                                binding.btnFlashOff.visibility = View.GONE
+                                                binding.btnFlashOn.visibility = View.VISIBLE}
+
         binding.btnFlipCamera.setOnClickListener {
             if(getCurrentCamera() == CameraSelector.DEFAULT_BACK_CAMERA){
                 saveCurrentCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
@@ -104,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         binding.cameraCaptureButton.setOnClickListener {
             if(adapter.itemCount == 0){
                 Toast.makeText(this, "Add a Tagg first!", Toast.LENGTH_SHORT).show()
-            } else takePhoto()
+            } else takePhoto(getCurrentFlash())
         }
 
         binding.openGaleryButton.setOnClickListener {
@@ -116,6 +131,25 @@ class MainActivity : AppCompatActivity() {
             saveCurrentTagg(tagg)
         }
         setCurrentTagg(getCurrentTagg())
+    }
+
+    private fun getCurrentFlash(): Int {
+        val currentFlash = this.getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
+        return when (currentFlash.getInt("currentFlash", ImageCapture.FLASH_MODE_OFF)) {
+            ImageCapture.FLASH_MODE_ON -> ImageCapture.FLASH_MODE_ON
+            ImageCapture.FLASH_MODE_AUTO -> ImageCapture.FLASH_MODE_AUTO
+            else -> {ImageCapture.FLASH_MODE_OFF}
+        }
+    }
+    private fun setCurrentFlash(flashMode: Int){
+        val currentFlash = this.getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
+        val save = currentFlash.edit()
+        when(flashMode){
+            ImageCapture.FLASH_MODE_ON -> save.putInt("currentFlash", ImageCapture.FLASH_MODE_ON)
+            ImageCapture.FLASH_MODE_AUTO -> save.putInt("currentFlash", ImageCapture.FLASH_MODE_AUTO)
+            ImageCapture.FLASH_MODE_OFF -> save.putInt("currentFlash", ImageCapture.FLASH_MODE_OFF)
+        }
+        save.apply()
     }
 
     private fun removeSettingsVisibility() {
@@ -180,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(flashMode: Int) {
         val imageCapture = imageCapture ?: return
         val photoFile = File(
             outputDirectory,
@@ -188,6 +222,7 @@ class MainActivity : AppCompatActivity() {
                 FILENAME_FORMAT, Locale.US
             ).format(System.currentTimeMillis()) + ".jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        imageCapture.flashMode = flashMode
         imageCapture.takePicture(
             outputOptions, ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
