@@ -3,5 +3,5 @@
     <item android:id="@+id/move_to_tagg"
         android:title="@string/txt_move_to_tagg"/>
     <item android:id="@+id/copy_to_tagg"
-        android:title="@string/txt_copy_to_tagg"/>
+        android:title="@string/txt_copy_to_tagg" />
 </menu>

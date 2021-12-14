@@ -16,7 +16,7 @@ class MainAdapter(private val taggs: ArrayList<Tagg>):
         fun bind(tagg: Tagg){
             itemView.apply {
                 findViewById<TextView>(R.id.chose_tagg_text).text = tagg.name
-                findViewById<CardView>(R.id.chose_tagg_color).setBackgroundColor(tagg.color)
+                findViewById<CardView>(R.id.chose_tagg_color).setCardBackgroundColor(tagg.color)
             }
         }
     }

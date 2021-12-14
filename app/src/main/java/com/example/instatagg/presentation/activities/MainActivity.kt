@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCurrentTagg(tagg: Tagg){
         binding.choseTaggText.text = tagg.name
-        binding.choseTaggColor.setBackgroundColor(tagg.color)
+        binding.choseTaggColor.setCardBackgroundColor(tagg.color)
     }
 
     private fun choseTagg(position: Int) {

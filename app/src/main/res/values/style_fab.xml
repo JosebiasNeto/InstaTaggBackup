@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="style_fab_main">
-        <item name="android:layout_width">80dp</item>
-        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
         <item name="android:layout_margin">20dp</item>
-        <item name="backgroundTint">@color/gray</item>
+        <item name="backgroundTint">@color/orange</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="layout_constraintEnd_toEndOf">parent</item>
         <item name="fabCustomSize">80dp</item>
@@ -12,10 +12,10 @@
         <item name="maxImageSize">70dp</item>
     </style>
     <style name="style_fab_secondary">
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
         <item name="android:layout_margin">30dp</item>
-        <item name="backgroundTint">@color/gray</item>
+        <item name="backgroundTint">@color/brown</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="layout_constraintEnd_toEndOf">parent</item>
         <item name="fabCustomSize">60dp</item>
