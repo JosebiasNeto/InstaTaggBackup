@@ -3,12 +3,11 @@ package com.example.instatagg.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.instatagg.R
 import com.example.instatagg.domain.model.Tagg
-import com.squareup.picasso.Picasso
 
 class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
     RecyclerView.Adapter<TaggsAdapter.TaggsHolder>() {
@@ -17,9 +16,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
         fun bind(tagg: Tagg) {
             itemView.apply {
                 findViewById<TextView>(R.id.tv_name_tagg).text = tagg.name
-                findViewById<TextView>(R.id.tv_name_tagg).setTextColor(tagg.color)
-                Picasso.get().load(R.drawable.tagg_empty)
-                    .into(itemView.findViewById<ImageView>(R.id.iv_tagg))
+                findViewById<CardView>(R.id.cv_tagg).setCardBackgroundColor(tagg.color)
             }
         }
     }
