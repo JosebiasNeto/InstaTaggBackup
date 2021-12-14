@@ -133,6 +133,11 @@ class PhotosActivity : AppCompatActivity() {
 
     private fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
+        for(i in 0 until adapter.itemCount){
+                adapter.getPhoto(i).id?.let { it1 -> viewModel.delPhoto(it1) }
+                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+        }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
     }
