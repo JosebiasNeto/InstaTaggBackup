@@ -13,4 +13,5 @@
     <string name="txt_delete_tagg">Delete Tagg</string>
     <string name="txt_move_to_tagg">Move to Tagg</string>
     <string name="txt_copy_to_tagg">Copy to Tagg</string>
+    <string name="tagg">Tagg</string>
 </resources>

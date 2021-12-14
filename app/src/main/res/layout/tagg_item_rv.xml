@@ -23,9 +23,10 @@
             android:id="@+id/chose_tagg_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            tools:background="@color/white"
-            tools:text="Família"/>
+            android:gravity="center"
+            android:textColor="@color/white"
+            tools:background="@color/black"
+            tools:text="Proparoxítona sempre que houver"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
