@@ -1,10 +1,10 @@
 package com.example.instatagg.presentation.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.widget.Toast
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.example.instatagg.R
 import com.example.instatagg.databinding.FragmentCreateEditTaggBinding
@@ -14,59 +14,65 @@ import com.github.dhaval2404.colorpicker.MaterialColorPickerDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
+
+
+
 class CreateTaggFragment : DialogFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
     private val viewModel: TaggsViewModel by viewModel()
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity.let {
-            _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
-            binding?.btnChoseColor?.setOnClickListener {
-                choseColor()
-            }
-            val builder = AlertDialog.Builder(it)
-            builder.setView(binding?.root)
-                .setPositiveButton(R.string.txt_create,
-                    DialogInterface.OnClickListener { dialog, id ->
-                        if(binding?.etTaggName!!.text.isEmpty()){
-                            Toast.makeText(it,"Your tagg was not created, you need to enter a name!", Toast.LENGTH_LONG).show()
-                        } else {
-                            viewModel.insertTagg(
-                                Tagg(
-                                    null,
-                                    binding?.etTaggName!!.text.toString(),
-                                    binding?.btnChoseColor!!.currentHintTextColor
-                                )
-                            )
-                            startActivity(requireActivity().intent)
-                        }
-                    })
-                .setNegativeButton(R.string.txt_cancel,
-                    DialogInterface.OnClickListener { dialog, id ->
-                        getDialog()?.cancel()
-                    })
 
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
+        binding?.btnChoseColor?.setOnClickListener {
+            choseColor()
+        }
+        val builder = AlertDialog.Builder(context, R.style.style_dialog)
+        builder.apply {
+        setView(binding?.root)
+        _binding?.cancelButton?.setOnClickListener {
+                getDialog()?.cancel()
+        }
+        _binding!!.confirmButton.setOnClickListener {
+                if(binding?.etTaggName!!.text.isEmpty()){
+                } else {
+                    viewModel.insertTagg(
+                        Tagg(
+                            null,
+                            binding?.etTaggName!!.text.toString(),
+                            binding?.btnChoseColor!!.currentHintTextColor
+                        )
+                    )
+                    startActivity(requireActivity().intent)
+                }
+        }}
+        binding!!.etTaggName.requestFocus()
+        val dialog = builder.create()
+        dialog.window!!.apply {
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
+        return dialog
     }
+
     private fun changeColor(color: Int){
         _binding?.btnChoseColor?.setBackgroundColor(color)
         _binding?.btnChoseColor?.setHintTextColor(color)
     }
     private fun choseColor(){
-        activity?.let {
+        val pickerColor = context?.let {
             MaterialColorPickerDialog.Builder(it)
                 .setTitle(R.string.txt_chose_color)
                 .setColorListener { color, colorHex ->
                     changeColor(color)
                 }
-                .setDefaultColor(R.color.white)
                 .setTickColorPerCard(false)
                 .show()
         }
-
     }
 
     override fun onDestroyView() {
