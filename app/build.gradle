@@ -93,7 +93,4 @@ dependencies {
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-    //Color Picker
-    implementation 'com.github.dhaval2404:colorpicker:2.0'
-
 }

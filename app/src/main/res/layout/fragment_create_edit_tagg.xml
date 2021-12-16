@@ -1,52 +1,325 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/gray_light">
+    app:cardCornerRadius="15dp"
+    android:backgroundTint="@color/primary_light">
 
-    <TextView
-        android:id="@+id/tv_create_tagg"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_chose_color"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/create_tagg"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/et_tagg_name"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/primary_light"
+        android:visibility="gone">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/txt_hint_tagg"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:inputType="textCapSentences"
-        android:textColorHint="@color/gray"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_create_tagg" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="7dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteY="2dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_1"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_2"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/pink"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_3"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/pink_dark"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_4"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_4"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/lilac_light"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_5"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_5"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/lilac"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_4"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="7dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteY="41dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_6"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/lilac_dark"
+                app:layout_constraintEnd_toStartOf="@id/cv_color_7"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_7"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/blue_two"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_8"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_6"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_8"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/blue"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_9"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_7"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_9"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/blue_dark"
+                app:layout_constraintEnd_toEndOf="@id/cv_color_10"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_8"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_10"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/green_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_9"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="7dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteY="80dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_11"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/green"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_12"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_12"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/green_dark"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_13"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_11"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_13"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/yellow"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_14"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_12"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_14"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/yellow_dark"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_15"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_13"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_15"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/brown_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_14"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteY="118dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_16"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/brown"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_17"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_17"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/brown_dark"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_18"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_16"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_18"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/red_light"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_19"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_17"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_19"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/red"
+                app:layout_constraintEnd_toStartOf="@+id/cv_color_20"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_18"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_color_20"
+                style="@style/style_pick_color"
+                app:cardBackgroundColor="@color/red_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cv_color_19"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/txt_chose_color"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@id/btn_chose_color"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="10dp"/>
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/btn_chose_color"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_tagg_name"/>
+        <TextView
+            android:id="@+id/tv_create_tagg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/create_tagg"
+            android:textColor="@color/primary"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/et_tagg_name"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/txt_hint_tagg"
+            android:inputType="textCapSentences"
+            android:textAlignment="center"
+            android:textColor="@color/primary"
+            android:textColorHint="@color/primary"
+            android:textSize="20sp"
+            android:layout_marginHorizontal="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_create_tagg" />
+
+        <TextView
+            android:id="@+id/txt_chose_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/txt_chose_color"
+            android:textColor="@color/primary"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@id/btn_chose_color"
+            app:layout_constraintEnd_toStartOf="@id/btn_chose_color"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/btn_chose_color"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/red"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColorHint="@color/red"
+            app:layout_constraintStart_toEndOf="@id/txt_chose_color"
+            app:layout_constraintTop_toBottomOf="@id/et_tagg_name" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/primary"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_margin="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/confirm_button"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_chose_color" />
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/accent"
+            android:text="Create"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cancel_button"
+            app:layout_constraintTop_toBottomOf="@id/btn_chose_color" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

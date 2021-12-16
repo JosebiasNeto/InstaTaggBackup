@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="gray">#75768a</color>
-    <color name="gray_light">#f0f1ea</color>
-    <color name="brown">#504c39</color>
-    <color name="brown_light">#817e63</color>
-    <color name="orange">#dba036</color>
+    <color name="primary">#75768a</color>
+    <color name="primary_light">#f0f1ea</color>
+    <color name="dark">#504c39</color>
+    <color name="dark_light">#817e63</color>
+    <color name="accent">#dba036</color>
+    <color name="white">#ffffff</color>
+
+    <color name="black">#000000</color>
+    <color name="pink">#ED449E</color>
+    <color name="pink_dark">#AC1D77</color>
+    <color name="lilac_light">#A961BA</color>
+    <color name="lilac">#A344BC</color>
+    <color name="lilac_dark">#622683</color>
+    <color name="blue_two">#2D486C</color>
+    <color name="blue">#1C47BD</color>
+    <color name="blue_dark">#0E3097</color>
+    <color name="green_light">#4D9C43</color>
+    <color name="green">#3F8B13</color>
+    <color name="green_dark">#23501F</color>
+    <color name="yellow">#D3BB2F</color>
+    <color name="yellow_dark">#BF9712</color>
+    <color name="brown_light">#A87935</color>
+    <color name="brown">#7C4626</color>
+    <color name="brown_dark">#432711</color>
+    <color name="red_light">#EF4E39</color>
+    <color name="red">#D31C06</color>
+    <color name="red_dark">#811D10</color>
 </resources>
