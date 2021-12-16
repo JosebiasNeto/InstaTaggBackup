@@ -103,7 +103,7 @@ class PhotosActivity : AppCompatActivity() {
         viewModel.getTaggs().observe(this, {
             refreshAdapterMain(it)
         })
-        binding.fromTaggToCamera.setOnClickListener {
+        binding.fabFromTaggToCamera.setOnClickListener {
             val mainActivity = Intent(this, MainActivity::class.java)
             mainActivity.putExtra("tagg", tagg)
             startActivity(mainActivity)
@@ -113,6 +113,7 @@ class PhotosActivity : AppCompatActivity() {
 
     fun changeBottomOptionsVisibility(){
         binding.cvBottom.isVisible = !binding.cvBottom.isVisible
+        binding.fabFromTaggToCamera.isVisible = !binding.fabFromTaggToCamera.isVisible
     }
 
     private fun openFullscreen(position: Int) {

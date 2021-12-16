@@ -57,7 +57,7 @@ class FullscreenPhotoFragment() : Fragment() {
         @RequiresApi(Build.VERSION_CODES.N)
         override fun onScale(detector: ScaleGestureDetector?): Boolean {
             scaleFactor *= scaleGestureDetector.scaleFactor
-            scaleFactor = max(0.1f, min(scaleFactor, 10.0f))
+            scaleFactor = max(1f, min(scaleFactor, 10.0f))
             imageView.scaleX = scaleFactor
             imageView.scaleY = scaleFactor
             return true

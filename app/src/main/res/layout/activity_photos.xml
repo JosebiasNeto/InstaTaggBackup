@@ -97,7 +97,7 @@
         android:visibility="gone"
         />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/from_tagg_to_camera"
+        android:id="@+id/fab_from_tagg_to_camera"
         style="@style/style_fab_main"
         android:scaleType="center"
         tools:ignore="MissingConstraints"

@@ -44,8 +44,7 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
                 if (binding!!.btnChoseColor.currentHintTextColor != tagg.color) {
                     viewModel.changeTaggColor(
                         tagg.id!!,
-                        binding!!.btnChoseColor.currentHintTextColor
-                    )
+                        binding!!.btnChoseColor.currentHintTextColor)
                 }
                 tagg.name = binding!!.etTaggName.text.toString()
                 tagg.color = binding!!.btnChoseColor.currentHintTextColor
