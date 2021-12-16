@@ -20,7 +20,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.instatagg.R
 import com.example.instatagg.databinding.ActivityMainBinding
 import com.example.instatagg.domain.model.Photo
 import com.example.instatagg.domain.model.Tagg
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        binding.choseTaggColor.setOnClickListener {
+        binding.cvChoseTaggColor.setOnClickListener {
             binding.rvChangeTagg.isVisible = !binding.rvChangeTagg.isVisible
         }
         binding.openSettingsButton.setOnClickListener {
@@ -114,6 +113,18 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getTaggs().observe(this, {
             refreshAdapter(it)
+            if(it.isEmpty()){
+                saveCurrentTagg(Tagg(0,"", resources.getColor(android.R.color.white)))
+            } else {
+                val listOfIds = arrayListOf<Long>()
+                for(i in it.indices){
+                    if(getCurrentTagg().id == it[i].id){
+                        saveCurrentTagg(it[i])
+                        it[i].id?.let { it1 -> listOfIds.add(it1) }
+                    }
+                }
+                if(listOfIds.isEmpty()) saveCurrentTagg(it[0])
+            }
         })
 
         binding.cameraCaptureButton.setOnClickListener {
@@ -172,7 +183,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCurrentTagg(tagg: Tagg){
         binding.choseTaggText.text = tagg.name
-        binding.choseTaggColor.setCardBackgroundColor(tagg.color)
+        binding.cvChoseTaggColor.setCardBackgroundColor(tagg.color)
     }
 
     private fun choseTagg(position: Int) {
@@ -265,14 +276,15 @@ class MainActivity : AppCompatActivity() {
         tagg.name?.let { save.putString("currentTaggName", it) }
         tagg.color?.let { save.putInt("currentTaggColor", it) }
         save.apply()
+        setCurrentTagg(getCurrentTagg())
     }
 
     private fun getCurrentTagg(): Tagg{
         val currentTagg = this.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
-        val tagg: Tagg = Tagg(0,"", R.color.white)
+        val tagg: Tagg = Tagg(0,"", resources.getColor(android.R.color.white))
         tagg.id = currentTagg.getLong("currentTaggId", 0)
         tagg.name = currentTagg.getString("currentTaggName", "")!!
-        tagg.color = currentTagg.getInt("currentTaggColor", R.color.white)
+        tagg.color = currentTagg.getInt("currentTaggColor", resources.getColor(android.R.color.white))
         return tagg
     }
     private fun saveCurrentCamera(cameraSelector: CameraSelector){
