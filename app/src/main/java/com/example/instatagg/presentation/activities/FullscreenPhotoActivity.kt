@@ -113,7 +113,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
         val photo = getPhotoFullscreen()
         when (item.itemId) {
             R.id.move_to_tagg -> {
-                binding.rvChooseTagg.isVisible = true
+                binding.cvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
                         val tagg = mainAdapter.getTagg(position)
@@ -127,7 +127,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                 return true
             }
             R.id.copy_to_tagg -> {
-                binding.rvChooseTagg.isVisible = true
+                binding.cvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
                         val oldTagg = photo.tagg
@@ -149,10 +149,14 @@ class FullscreenPhotoActivity : AppCompatActivity() {
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
     }
     override fun onBackPressed() {
-        val photosActivity = Intent(this, PhotosActivity::class.java)
-        val photo = getPhotoFullscreen()
-        photosActivity.putExtra("tagg", photo.tagg)
-        startActivity(photosActivity)
-        overridePendingTransition(0,0)
+        if(binding.cvChooseTagg.isVisible) {
+            binding.cvChooseTagg.visibility = View.GONE
+        } else {
+            val photosActivity = Intent(this, PhotosActivity::class.java)
+            val photo = getPhotoFullscreen()
+            photosActivity.putExtra("tagg", photo.tagg)
+            startActivity(photosActivity)
+            overridePendingTransition(0, 0)
+        }
     }
 }

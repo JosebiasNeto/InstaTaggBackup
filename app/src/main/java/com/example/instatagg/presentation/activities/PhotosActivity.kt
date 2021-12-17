@@ -153,11 +153,6 @@ class PhotosActivity : AppCompatActivity() {
         editTaggFragment.show(supportFragmentManager,"editTagg")
     }
 
-    override fun onBackPressed() {
-        startActivity(Intent(this, TaggsActivity::class.java))
-        overridePendingTransition(0,0)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.tagg_option_menu, menu)
@@ -205,7 +200,7 @@ class PhotosActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.move_to_tagg -> {
-                binding.rvChooseTagg.isVisible = true
+                binding.cvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
                         for(i in 0 until adapter.itemCount){
@@ -219,7 +214,7 @@ class PhotosActivity : AppCompatActivity() {
                 return true
             }
             R.id.copy_to_tagg -> {
-                binding.rvChooseTagg.isVisible = true
+                binding.cvChooseTagg.isVisible = true
                 binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
                     override fun onItemClicked(position: Int, view: View) {
                         for(i in 0 until adapter.itemCount){
@@ -239,5 +234,17 @@ class PhotosActivity : AppCompatActivity() {
     }
     fun moveToTagg(tagg: Tagg, photo: Photo){
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
+    }
+
+    override fun onBackPressed() {
+        if(binding.cvChooseTagg.isVisible){
+            binding.cvChooseTagg.visibility = View.GONE
+        } else if(adapter.getPhoto(0).checkboxVisibility){
+            startActivity(intent)
+            overridePendingTransition(0,0)
+        } else {
+            startActivity(Intent(this, TaggsActivity::class.java))
+            overridePendingTransition(0,0)
+        }
     }
 }

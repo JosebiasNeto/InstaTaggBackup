@@ -10,8 +10,7 @@
         android:id="@+id/cv_bottom"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:backgroundTint="@color/primary_light"
         android:visibility="gone"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,6 +25,7 @@
                 android:id="@+id/ib_more"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/accent"
                 android:src="@drawable/ic_baseline_more_vert_24"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="30dp"
@@ -34,6 +34,7 @@
                 android:id="@+id/ib_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/accent"
                 android:src="@drawable/outline_delete_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +43,7 @@
                 android:id="@+id/ib_share"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:backgroundTint="@color/accent"
                 android:src="@drawable/ic_baseline_share_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="30dp"
@@ -83,19 +85,27 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_choose_tagg"
-        android:layout_width="110dp"
-        android:layout_height="240dp"
-        tools:itemCount="5"
-        tools:listitem="@layout/tagg_item_rv"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_choose_tagg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:cardBackgroundColor="@color/primary_light"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/white"
         android:visibility="gone"
+        app:cardCornerRadius="15dp"
+        android:layout_width="130dp"
+        android:layout_height="300dp">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_choose_tagg"
+        android:layout_width="110dp"
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        tools:itemCount="5"
+        tools:listitem="@layout/tagg_item_rv"
+        android:background="@color/primary_light"
         />
+    </androidx.cardview.widget.CardView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_from_tagg_to_camera"
         style="@style/style_fab_main"
