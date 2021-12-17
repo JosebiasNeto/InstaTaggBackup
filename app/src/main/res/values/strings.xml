@@ -1,17 +1,16 @@
 <resources>
-    <string name="app_name">InstaTagg</string>
+    <string name="app_name" translatable="false">InstaTagg</string>
     <string name="txt_galery">Galery</string>
     <string name="create_tagg">Create Tagg</string>
     <string name="txt_hint_tagg">new tagg name</string>
     <string name="txt_chose_color">Chose the color:</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="txt_create">Create</string>
-    <string name="txt_cancel">Cancel</string>
     <string name="txt_edit">Edit</string>
     <string name="txt_clear_tagg">Clear Tagg</string>
     <string name="txt_delete_tagg">Delete Tagg</string>
     <string name="txt_move_to_tagg">Move to Tagg</string>
     <string name="txt_copy_to_tagg">Copy to Tagg</string>
-    <string name="tagg">Tagg</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="no_taggs">No Taggs</string>
+    <string name="edit_tagg">Edit Tagg</string>
 </resources>

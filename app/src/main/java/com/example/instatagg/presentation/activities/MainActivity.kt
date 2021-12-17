@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.getTaggs().observe(this, {
             refreshAdapter(it)
             if(it.isEmpty()){
-                saveCurrentTagg(Tagg(0,"", resources.getColor(android.R.color.white)))
+                saveCurrentTagg(Tagg(0,getString(com.example.instatagg.R.string.no_taggs), resources.getColor(android.R.color.white)))
             } else {
                 val listOfIds = arrayListOf<Long>()
                 for(i in it.indices){

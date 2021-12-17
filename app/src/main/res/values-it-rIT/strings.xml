@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InstaTagg</string>
+    <string name="txt_galery">Galleria</string>
+    <string name="create_tagg">Crea Tagg</string>
+    <string name="txt_hint_tagg">nuovo nome tagg</string>
+    <string name="txt_chose_color">Scegli il colore</string>
+    <string name="txt_edit">Modificare</string>
+    <string name="txt_clear_tagg">Cancella il Tagg</string>
+    <string name="txt_delete_tagg">Elimina Tagg</string>
+    <string name="txt_move_to_tagg">Sposta in Tagg</string>
+    <string name="txt_copy_to_tagg">Copia nel Tagg</string>
+    <string name="cancel">Annulla</string>
+    <string name="create">Creare</string>
+    <string name="no_taggs">Nessun Tagg</string>
+    <string name="edit_tagg">Modifica Tagg</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InstaTagg</string>
+    <string name="txt_galery">画廊</string>
+    <string name="create_tagg">创建标签</string>
+    <string name="txt_hint_tagg">新标签名称</string>
+    <string name="txt_chose_color">选择颜色</string>
+    <string name="txt_edit">编辑</string>
+    <string name="txt_clear_tagg">清除标签</string>
+    <string name="txt_delete_tagg">删除标签</string>
+    <string name="txt_move_to_tagg">移动到标签</string>
+    <string name="txt_copy_to_tagg">复制到标签</string>
+    <string name="cancel">取消</string>
+    <string name="create">创建</string>
+    <string name="no_taggs">无标签</string>
+    <string name="edit_tagg">编辑标签</string>
+</resources>

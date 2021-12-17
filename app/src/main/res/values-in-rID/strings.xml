@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InstaTagg</string>
+    <string name="txt_galery">Galeri</string>
+    <string name="create_tagg">Buat Tagg</string>
+    <string name="txt_hint_tagg">nama tag baru</string>
+    <string name="txt_chose_color">Pilih warnanya</string>
+    <string name="txt_edit">Sunting</string>
+    <string name="txt_clear_tagg">Hapus Tagg</string>
+    <string name="txt_delete_tagg">Hapus Tagg</string>
+    <string name="txt_move_to_tagg">Pindah ke Tagg</string>
+    <string name="txt_copy_to_tagg">Salin ke Tagg</string>
+    <string name="cancel">Membatalkan</string>
+    <string name="create">Membuat</string>
+    <string name="no_taggs">Tidak ada Tagg</string>
+    <string name="edit_tagg">Edit Tagg</string>
+</resources>

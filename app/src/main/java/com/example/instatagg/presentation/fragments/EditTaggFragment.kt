@@ -22,8 +22,8 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
-        binding!!.confirmButton.text = "Edit"
-        binding!!.tvCreateTagg.text = "Edit Tagg"
+        binding!!.confirmButton.text = getString(R.string.txt_edit)
+        binding!!.tvCreateTagg.text = getString(R.string.edit_tagg)
         binding?.etTaggName!!.text = Editable.Factory.getInstance().newEditable(tagg.name)
         binding?.btnChoseColor!!.setBackgroundColor(tagg.color)
         binding?.btnChoseColor!!.setHintTextColor(tagg.color)

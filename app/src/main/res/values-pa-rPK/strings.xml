@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InstaTagg</string>
+    <string name="txt_galery">ਗੈਲਰੀ</string>
+    <string name="create_tagg">ਟੈਗ ਬਣਾਓ</string>
+    <string name="txt_hint_tagg">ਨਵਾਂ ਟੈਗ ਨਾਮ</string>
+    <string name="txt_chose_color">ਰੰਗ ਚੁਣੋ</string>
+    <string name="txt_edit">ਸੰਪਾਦਿਤ ਕਰੋ</string>
+    <string name="txt_clear_tagg">ਟੈਗ ਨੂੰ ਸਾਫ਼ ਕਰੋ</string>
+    <string name="txt_delete_tagg">ਟੈਗ ਮਿਟਾਓ</string>
+    <string name="txt_move_to_tagg">ਟੈਗ \'ਤੇ ਜਾਓ</string>
+    <string name="txt_copy_to_tagg">ਟੈਗ ਕਰਨ ਲਈ ਕਾਪੀ ਕਰੋ</string>
+    <string name="cancel">ਰੱਦ ਕਰੋ</string>
+    <string name="create">ਬਣਾਓ</string>
+    <string name="no_taggs">ਕੋਈ ਟੈਗ ਨਹੀਂ</string>
+    <string name="edit_tagg">ਟੈਗ ਦਾ ਸੰਪਾਦਨ ਕਰੋ</string>
+</resources>
