@@ -239,7 +239,7 @@ class PhotosActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if(binding.cvChooseTagg.isVisible){
             binding.cvChooseTagg.visibility = View.GONE
-        } else if(adapter.getPhoto(0).checkboxVisibility){
+        } else if(binding.cvBottom.isVisible){
             startActivity(intent)
             overridePendingTransition(0,0)
         } else {
