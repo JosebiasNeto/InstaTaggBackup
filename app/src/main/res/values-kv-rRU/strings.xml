@@ -14,4 +14,5 @@
     <string name="create">Создавать</string>
     <string name="no_taggs">Без тегов</string>
     <string name="edit_tagg">Изменить тег</string>
+    <string name="without_tagg">добавить тег</string>
 </resources>

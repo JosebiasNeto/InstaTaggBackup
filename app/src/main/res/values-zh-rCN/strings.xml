@@ -14,4 +14,5 @@
     <string name="create">创建</string>
     <string name="no_taggs">无标签</string>
     <string name="edit_tagg">编辑标签</string>
+    <string name="without_tagg">添加标签</string>
 </resources>

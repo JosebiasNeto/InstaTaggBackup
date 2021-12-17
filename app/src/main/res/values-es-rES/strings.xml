@@ -14,4 +14,5 @@
     <string name="create">Crear</string>
     <string name="no_taggs">No Taggs</string>
     <string name="edit_tagg">Editar Tagg</string>
+    <string name="without_tagg">añadir una etiqueta</string>
 </resources>

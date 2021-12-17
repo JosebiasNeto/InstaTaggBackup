@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaActionSound
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -114,7 +115,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.getTaggs().observe(this, {
             refreshAdapter(it)
             if(it.isEmpty()){
-                saveCurrentTagg(Tagg(0,getString(com.example.instatagg.R.string.no_taggs), resources.getColor(android.R.color.white)))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    saveCurrentTagg(Tagg(0,getString(com.example.instatagg.R.string.no_taggs), getColor(com.example.instatagg.R.color.accent)))
+                }
             } else {
                 val listOfIds = arrayListOf<Long>()
                 for(i in it.indices){
@@ -129,7 +132,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.cameraCaptureButton.setOnClickListener {
             if(adapter.itemCount == 0){
-                Toast.makeText(this, "Add a Tagg first!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(com.example.instatagg.R.string.without_tagg),
+                    Toast.LENGTH_SHORT).show()
             } else takePhoto(getCurrentFlash())
         }
 

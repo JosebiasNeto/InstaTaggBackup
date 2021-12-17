@@ -14,4 +14,5 @@
     <string name="create">ਬਣਾਓ</string>
     <string name="no_taggs">ਕੋਈ ਟੈਗ ਨਹੀਂ</string>
     <string name="edit_tagg">ਟੈਗ ਦਾ ਸੰਪਾਦਨ ਕਰੋ</string>
+    <string name="without_tagg">ਇੱਕ ਟੈਗ ਸ਼ਾਮਲ ਕਰੋ</string>
 </resources>
