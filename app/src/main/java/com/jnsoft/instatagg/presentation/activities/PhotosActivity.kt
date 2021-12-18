@@ -7,6 +7,8 @@ import android.view.*
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +40,7 @@ class PhotosActivity : AppCompatActivity() {
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         supportActionBar!!.setTitle(tagg.name)
         binding.toolbar.setBackgroundColor(tagg.color)
+        binding.tvTotalSize.text = tagg.size.toString()
         adapter = PhotosAdapter(arrayListOf(), this)
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
@@ -64,7 +67,12 @@ class PhotosActivity : AppCompatActivity() {
         binding.ibDelete.setOnClickListener {
             for(i in 0 until adapter.itemCount){
                 if(adapter.getPhoto(i).checked) {
-                    adapter.getPhoto(i).id?.let { it1 -> viewModel.delPhoto(it1) }
+                    adapter.getPhoto(i).let { it1 ->
+                            viewModel.delPhoto(
+                                it1,
+                                (it1.path!!.toUri().toFile().length()/(1024*1024)).toInt())
+
+                    }
                     applicationContext.deleteFile(adapter.getPhoto(i).path!!
                         .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
                 }
@@ -114,6 +122,7 @@ class PhotosActivity : AppCompatActivity() {
     fun changeBottomOptionsVisibility(){
         binding.cvBottom.isVisible = !binding.cvBottom.isVisible
         binding.fabFromTaggToCamera.isVisible = !binding.fabFromTaggToCamera.isVisible
+        binding.cvTotalSize.isVisible = !binding.cvTotalSize.isVisible
     }
 
     private fun openFullscreen(position: Int) {
@@ -141,7 +150,11 @@ class PhotosActivity : AppCompatActivity() {
     private fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
         for(i in 0 until adapter.itemCount){
-                adapter.getPhoto(i).id?.let { it1 -> viewModel.delPhoto(it1) }
+                adapter.getPhoto(i).let { it1 ->
+                        viewModel.delPhoto(
+                            it1,
+                            (it1.path!!.toUri().toFile().length()/(1024*1024)).toInt())
+                }
                 applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
         }
@@ -220,7 +233,7 @@ class PhotosActivity : AppCompatActivity() {
                         for(i in 0 until adapter.itemCount){
                             if(adapter.getPhoto(i).checked) {
                                 adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
-                                viewModel.insertPhoto(adapter.getPhoto(i))
+                                viewModel.insertPhoto(adapter.getPhoto(i), 0)
                             }
                         }
                         finish()

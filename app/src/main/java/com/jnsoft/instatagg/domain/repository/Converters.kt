@@ -19,7 +19,7 @@ object Converters {
             path = photoEntity.path,
             tagg = photoEntity.taggid?.let
             { photoEntity.name?.let { it1 -> photoEntity.color?.let { it2 ->
-                Tagg(id = it, name = it1, color = it2) } } },
+                Tagg(id = it, name = it1, color = it2, 0) } } },
             id = photoEntity.id
         )
     }

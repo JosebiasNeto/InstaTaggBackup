@@ -40,8 +40,8 @@ class PhotosViewModel(
         emit(mainRepository.getTagg(id))
     }
 
-    fun delPhoto(id: Long){
-        viewModelScope.launch { mainRepository.delPhoto(id) }
+    fun delPhoto(photo: Photo, size: Int){
+        viewModelScope.launch { mainRepository.delPhoto(photo, size) }
     }
 
     fun clearTagg(id: Long) {
@@ -55,8 +55,8 @@ class PhotosViewModel(
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
     }
-    fun insertPhoto(photo: Photo){
-        viewModelScope.launch { mainRepository.insertPhoto(photo) }
+    fun insertPhoto(photo: Photo, size: Int){
+        viewModelScope.launch { mainRepository.insertPhoto(photo, size) }
     }
 
 }

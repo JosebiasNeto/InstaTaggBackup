@@ -9,6 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -49,7 +51,11 @@ class FullscreenPhotoActivity : AppCompatActivity() {
             refreshPagerAdapter(it)
         })
         binding.ibDelete.setOnClickListener {
-            getPhotoFullscreen().id?.let { it -> viewModel.delPhoto(it) }
+            getPhotoFullscreen().let { it ->
+                    viewModel.delPhoto(
+                        it,
+                        (it.path!!.toUri().toFile().length()/(1024*1024)).toInt())
+            }
             applicationContext.deleteFile(getPhotoFullscreen().path!!
                 .substring(getPhotoFullscreen().path!!.lastIndexOf("/")+1))
             val photosActivity = Intent(this, PhotosActivity::class.java)
@@ -134,7 +140,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                         val tagg = mainAdapter.getTagg(position)
                         photo.tagg = tagg
                         val photosActivity = Intent(this@FullscreenPhotoActivity, PhotosActivity::class.java)
-                        viewModel.insertPhoto(photo)
+                        viewModel.insertPhoto(photo,0)
                         photosActivity.putExtra("tagg", oldTagg)
                         startActivity(photosActivity)
                     }

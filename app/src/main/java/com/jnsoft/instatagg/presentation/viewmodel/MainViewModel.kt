@@ -14,8 +14,8 @@ class MainViewModel(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    fun insertPhoto(photo: Photo){
-        viewModelScope.launch { mainRepository.insertPhoto(photo) }
+    fun insertPhoto(photo: Photo, size: Int){
+        viewModelScope.launch { mainRepository.insertPhoto(photo, size)}
     }
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())

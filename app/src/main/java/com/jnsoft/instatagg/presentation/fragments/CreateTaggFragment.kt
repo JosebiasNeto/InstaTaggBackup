@@ -43,7 +43,8 @@ class CreateTaggFragment : DialogFragment() {
                         Tagg(
                             null,
                             binding?.etTaggName!!.text.toString(),
-                            binding?.btnChoseColor!!.currentHintTextColor
+                            binding?.btnChoseColor!!.currentHintTextColor,
+                            0
                         )
                     )
                     startActivity(requireActivity().intent)

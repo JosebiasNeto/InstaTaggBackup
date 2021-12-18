@@ -9,8 +9,9 @@ class MainRepository(
     private val photosDao: PhotosDao,
     private val taggsDao: TaggsDao
 ) {
-    suspend fun insertPhoto(photo: Photo) {
+    suspend fun insertPhoto(photo: Photo, size: Int) {
         photosDao.insert(Converters.toPhotoEntity(photo))
+        photo.tagg!!.id?.let { taggsDao.increaseTaggSize(size, it) }
     }
 
     suspend fun getPhotos(id: Long): List<Photo> {
@@ -19,8 +20,9 @@ class MainRepository(
         }
     }
 
-    suspend fun delPhoto(id: Long) {
-        photosDao.delPhoto(id)
+    suspend fun delPhoto(photo: Photo, size: Int) {
+        photo.id?.let { photosDao.delPhoto(it) }
+        photo.tagg!!.id?.let{taggsDao.decreaseTaggSize(size, it)}
     }
 
     suspend fun clearTagg(id: Long) {

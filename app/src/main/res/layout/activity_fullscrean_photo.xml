@@ -10,7 +10,7 @@
         android:id="@+id/cv_bottom"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:backgroundTint="@color/primary_light"
+        android:backgroundTint="@color/black"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
@@ -53,7 +53,6 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_fullscreen_photo"
-        android:backgroundTint="@color/primary_light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

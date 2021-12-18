@@ -27,4 +27,10 @@ interface TaggsDao {
 
     @Query("SELECT * FROM taggs WHERE id = :id")
     suspend fun getTagg(id: Long): Tagg
+
+    @Query("UPDATE taggs SET size = size - :size WHERE id = :id")
+    suspend fun decreaseTaggSize(size: Int, id: Long)
+
+    @Query("UPDATE taggs SET size = size + :size WHERE id = :id")
+    suspend fun increaseTaggSize(size: Int, id: Long)
 }

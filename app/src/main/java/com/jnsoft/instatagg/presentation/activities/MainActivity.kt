@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             refreshAdapter(it)
             if(it.isEmpty()){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    saveCurrentTagg(Tagg(0,getString(com.jnsoft.instatagg.R.string.no_taggs), getColor(com.jnsoft.instatagg.R.color.accent)))
+                    saveCurrentTagg(Tagg(0,getString(com.jnsoft.instatagg.R.string.no_taggs), getColor(com.jnsoft.instatagg.R.color.accent),0))
                 }
             } else {
                 val listOfIds = arrayListOf<Long>()
@@ -174,9 +174,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnFlashOn.isVisible = false
     }
 
-    private fun insertPhoto(photoFile: String, tagg: Tagg) {
+    private fun insertPhoto(photoFile: String, tagg: Tagg, size: Int) {
     val photo = Photo(photoFile, tagg,null)
-        viewModel.insertPhoto(photo)
+        viewModel.insertPhoto(photo, size)
     }
     private fun refreshAdapter(taggs: List<Tagg>){
         adapter.apply {
@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity() {
                     if(getCurrentTagg().name.isEmpty()){
                         Toast.makeText(applicationContext,"Photo capture failed!",Toast.LENGTH_SHORT).show()
                     } else {
-                        savedUri.toString().let { insertPhoto(it, getCurrentTagg()) }
+                        savedUri.toString().let { insertPhoto(it, getCurrentTagg(), (photoFile.length()/(1024*1024)).toInt()) }
                         MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
                         flashEffect()
                     }
@@ -285,7 +285,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getCurrentTagg(): Tagg{
         val currentTagg = this.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
-        val tagg: Tagg = Tagg(0,"", resources.getColor(android.R.color.white))
+        val tagg: Tagg = Tagg(0,"", resources.getColor(android.R.color.white), 0)
         tagg.id = currentTagg.getLong("currentTaggId", 0)
         tagg.name = currentTagg.getString("currentTaggName", "")!!
         tagg.color = currentTagg.getInt("currentTaggColor", resources.getColor(android.R.color.white))

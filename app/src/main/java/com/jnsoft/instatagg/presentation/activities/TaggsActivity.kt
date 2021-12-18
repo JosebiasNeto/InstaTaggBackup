@@ -35,6 +35,7 @@ class TaggsActivity : AppCompatActivity() {
 
         viewModel.getTaggs().observe(this,{
             refreshAdapter(it)
+            setTotalSize(it)
         })
 
         binding.rvTaggs.addOnItemClickListener(object : OnItemClickListener{
@@ -42,6 +43,12 @@ class TaggsActivity : AppCompatActivity() {
                 openPhotosActivity(position)
             }
         })
+    }
+
+    private fun setTotalSize(taggs: List<Tagg>) {
+        val totalSize = arrayListOf<Int>()
+        taggs.map { totalSize.add(it.size) }
+        binding.tvTotalSize.text = totalSize.sum().toString()
     }
 
     private fun refreshAdapter(taggs: List<Tagg>){
