@@ -11,5 +11,6 @@ data class Tagg (
     @PrimaryKey(autoGenerate = true)
     var id: Long?,
     var name: String,
-    var color: Int
+    var color: Int,
+    var size: Int
         ) : Parcelable

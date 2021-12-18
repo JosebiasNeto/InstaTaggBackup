@@ -17,6 +17,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
             itemView.apply {
                 findViewById<TextView>(R.id.tv_name_tagg).text = tagg.name
                 findViewById<CardView>(R.id.cv_tagg).setCardBackgroundColor(tagg.color)
+                findViewById<TextView>(R.id.tv_size_tagg).text = tagg.size.toString()
             }
         }
     }

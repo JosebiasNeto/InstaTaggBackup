@@ -14,4 +14,5 @@
     <string name="no_taggs">No Taggs</string>
     <string name="edit_tagg">Edit Tagg</string>
     <string name="without_tagg">Add a Tagg first</string>
+    <string name="total_size">Total size:</string>
 </resources>
