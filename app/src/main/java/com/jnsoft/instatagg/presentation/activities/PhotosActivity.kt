@@ -24,6 +24,7 @@ import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
+import java.util.*
 
 class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
@@ -77,9 +78,10 @@ class PhotosActivity : AppCompatActivity() {
                         viewModel.delPhoto(it1,(it1.path!!.toUri()
                             .toFile().length()/(1024*1024)).toInt())
                     }
-                    applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                        .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
-                }
+                    adapter.getPhoto(i).path?.let { it1 ->
+                                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+                }}
             }
             finish()
             overridePendingTransition(0,0)
@@ -158,9 +160,9 @@ class PhotosActivity : AppCompatActivity() {
                         viewModel.delPhoto(
                             it1,
                             (it1.path!!.toUri().toFile().length()/(1024*1024)).toInt())
+                                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
                 }
-                applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
         }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
@@ -241,7 +243,11 @@ class PhotosActivity : AppCompatActivity() {
                         for(i in 0 until adapter.itemCount){
                             if(adapter.getPhoto(i).checked) {
                                 adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
-                                viewModel.insertPhoto(adapter.getPhoto(i), 0)
+                                adapter.getPhoto(i).path = copyFile(
+                                adapter.getPhoto(i).path!!.toUri().toFile(),
+                                System.currentTimeMillis().toString())
+                                viewModel.insertPhoto(adapter.getPhoto(i),
+                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()/(1024*1024)).toInt())
                             }
                         }
                         finish()
@@ -253,6 +259,12 @@ class PhotosActivity : AppCompatActivity() {
         }
         return super.onContextItemSelected(item)
     }
+
+    private fun copyFile(currentFile: File, newFileName: String): String {
+        val newFile = File(applicationContext.filesDir, "$newFileName.jpg")
+        return Uri.fromFile(currentFile.copyTo(newFile)).toString()
+    }
+
     fun moveToTagg(tagg: Tagg, photo: Photo){
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
         (photo.path!!.toUri().toFile().length()/(1024*1024)).toInt(), this.tagg.id!!)

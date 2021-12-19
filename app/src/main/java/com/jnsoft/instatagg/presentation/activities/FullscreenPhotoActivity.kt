@@ -24,7 +24,8 @@ import com.jnsoft.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
 import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
+import java.io.*
+import java.util.*
 
 class FullscreenPhotoActivity : AppCompatActivity() {
 
@@ -56,8 +57,10 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                         it,
                         (it.path!!.toUri().toFile().length()/(1024*1024)).toInt())
             }
-            applicationContext.deleteFile(getPhotoFullscreen().path!!
-                .substring(getPhotoFullscreen().path!!.lastIndexOf("/")+1))
+            getPhotoFullscreen().path?.let { it1 ->
+                        applicationContext.deleteFile(getPhotoFullscreen().path!!
+                            .substring(getPhotoFullscreen().path!!.lastIndexOf("/")+1))
+            }
             val photosActivity = Intent(this, PhotosActivity::class.java)
             photosActivity.putExtra("tagg", getPhotoFullscreen().tagg)
             this.finish()
@@ -139,8 +142,11 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                         val oldTagg = photo.tagg
                         val tagg = mainAdapter.getTagg(position)
                         photo.tagg = tagg
+                        photo.path = copyFile(photo.path!!.toUri().toFile(),
+                            System.currentTimeMillis().toString() + ".jpg")
                         val photosActivity = Intent(this@FullscreenPhotoActivity, PhotosActivity::class.java)
-                        viewModel.insertPhoto(photo,0)
+                        viewModel.insertPhoto(photo,
+                            (photo.path!!.toUri().toFile().length()/(1024*1024)).toInt())
                         photosActivity.putExtra("tagg", oldTagg)
                         startActivity(photosActivity)
                     }
@@ -150,6 +156,12 @@ class FullscreenPhotoActivity : AppCompatActivity() {
         }
         return super.onContextItemSelected(item)
     }
+
+    private fun copyFile(currentFile: File, newFileName: String): String {
+        val newFile = File(applicationContext.filesDir, "$newFileName.jpg")
+        return Uri.fromFile(currentFile.copyTo(newFile)).toString()
+    }
+
     fun moveToTagg(tagg: Tagg){
         val photo = getPhotoFullscreen()
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
