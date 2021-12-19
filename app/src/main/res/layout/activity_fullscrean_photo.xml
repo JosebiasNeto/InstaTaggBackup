@@ -61,7 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:cardBackgroundColor="@color/primary_light"
+        app:cardBackgroundColor="@color/accent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
         app:cardCornerRadius="15dp"

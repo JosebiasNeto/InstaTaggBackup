@@ -152,7 +152,8 @@ class FullscreenPhotoActivity : AppCompatActivity() {
     }
     fun moveToTagg(tagg: Tagg){
         val photo = getPhotoFullscreen()
-        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
+        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
+            (photo.path!!.toUri().toFile().length()/(1024*1024)).toInt(), photo.tagg!!.id!!)
     }
     override fun onBackPressed() {
         if(binding.cvChooseTagg.isVisible) {

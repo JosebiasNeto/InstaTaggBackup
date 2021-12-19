@@ -17,8 +17,10 @@ class FullscreanPhotoViewModel(
     fun delPhoto(photo: Photo, size: Int){
         viewModelScope.launch { mainRepository.delPhoto(photo, size) }
     }
-    fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long){
-        viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id) }
+    fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long,
+                  size: Int, oldTaggId: Long){
+        viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id,
+                                                         size, oldTaggId) }
     }
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())

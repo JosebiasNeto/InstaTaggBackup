@@ -32,8 +32,10 @@ class PhotosViewModel(
             mainRepository.changeTaggColor(id, newColor) }
     }
 
-    fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long){
-        viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id) }
+    fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long,
+                  size: Int, oldTaggId: Long){
+        viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id,
+                                                         size, oldTaggId) }
     }
 
     fun getTagg(id: Long): LiveData<Tagg> = liveData(Dispatchers.IO) {

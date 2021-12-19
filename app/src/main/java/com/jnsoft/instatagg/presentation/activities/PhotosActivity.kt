@@ -30,17 +30,23 @@ class PhotosActivity : AppCompatActivity() {
     private val viewModel: PhotosViewModel by viewModel()
     private lateinit var adapter: PhotosAdapter
     private lateinit var adapterMain: MainAdapter
+    private lateinit var tagg: Tagg
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        tagg = intent.getParcelableExtra<Tagg>("tagg")!!
+        tagg.id?.let {
+            viewModel.getTagg(it).observe(this,{
+                supportActionBar!!.title = it.name
+                binding.toolbar.setBackgroundColor(it.color)
+                binding.tvTotalSize.text = it.size.toString()
+            })
+        }
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
-        supportActionBar!!.setTitle(tagg.name)
-        binding.toolbar.setBackgroundColor(tagg.color)
-        binding.tvTotalSize.text = tagg.size.toString()
         adapter = PhotosAdapter(arrayListOf(), this)
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
@@ -68,10 +74,8 @@ class PhotosActivity : AppCompatActivity() {
             for(i in 0 until adapter.itemCount){
                 if(adapter.getPhoto(i).checked) {
                     adapter.getPhoto(i).let { it1 ->
-                            viewModel.delPhoto(
-                                it1,
-                                (it1.path!!.toUri().toFile().length()/(1024*1024)).toInt())
-
+                        viewModel.delPhoto(it1,(it1.path!!.toUri()
+                            .toFile().length()/(1024*1024)).toInt())
                     }
                     applicationContext.deleteFile(adapter.getPhoto(i).path!!
                         .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
@@ -105,18 +109,18 @@ class PhotosActivity : AppCompatActivity() {
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
 
-        adapterMain = MainAdapter(arrayListOf())
-        binding.rvChooseTagg.adapter = adapterMain
-        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
-        viewModel.getTaggs().observe(this, {
-            refreshAdapterMain(it)
-        })
         binding.fabFromTaggToCamera.setOnClickListener {
             val mainActivity = Intent(this, MainActivity::class.java)
             mainActivity.putExtra("tagg", tagg)
             startActivity(mainActivity)
             overridePendingTransition(0,0)
         }
+        adapterMain = MainAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = adapterMain
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
+        viewModel.getTaggs().observe(this, {
+            refreshAdapterMain(it)
+        })
     }
 
     fun changeBottomOptionsVisibility(){
@@ -179,6 +183,10 @@ class PhotosActivity : AppCompatActivity() {
 //
 //                return true
 //            }
+            android.R.id.home -> {
+                startActivity(Intent(this, TaggsActivity::class.java))
+                return true
+            }
             R.id.tagg_edit -> {
                 editTagg(tagg)
                 return true
@@ -246,7 +254,8 @@ class PhotosActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
     fun moveToTagg(tagg: Tagg, photo: Photo){
-        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!)
+        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
+        (photo.path!!.toUri().toFile().length()/(1024*1024)).toInt(), this.tagg.id!!)
     }
 
     override fun onBackPressed() {
