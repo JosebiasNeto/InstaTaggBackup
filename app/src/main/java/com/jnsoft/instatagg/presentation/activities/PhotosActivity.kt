@@ -3,8 +3,12 @@ package com.jnsoft.instatagg.presentation.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import android.widget.CheckBox
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
@@ -32,6 +36,7 @@ class PhotosActivity : AppCompatActivity() {
     private lateinit var adapter: PhotosAdapter
     private lateinit var adapterMain: MainAdapter
     private lateinit var tagg: Tagg
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +128,38 @@ class PhotosActivity : AppCompatActivity() {
         viewModel.getTaggs().observe(this, {
             refreshAdapterMain(it)
         })
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult())
+        { result ->
+            if(result.resultCode == RESULT_OK){
+                if (result.data != null){
+                    val uriPhoto: Uri = result.data!!.data!!
+                    val cursor = contentResolver.query(uriPhoto,
+                        arrayOf(MediaStore.Images.Media.DATA), null, null, null)
+                    cursor!!.moveToFirst()
+                    val cIndex = cursor.getColumnIndex(arrayOf(MediaStore.Images.Media.DATA)[0])
+                    val pathPhoto = cursor.getString(cIndex)
+                    val newPhoto = copyFile(File(pathPhoto), System.currentTimeMillis().toString())
+                    viewModel.insertPhoto(Photo(newPhoto, tagg, null),
+                        (newPhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                }
+            }
+            else if (result.data!!.clipData != null){
+                val newPhotos = arrayListOf<Uri>()
+                val mClipData = result.data!!.clipData
+                for (i in 0 until mClipData!!.itemCount){
+                    newPhotos.add(mClipData.getItemAt(i).uri)
+                }
+                newPhotos.map {
+                    val newPhoto = copyFile(File(it.toString()), System.currentTimeMillis().toString())
+                    viewModel.insertPhoto(Photo(newPhoto, tagg, null),
+                        (newPhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                }
+            } else {
+                Toast.makeText(this, "No images picked", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     fun changeBottomOptionsVisibility(){
@@ -181,10 +218,14 @@ class PhotosActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         when (item.itemId) {
-//            R.id.import_photos -> {
-//
-//                return true
-//            }
+            R.id.import_photos -> {
+                val galery = Intent(Intent.ACTION_GET_CONTENT)
+                galery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                galery.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                galery.type = "image/*"
+                activityResultLauncher.launch(galery)
+                }
+
             android.R.id.home -> {
                 startActivity(Intent(this, TaggsActivity::class.java))
                 return true
@@ -204,6 +245,7 @@ class PhotosActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     override fun onCreateContextMenu(
             menu: ContextMenu?,
             v: View?,
