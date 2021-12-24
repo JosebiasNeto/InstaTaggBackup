@@ -16,4 +16,5 @@
     <string name="without_tagg">Add a Tagg first</string>
     <string name="total_size">Total size:</string>
     <string name="tagg_size">Tagg size:</string>
+    <string name="txt_select_all">Select All</string>
 </resources>

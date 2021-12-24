@@ -374,6 +374,13 @@ class PhotosActivity : AppCompatActivity() {
                 })
                 return true
             }
+            R.id.select_all -> {
+                for(i in 0 until adapter.itemCount){
+                    adapter.getPhoto(i).checked = true
+                    adapter.notifyDataSetChanged()
+                }
+                return true
+            }
         }
         return super.onContextItemSelected(item)
     }
