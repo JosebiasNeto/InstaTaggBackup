@@ -97,8 +97,9 @@ class PhotosActivity : AppCompatActivity() {
                     adapter.getPhoto(i).path?.let { it1 ->
                                 applicationContext.deleteFile(adapter.getPhoto(i).path!!
                                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
-                }}
-                eventDeletePhoto()
+                    }
+                    eventDeletePhoto()
+                }
             }
             finish()
             overridePendingTransition(0,0)
