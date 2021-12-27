@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "11473768072",
+    "project_id": "instatagg-c856e",
+    "storage_bucket": "instatagg-c856e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11473768072:android:4666311026c7329dc4d93d",
+        "android_client_info": {
+          "package_name": "com.jnsoft.instatagg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11473768072-uvk5upuktlgm5cp9icdfccjunb04qmf6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7EBg8c5KRHYXAq8voaSDajaGbYL_l33k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11473768072-uvk5upuktlgm5cp9icdfccjunb04qmf6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,6 +14,9 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.ActivityFullscreanPhotoBinding
 import com.jnsoft.instatagg.domain.model.Photo
@@ -34,11 +37,13 @@ class FullscreenPhotoActivity : AppCompatActivity() {
     private lateinit var mainAdapter: MainAdapter
     private lateinit var pageAdapter: FullscreenPhotoAdapter
     private lateinit var viewPager: ViewPager2
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFullscreanPhotoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseAnalytics = Firebase.analytics
         val firstPhoto = intent.getParcelableExtra<Photo>("photo")!!
         val position = intent.getIntExtra("position", 0)
         pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
@@ -66,6 +71,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
             this.finish()
             this.overridePendingTransition(0,0)
             startActivity(photosActivity)
+            eventDeletePhoto()
         }
 
         binding.ibShare.setOnClickListener {
@@ -81,6 +87,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                 type = "image/jpg"
             }
             startActivity(Intent.createChooser(shareIntent, "shareImage"))
+            eventSharePhoto()
         }
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
@@ -177,5 +184,15 @@ class FullscreenPhotoActivity : AppCompatActivity() {
             startActivity(photosActivity)
             overridePendingTransition(0, 0)
         }
+    }
+    private fun eventDeletePhoto(){
+        val params = Bundle()
+        params.putString("photo", "delete_photo")
+        firebaseAnalytics.logEvent("delete_photo", params)
+    }
+    private fun eventSharePhoto(){
+        val params = Bundle()
+        params.putString("photo", "share_photo")
+        firebaseAnalytics.logEvent("share_photo", params)
     }
 }

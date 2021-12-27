@@ -7,6 +7,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.domain.model.Tagg
@@ -22,11 +25,13 @@ class CreateTaggFragment : DialogFragment() {
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
     private val viewModel: TaggsViewModel by viewModel()
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     @SuppressLint("RestrictedApi")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
+        firebaseAnalytics = Firebase.analytics
         binding?.btnChoseColor?.setOnClickListener {
             choseColor()
         }
@@ -48,6 +53,7 @@ class CreateTaggFragment : DialogFragment() {
                         )
                     )
                     startActivity(requireActivity().intent)
+                    eventCreateTagg()
                 }
         }}
         binding!!.etTaggName.requestFocus()
@@ -58,6 +64,12 @@ class CreateTaggFragment : DialogFragment() {
             setBackgroundDrawableResource(android.R.color.transparent)
         }
         return dialog
+    }
+
+    private fun eventCreateTagg() {
+        val params = Bundle()
+        params.putString("tagg", "create_tagg")
+        firebaseAnalytics.logEvent("create_tagg", params)
     }
 
     private fun changeColor(color: Int){

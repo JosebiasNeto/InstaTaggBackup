@@ -21,6 +21,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.jnsoft.instatagg.databinding.ActivityMainBinding
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
@@ -42,7 +45,6 @@ import java.util.concurrent.Executors
 
 
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -52,11 +54,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: MainAdapter
     private var camera: Camera? = null
     private val viewModel: MainViewModel by viewModel()
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseAnalytics = Firebase.analytics
         if (allPermissionsGranted()) {
             startCamera(getCurrentCamera())
         } else {
@@ -178,6 +182,18 @@ class MainActivity : AppCompatActivity() {
     val photo = Photo(photoFile, tagg,null)
         viewModel.insertPhoto(photo, size)
     }
+
+    private fun eventTakePhotoBack(){
+        val params = Bundle()
+        params.putString("camera", "back_camera")
+        firebaseAnalytics.logEvent("take_photo", params)
+    }
+    private fun eventTakePhotoSelfie(){
+        val params = Bundle()
+        params.putString("camera", "selfie_camera")
+        firebaseAnalytics.logEvent("take_photo", params)
+    }
+
     private fun refreshAdapter(taggs: List<Tagg>){
         adapter.apply {
             addTaggs(taggs)
@@ -254,6 +270,8 @@ class MainActivity : AppCompatActivity() {
                         savedUri.toString().let { insertPhoto(it, getCurrentTagg(), (photoFile.length()/(1024*1024)).toInt()) }
                         MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
                         flashEffect()
+                        if(getCurrentCamera() == CameraSelector.DEFAULT_BACK_CAMERA) eventTakePhotoBack()
+                        if(getCurrentCamera() == CameraSelector.DEFAULT_FRONT_CAMERA) eventTakePhotoSelfie()
                     }
                 }
             })

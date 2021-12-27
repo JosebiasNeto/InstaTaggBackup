@@ -22,6 +22,9 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.ActivityPhotosBinding
 import com.jnsoft.instatagg.domain.model.Photo
@@ -43,12 +46,14 @@ class PhotosActivity : AppCompatActivity() {
     private lateinit var adapterMain: MainAdapter
     private lateinit var tagg: Tagg
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        firebaseAnalytics = Firebase.analytics
         tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         tagg.id?.let {
             viewModel.getTagg(it).observe(this,{
@@ -93,6 +98,7 @@ class PhotosActivity : AppCompatActivity() {
                                 applicationContext.deleteFile(adapter.getPhoto(i).path!!
                                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
                 }}
+                eventDeletePhoto()
             }
             finish()
             overridePendingTransition(0,0)
@@ -109,6 +115,7 @@ class PhotosActivity : AppCompatActivity() {
                     File(Uri.parse(adapter.getPhoto(i).path).path))
                 if(adapter.getPhoto(i).checked){
                     contentUris.add(uri)
+                    eventSharePhoto()
                 }
             }
             val shareIntent = Intent().apply {
@@ -144,6 +151,7 @@ class PhotosActivity : AppCompatActivity() {
                     val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)), System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(filePhoto, tagg, null),
                         (filePhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                    eventImportPhoto()
                 }
             else if (result.data!!.clipData != null){
                 val newPhotos = arrayListOf<Uri>()
@@ -155,6 +163,7 @@ class PhotosActivity : AppCompatActivity() {
                     val newPhoto = copyFile(File(getPath(applicationContext, it)), System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(newPhoto, tagg, null),
                         (newPhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                    eventImportPhoto()
                 }
             } else {
                 Toast.makeText(this, "No images picked", Toast.LENGTH_LONG).show()
@@ -279,6 +288,7 @@ class PhotosActivity : AppCompatActivity() {
         }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
+        eventDeleteTagg(adapter.itemCount)
     }
     fun editTagg(tagg: Tagg){
         val editTaggFragment = EditTaggFragment(tagg)
@@ -405,5 +415,25 @@ class PhotosActivity : AppCompatActivity() {
             startActivity(Intent(this, TaggsActivity::class.java))
             overridePendingTransition(0,0)
         }
+    }
+    private fun eventDeleteTagg(photosCount: Int){
+        val params = Bundle()
+        params.putInt("tagg_size", photosCount)
+        firebaseAnalytics.logEvent("delete_tagg", params)
+    }
+    private fun eventDeletePhoto(){
+        val params = Bundle()
+        params.putString("photo", "delete_photo")
+        firebaseAnalytics.logEvent("delete_photo", params)
+    }
+    private fun eventSharePhoto(){
+        val params = Bundle()
+        params.putString("photo", "share_photo")
+        firebaseAnalytics.logEvent("share_photo", params)
+    }
+    private fun eventImportPhoto(){
+        val params = Bundle()
+        params.putString("photo", "import_photo")
+        firebaseAnalytics.logEvent("import_photo", params)
     }
 }
