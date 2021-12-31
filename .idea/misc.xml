@@ -28,7 +28,7 @@
         <entry key="app/src/main/res/layout/create_tagg.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_create_edit_tagg.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_fullscreen_photo.xml" value="0.1671875" />
-        <entry key="app/src/main/res/layout/photo_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/photo_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/tagg_item.xml" value="0.5657894736842105" />
         <entry key="app/src/main/res/layout/tagg_item_rv.xml" value="0.4873096446700508" />
         <entry key="app/src/main/res/layout/toolbar_photos_activity.xml" value="0.17983789260385005" />

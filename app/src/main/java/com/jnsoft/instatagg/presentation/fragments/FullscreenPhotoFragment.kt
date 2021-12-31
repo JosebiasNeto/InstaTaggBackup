@@ -1,6 +1,7 @@
 package com.jnsoft.instatagg.presentation.fragments
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.jnsoft.instatagg.databinding.FragmentFullscreenPhotoBinding
 import com.jnsoft.instatagg.domain.model.Photo
@@ -38,9 +41,9 @@ class FullscreenPhotoFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFullscreenPhotoBinding.inflate(layoutInflater)
-        Picasso.get().load(photo.path).noFade().resize(1440,1920)
+        val imageSize = getImageSize(photo)
+        Picasso.get().load(photo.path).noFade().resize(imageSize[0],imageSize[1])
             .into(binding.ivFullscreanPhoto)
-
         imageView = binding.ivFullscreanPhoto
         scaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
         binding.root.setOnTouchListener { view, motionEvent ->
@@ -50,8 +53,6 @@ class FullscreenPhotoFragment() : Fragment() {
 
         return binding.root
     }
-
-
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener(){
         @RequiresApi(Build.VERSION_CODES.N)
@@ -64,4 +65,13 @@ class FullscreenPhotoFragment() : Fragment() {
         }
     }
 
+    private fun getImageSize(photo: Photo): ArrayList<Int>{
+        val imageSize = arrayListOf<Int>()
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(photo.path!!.toUri().toFile().absolutePath, options)
+        imageSize.add(options.outWidth)
+        imageSize.add(options.outHeight)
+        return imageSize
+    }
 }

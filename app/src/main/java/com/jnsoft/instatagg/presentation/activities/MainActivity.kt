@@ -9,7 +9,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.Toast
@@ -213,10 +215,20 @@ class MainActivity : AppCompatActivity() {
         saveCurrentTagg(tagg)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "RestrictedApi")
     private fun startCamera(cameraSelector: CameraSelector) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
+            val outMetrics = DisplayMetrics()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                val display = this.display
+                display?.getRealMetrics(outMetrics)
+            } else {
+                @Suppress("DEPRECATION")
+                val display = this.windowManager.defaultDisplay
+                @Suppress("DEPRECATION")
+                display.getMetrics(outMetrics)
+            }
 
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder()
@@ -226,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                 }
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setTargetResolution(Size(outMetrics.widthPixels * 2, outMetrics.heightPixels))
                 .build()
                 cameraProvider.unbindAll()
                 camera = cameraProvider.bindToLifecycle(

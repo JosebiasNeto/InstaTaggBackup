@@ -123,6 +123,8 @@ class FullscreenPhotoActivity : AppCompatActivity() {
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.photos_option_menu, menu)
+        val selectAllMenu = menu!!.findItem(R.id.select_all)
+        selectAllMenu.isVisible = false
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
