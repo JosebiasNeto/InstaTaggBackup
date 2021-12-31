@@ -54,7 +54,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
         binding.rvChooseTagg.adapter = mainAdapter
         binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
         viewModel.getPhotos(firstPhoto.tagg!!.id!!).observe(this, {
-            refreshPagerAdapter(it)
+            refreshPagerAdapter(it.reversed())
         })
         binding.ibDelete.setOnClickListener {
             getPhotoFullscreen().let { it ->

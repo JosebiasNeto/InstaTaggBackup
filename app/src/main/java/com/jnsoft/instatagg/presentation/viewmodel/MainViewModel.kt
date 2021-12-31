@@ -20,4 +20,9 @@ class MainViewModel(
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
     }
+    fun insertTagg(tagg: Tagg){
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepository.insertTagg(tagg)
+        }
+    }
 }

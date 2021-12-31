@@ -17,4 +17,7 @@
     <string name="total_size">Total size:</string>
     <string name="tagg_size">Tagg size:</string>
     <string name="txt_select_all">Select All</string>
+    <string name="job">Job</string>
+    <string name="vacation">Vacation</string>
+    <string name="family">Family</string>
 </resources>

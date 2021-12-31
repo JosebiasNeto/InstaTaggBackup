@@ -75,9 +75,25 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
         _binding?.btnChoseColor?.setBackgroundColor(color)
         _binding?.btnChoseColor?.setHintTextColor(color)
         _binding?.cvChoseColor?.visibility = View.GONE
+        unblockClicks()
+    }
+
+    private fun unblockClicks() {
+        binding!!.etTaggName.isFocusable = true
+        binding!!.btnChoseColor.isClickable = true
+        binding!!.cancelButton.isClickable = true
+        binding!!.confirmButton.isClickable = true
+    }
+
+    private fun blockClicks() {
+        binding!!.etTaggName.isFocusable = false
+        binding!!.btnChoseColor.isClickable = false
+        binding!!.cancelButton.isClickable = false
+        binding!!.confirmButton.isClickable = false
     }
 
     private fun choseColor() {
+        blockClicks()
         binding!!.cvChoseColor.visibility = View.VISIBLE
         binding!!.cvColor1.setOnClickListener { changeColor(binding!!.cvColor1.cardBackgroundColor.defaultColor) }
         binding!!.cvColor2.setOnClickListener { changeColor(binding!!.cvColor2.cardBackgroundColor.defaultColor) }

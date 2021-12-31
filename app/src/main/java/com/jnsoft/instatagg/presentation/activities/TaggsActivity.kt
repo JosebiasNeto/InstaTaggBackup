@@ -34,7 +34,7 @@ class TaggsActivity : AppCompatActivity() {
         binding.rvTaggs.adapter = adapter
 
         viewModel.getTaggs().observe(this,{
-            refreshAdapter(it)
+            refreshAdapter(it.reversed())
             setTotalSize(it)
         })
 

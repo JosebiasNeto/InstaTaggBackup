@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseAnalytics = Firebase.analytics
+        firstOpen()
         if (allPermissionsGranted()) {
             startCamera(getCurrentCamera())
         } else {
@@ -152,6 +153,22 @@ class MainActivity : AppCompatActivity() {
             saveCurrentTagg(tagg)
         }
         setCurrentTagg(getCurrentTagg())
+    }
+
+    private fun firstOpen() {
+        val firstOpen = this.getSharedPreferences("firstOpen", Context.MODE_PRIVATE)
+        val isFirstOpen = firstOpen.getBoolean("firstOpen", true)
+        if(isFirstOpen){
+            viewModel.insertTagg(Tagg(null,resources.getString(com.jnsoft.instatagg.R.string.job),
+                resources.getColor(com.jnsoft.instatagg.R.color.blue), 0))
+            viewModel.insertTagg(Tagg(null,resources.getString(com.jnsoft.instatagg.R.string.vacation),
+                resources.getColor(com.jnsoft.instatagg.R.color.green), 0))
+            viewModel.insertTagg(Tagg(null,resources.getString(com.jnsoft.instatagg.R.string.family),
+                resources.getColor(com.jnsoft.instatagg.R.color.red), 0))
+        }
+        val save = firstOpen.edit()
+        save.putBoolean("firstOpen", false)
+        save.apply()
     }
 
     private fun getCurrentFlash(): Int {

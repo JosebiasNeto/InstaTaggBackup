@@ -70,7 +70,7 @@ class PhotosActivity : AppCompatActivity() {
         if (tagg != null) {
             tagg.id?.let {
                 viewModel.getPhotos(it).observe(this, {
-                    refreshAdapter(it)
+                    refreshAdapter(it.reversed())
                 })
             }
         }
@@ -153,6 +153,8 @@ class PhotosActivity : AppCompatActivity() {
                     viewModel.insertPhoto(Photo(filePhoto, tagg, null),
                         (filePhoto.toUri().toFile().length()/(1024*1024)).toInt())
                     eventImportPhoto()
+                    finish()
+                    startActivity(this.intent)
                 }
             else if (result.data!!.clipData != null){
                 val newPhotos = arrayListOf<Uri>()
@@ -165,6 +167,8 @@ class PhotosActivity : AppCompatActivity() {
                     viewModel.insertPhoto(Photo(newPhoto, tagg, null),
                         (newPhoto.toUri().toFile().length()/(1024*1024)).toInt())
                     eventImportPhoto()
+                    finish()
+                    startActivity(this.intent)
                 }
             } else {
                 Toast.makeText(this, "No images picked", Toast.LENGTH_LONG).show()
