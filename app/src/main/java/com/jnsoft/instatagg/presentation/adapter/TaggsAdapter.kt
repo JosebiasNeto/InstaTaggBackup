@@ -13,11 +13,14 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
     RecyclerView.Adapter<TaggsAdapter.TaggsHolder>() {
 
     class TaggsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val taggName = itemView.findViewById<TextView>(R.id.tv_name_tagg)
+        private val cvTagg = itemView.findViewById<CardView>(R.id.cv_tagg)
+        private val taggSize = itemView.findViewById<TextView>(R.id.tv_size_tagg)
         fun bind(tagg: Tagg) {
             itemView.apply {
-                findViewById<TextView>(R.id.tv_name_tagg).text = tagg.name
-                findViewById<CardView>(R.id.cv_tagg).setCardBackgroundColor(tagg.color)
-                findViewById<TextView>(R.id.tv_size_tagg).text = tagg.size.toString()
+                taggName.text = tagg.name
+                cvTagg.setCardBackgroundColor(tagg.color)
+                taggSize.text = tagg.size.toString()
             }
         }
     }

@@ -15,11 +15,12 @@ import com.squareup.picasso.Picasso
 class PhotosAdapter(private val photos: ArrayList<Photo>, private val activity: PhotosActivity) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
     class PhotosHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
+        private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
-            Picasso.get().load(photo.path).noFade().resize(235,235)
-                .into(itemView.findViewById<ImageView>(R.id.iv_photo))
-            itemView.findViewById<CheckBox>(R.id.checkBox).isVisible = photo.checkboxVisibility
-            itemView.findViewById<CheckBox>(R.id.checkBox).isChecked = photo.checked
+            Picasso.get().load(photo.path).noFade().resize(235,235).into(ivPhoto)
+            checkBox.isVisible = photo.checkboxVisibility
+            checkBox.isChecked = photo.checked
         }
     }
 
