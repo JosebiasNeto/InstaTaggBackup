@@ -16,8 +16,8 @@ android {
         applicationId "com.jnsoft.instatagg"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 3
-        versionName "1.00"
+        versionCode 4
+        versionName "1.01"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,8 +38,6 @@ android {
 
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-        //sourceCompatibility "1.8"
-        //targetCompatibility kotlin_version
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -66,7 +64,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
     //Coroutines
-    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2-native-mt')
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2')
 
     //CameraX
     def camerax_version = '1.0.2'
@@ -76,7 +74,7 @@ dependencies {
     implementation "androidx.camera:camera-core:$camerax_version"
 
     //Room
-    def room_version = "2.3.0"
+    def room_version = "2.4.0"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt("androidx.room:room-compiler:$room_version")
