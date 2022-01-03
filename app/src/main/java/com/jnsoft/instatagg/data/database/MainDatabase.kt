@@ -1,13 +1,17 @@
 package com.jnsoft.instatagg.data.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.jnsoft.instatagg.domain.model.PhotoEntity
 import com.jnsoft.instatagg.domain.model.Tagg
 
-@Database(version = 1, entities = [PhotoEntity::class, Tagg::class])
+@Database(version = 2, entities = [PhotoEntity::class, Tagg::class],
+          autoMigrations = [
+              AutoMigration (from = 1, to = 2)
+          ])
 abstract class MainDatabase : RoomDatabase() {
 
     abstract fun photosDao(): PhotosDao
@@ -27,7 +31,6 @@ abstract class MainDatabase : RoomDatabase() {
                     context.applicationContext,
                     MainDatabase::class.java,
                     "main_database")
-                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 return instance
