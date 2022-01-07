@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "f28dd64c38010ede2426ba2d89c11ad1",
+    "identityHash": "60db114f4543ce66d75e2e9dc7ef3bc3",
     "entities": [
       {
         "tableName": "photos",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "taggs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `color` INTEGER NOT NULL, `size` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `color` INTEGER NOT NULL, `size` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "id",
@@ -74,7 +74,8 @@
             "fieldPath": "size",
             "columnName": "size",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -90,7 +91,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f28dd64c38010ede2426ba2d89c11ad1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60db114f4543ce66d75e2e9dc7ef3bc3')"
     ]
   }
 }
