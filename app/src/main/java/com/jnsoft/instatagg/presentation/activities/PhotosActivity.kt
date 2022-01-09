@@ -295,8 +295,8 @@ class PhotosActivity : AppCompatActivity() {
         startActivity(taggsActivity)
         eventDeleteTagg(adapter.itemCount)
     }
-    fun editTagg(tagg: Tagg){
-        val editTaggFragment = EditTaggFragment(tagg)
+    private fun editTagg(tagg: Tagg){
+        val editTaggFragment = EditTaggFragment.newInstance(tagg)
         editTaggFragment.show(supportFragmentManager,"editTagg")
     }
 

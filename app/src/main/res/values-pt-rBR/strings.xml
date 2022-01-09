@@ -15,4 +15,10 @@
     <string name="no_taggs">Sem Taggs</string>
     <string name="edit_tagg">Editar Tagg</string>
     <string name="without_tagg">Adicione uma Tagg</string>
+    <string name="total_size">Tamanho total:</string>
+    <string name="tagg_size">Tamanho da Tagg:</string>
+    <string name="txt_select_all">Selecionar todas</string>
+    <string name="job">Trabalho</string>
+    <string name="vacation">Férias</string>
+    <string name="family">Família</string>
 </resources>

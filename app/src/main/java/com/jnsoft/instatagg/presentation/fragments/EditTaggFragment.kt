@@ -4,23 +4,32 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
-import android.view.View
-import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.presentation.viewmodel.PhotosViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
+class EditTaggFragment : BaseTaggFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
     private val viewModel: PhotosViewModel by viewModel()
+    private lateinit var tagg: Tagg
+
+    companion object {
+        fun newInstance(tagg: Tagg): EditTaggFragment {
+            val fragment = EditTaggFragment()
+            val saveTagg: Bundle = Bundle()
+            saveTagg.putParcelable("tagg", tagg)
+            fragment.arguments = saveTagg
+            return fragment
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
+        tagg = requireArguments().getParcelable<Tagg>("tagg")!!
         _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
         binding!!.confirmButton.text = getString(R.string.txt_edit)
         binding!!.tvCreateTagg.text = getString(R.string.edit_tagg)
@@ -28,7 +37,7 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
         binding?.btnChoseColor!!.setBackgroundColor(tagg.color)
         binding?.btnChoseColor!!.setHintTextColor(tagg.color)
         binding?.btnChoseColor?.setOnClickListener {
-            choseColor()
+            choseColor(_binding!!)
         }
         val builder = AlertDialog.Builder(context, R.style.style_dialog)
         builder.apply {
@@ -58,69 +67,13 @@ class EditTaggFragment(private var tagg: Tagg) : DialogFragment() {
                 getDialog()?.cancel()
             }
         }
-        binding!!.etTaggName.requestFocus()
+        setEditText(binding!!)
         val dialog = builder.create()
-        dialog.window!!.apply {
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-            setLayout(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
-            )
-            setBackgroundDrawableResource(android.R.color.transparent)
-        }
-        return dialog
-    }
-
-    private fun changeColor(color: Int) {
-        _binding?.btnChoseColor?.setBackgroundColor(color)
-        _binding?.btnChoseColor?.setHintTextColor(color)
-        _binding?.cvChoseColor?.visibility = View.GONE
-        unblockClicks()
-    }
-
-    private fun unblockClicks() {
-        binding!!.etTaggName.isFocusable = true
-        binding!!.btnChoseColor.isClickable = true
-        binding!!.cancelButton.isClickable = true
-        binding!!.confirmButton.isClickable = true
-    }
-
-    private fun blockClicks() {
-        binding!!.etTaggName.isFocusable = false
-        binding!!.btnChoseColor.isClickable = false
-        binding!!.cancelButton.isClickable = false
-        binding!!.confirmButton.isClickable = false
-    }
-
-    private fun choseColor() {
-        blockClicks()
-        binding!!.cvChoseColor.visibility = View.VISIBLE
-        binding!!.cvColor1.setOnClickListener { changeColor(binding!!.cvColor1.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor2.setOnClickListener { changeColor(binding!!.cvColor2.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor3.setOnClickListener { changeColor(binding!!.cvColor3.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor4.setOnClickListener { changeColor(binding!!.cvColor4.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor5.setOnClickListener { changeColor(binding!!.cvColor5.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor6.setOnClickListener { changeColor(binding!!.cvColor6.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor7.setOnClickListener { changeColor(binding!!.cvColor7.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor8.setOnClickListener { changeColor(binding!!.cvColor8.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor9.setOnClickListener { changeColor(binding!!.cvColor9.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor10.setOnClickListener { changeColor(binding!!.cvColor10.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor11.setOnClickListener { changeColor(binding!!.cvColor11.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor12.setOnClickListener { changeColor(binding!!.cvColor12.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor13.setOnClickListener { changeColor(binding!!.cvColor13.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor14.setOnClickListener { changeColor(binding!!.cvColor14.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor15.setOnClickListener { changeColor(binding!!.cvColor15.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor16.setOnClickListener { changeColor(binding!!.cvColor16.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor17.setOnClickListener { changeColor(binding!!.cvColor17.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor18.setOnClickListener { changeColor(binding!!.cvColor18.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor19.setOnClickListener { changeColor(binding!!.cvColor19.cardBackgroundColor.defaultColor) }
-        binding!!.cvColor20.setOnClickListener { changeColor(binding!!.cvColor20.cardBackgroundColor.defaultColor) }
+        return returnDialog(dialog)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

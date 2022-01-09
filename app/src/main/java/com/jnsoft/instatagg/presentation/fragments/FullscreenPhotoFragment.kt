@@ -29,7 +29,9 @@ class FullscreenPhotoFragment() : Fragment() {
     companion object {
         fun newInstance(photo: Photo): Fragment {
             val fragment = FullscreenPhotoFragment()
-            fragment.photo = photo
+            val savePhoto = Bundle()
+            savePhoto.putParcelable("photo", photo)
+            fragment.arguments = savePhoto
             return fragment
         }
     }
@@ -40,6 +42,7 @@ class FullscreenPhotoFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        photo = requireArguments().getParcelable<Photo>("photo")!!
         binding = FragmentFullscreenPhotoBinding.inflate(layoutInflater)
         val imageSize = getImageSize(photo)
         Picasso.get().load(photo.path).noFade().resize(imageSize[0],imageSize[1])

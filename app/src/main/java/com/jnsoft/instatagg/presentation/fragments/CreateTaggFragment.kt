@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.fragment.app.DialogFragment
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -16,11 +13,7 @@ import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.presentation.viewmodel.TaggsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-
-
-
-class CreateTaggFragment : DialogFragment() {
+class CreateTaggFragment : BaseTaggFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
@@ -33,7 +26,7 @@ class CreateTaggFragment : DialogFragment() {
         _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
         firebaseAnalytics = Firebase.analytics
         binding?.btnChoseColor?.setOnClickListener {
-            choseColor()
+            choseColor(_binding!!)
         }
         val builder = AlertDialog.Builder(context, R.style.style_dialog)
         builder.apply {
@@ -56,66 +49,15 @@ class CreateTaggFragment : DialogFragment() {
                     eventCreateTagg()
                 }
         }}
-        binding!!.etTaggName.requestFocus()
+        setEditText(binding!!)
         val dialog = builder.create()
-        dialog.window!!.apply {
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-            setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawableResource(android.R.color.transparent)
-        }
-        return dialog
+        return returnDialog(dialog)
     }
 
     private fun eventCreateTagg() {
         val params = Bundle()
         params.putString("tagg", "create_tagg")
         firebaseAnalytics.logEvent("create_tagg", params)
-    }
-
-    private fun changeColor(color: Int){
-        _binding?.btnChoseColor?.setBackgroundColor(color)
-        _binding?.btnChoseColor?.setHintTextColor(color)
-        _binding?.cvChoseColor?.visibility = View.GONE
-        unblockClicks()
-    }
-
-    private fun unblockClicks() {
-        binding!!.etTaggName.isFocusable = true
-        binding!!.btnChoseColor.isClickable = true
-        binding!!.cancelButton.isClickable = true
-        binding!!.confirmButton.isClickable = true
-    }
-
-    private fun blockClicks() {
-        binding!!.etTaggName.isFocusable = false
-        binding!!.btnChoseColor.isClickable = false
-        binding!!.cancelButton.isClickable = false
-        binding!!.confirmButton.isClickable = false
-    }
-
-    private fun choseColor(){
-        blockClicks()
-        binding!!.cvChoseColor.visibility = View.VISIBLE
-        binding!!.cvColor1.setOnClickListener { changeColor(binding!!.cvColor1.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor2.setOnClickListener { changeColor(binding!!.cvColor2.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor3.setOnClickListener { changeColor(binding!!.cvColor3.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor4.setOnClickListener { changeColor(binding!!.cvColor4.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor5.setOnClickListener { changeColor(binding!!.cvColor5.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor6.setOnClickListener { changeColor(binding!!.cvColor6.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor7.setOnClickListener { changeColor(binding!!.cvColor7.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor8.setOnClickListener { changeColor(binding!!.cvColor8.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor9.setOnClickListener { changeColor(binding!!.cvColor9.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor10.setOnClickListener { changeColor(binding!!.cvColor10.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor11.setOnClickListener { changeColor(binding!!.cvColor11.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor12.setOnClickListener { changeColor(binding!!.cvColor12.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor13.setOnClickListener { changeColor(binding!!.cvColor13.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor14.setOnClickListener { changeColor(binding!!.cvColor14.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor15.setOnClickListener { changeColor(binding!!.cvColor15.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor16.setOnClickListener { changeColor(binding!!.cvColor16.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor17.setOnClickListener { changeColor(binding!!.cvColor17.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor18.setOnClickListener { changeColor(binding!!.cvColor18.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor19.setOnClickListener { changeColor(binding!!.cvColor19.cardBackgroundColor.defaultColor)}
-        binding!!.cvColor20.setOnClickListener { changeColor(binding!!.cvColor20.cardBackgroundColor.defaultColor)}
     }
 
     override fun onDestroyView() {
