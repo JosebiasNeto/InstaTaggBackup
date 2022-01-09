@@ -100,4 +100,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:29.0.2')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    //Zoom
+    implementation "com.davemorrissey.labs:subsampling-scale-image-view:3.10.0"
+
 }
