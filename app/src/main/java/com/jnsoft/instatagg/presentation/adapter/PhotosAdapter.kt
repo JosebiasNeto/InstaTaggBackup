@@ -12,13 +12,13 @@ import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.presentation.activities.PhotosActivity
 import com.squareup.picasso.Picasso
 
-class PhotosAdapter(private val photos: ArrayList<Photo>, private val activity: PhotosActivity) :
+class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosActivity, val width: Int) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
-    class PhotosHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class PhotosHolder(itemView: View, private val activity: PhotosActivity, private val width: Int) : RecyclerView.ViewHolder(itemView) {
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
         private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
-            Picasso.get().load(photo.path).noFade().resize(235,235).into(ivPhoto)
+            Picasso.get().load(photo.path).noFade().resize(width/3, width/3).into(ivPhoto)
             checkBox.isVisible = photo.checkboxVisibility
             checkBox.isChecked = photo.checked
         }
@@ -27,13 +27,12 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, private val activity: 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapter.PhotosHolder =
         PhotosAdapter.PhotosHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.photo_item, parent, false)
-        )
+                .inflate(R.layout.photo_item, parent, false), activity, width)
 
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
-            PhotosAdapter(photos, activity).changeCheckBoxVisibility()
+            PhotosAdapter(photos, activity, width).changeCheckBoxVisibility()
             photos[position].checked = true
             notifyDataSetChanged()
             true }

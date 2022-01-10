@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.CheckBox
 import android.widget.Toast
@@ -63,8 +64,17 @@ class PhotosActivity : AppCompatActivity() {
             })
         }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        adapter = PhotosAdapter(arrayListOf(), this)
+        val outMetrics = DisplayMetrics()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display = this.display
+            display?.getRealMetrics(outMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            val display = this.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
+            display.getMetrics(outMetrics)
+        }
+        adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
         if (tagg != null) {
