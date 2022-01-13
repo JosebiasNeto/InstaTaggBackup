@@ -48,7 +48,10 @@ class TaggsActivity : AppCompatActivity() {
     private fun setTotalSize(taggs: List<Tagg>) {
         val totalSize = arrayListOf<Int>()
         taggs.map { totalSize.add(it.size) }
-        binding.tvTotalSize.text = totalSize.sum().toString()
+        if(totalSize.sum().toString().length > 6){
+            binding.tvTotalSize.text = totalSize.sum().toString().substring(0,
+                totalSize.sum().toString().length - 6)
+        } else binding.tvTotalSize.text = "0"
     }
 
     private fun refreshAdapter(taggs: List<Tagg>){

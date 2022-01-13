@@ -20,7 +20,10 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>) :
             itemView.apply {
                 taggName.text = tagg.name
                 cvTagg.setCardBackgroundColor(tagg.color)
-                taggSize.text = tagg.size.toString()
+                if(tagg.size.toString().length > 6){
+                    taggSize.text = tagg.size.toString().substring(0,
+                        tagg.size.toString().length - 6)
+                } else taggSize.text = "0"
             }
         }
     }

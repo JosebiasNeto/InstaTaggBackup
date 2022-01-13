@@ -8,9 +8,10 @@ import androidx.room.RoomDatabase
 import com.jnsoft.instatagg.domain.model.PhotoEntity
 import com.jnsoft.instatagg.domain.model.Tagg
 
-@Database(version = 2, entities = [PhotoEntity::class, Tagg::class],
+@Database(version = 3, entities = [PhotoEntity::class, Tagg::class],
           autoMigrations = [
-              AutoMigration (from = 1, to = 2)
+              AutoMigration (from = 1, to = 2),
+              AutoMigration (from = 2, to = 3)
           ])
 abstract class MainDatabase : RoomDatabase() {
 

@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnFlashOn.isVisible = false
     }
 
-    private fun insertPhoto(photoFile: String, tagg: Tagg, size: Int) {
+    private fun insertPhoto(photoFile: String, tagg: Tagg, size: Long) {
     val photo = Photo(photoFile, tagg,null)
         viewModel.insertPhoto(photo, size)
     }
@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity() {
                 }
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetResolution(Size(outMetrics.widthPixels * 2, outMetrics.heightPixels))
+                .setTargetResolution(Size(outMetrics.xdpi.toInt(), outMetrics.ydpi.toInt()))
                 .build()
                 cameraProvider.unbindAll()
                 camera = cameraProvider.bindToLifecycle(
@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity() {
                     if(getCurrentTagg().name.isEmpty()){
                         Toast.makeText(applicationContext,"Photo capture failed!",Toast.LENGTH_SHORT).show()
                     } else {
-                        savedUri.toString().let { insertPhoto(it, getCurrentTagg(), (photoFile.length()/(1024*1024)).toInt()) }
+                        savedUri.toString().let { insertPhoto(it, getCurrentTagg(), (photoFile.length())) }
                         MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
                         flashEffect()
                         if(getCurrentCamera() == CameraSelector.DEFAULT_BACK_CAMERA) eventTakePhotoBack()

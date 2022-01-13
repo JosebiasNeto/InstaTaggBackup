@@ -60,7 +60,9 @@ class PhotosActivity : AppCompatActivity() {
             viewModel.getTagg(it).observe(this,{
                 supportActionBar!!.title = it.name
                 binding.toolbar.setBackgroundColor(it.color)
-                binding.tvTotalSize.text = it.size.toString()
+                if(it.size.toString().length > 6){
+                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
+                } else binding.tvTotalSize.text = "0"
             })
         }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -102,11 +104,11 @@ class PhotosActivity : AppCompatActivity() {
                 if(adapter.getPhoto(i).checked) {
                     adapter.getPhoto(i).let { it1 ->
                         viewModel.delPhoto(it1,(it1.path!!.toUri()
-                            .toFile().length()/(1024*1024)).toInt())
+                            .toFile().length()/(1024*1024)))
                     }
                     adapter.getPhoto(i).path?.let { it1 ->
-                                applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+                        applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                            .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
                     }
                     eventDeletePhoto()
                 }
@@ -159,9 +161,10 @@ class PhotosActivity : AppCompatActivity() {
             if(result.resultCode == RESULT_OK){
                 if (result.data!!.data != null){
                     val uriPhoto = result.data!!.data!!
-                    val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)), System.currentTimeMillis().toString() + ".jpg")
+                    val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)),
+                        System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(filePhoto, tagg, null),
-                        (filePhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                        (filePhoto.toUri().toFile().length()/(1024*1024)))
                     eventImportPhoto()
                     finish()
                     startActivity(this.intent)
@@ -173,9 +176,10 @@ class PhotosActivity : AppCompatActivity() {
                     newPhotos.add(mClipData.getItemAt(i).uri)
                 }
                 newPhotos.map {
-                    val newPhoto = copyFile(File(getPath(applicationContext, it)), System.currentTimeMillis().toString() + ".jpg")
+                    val newPhoto = copyFile(File(getPath(applicationContext, it)),
+                        System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(newPhoto, tagg, null),
-                        (newPhoto.toUri().toFile().length()/(1024*1024)).toInt())
+                        (newPhoto.toUri().toFile().length()/(1024*1024)))
                     eventImportPhoto()
                     finish()
                     startActivity(this.intent)
@@ -286,6 +290,15 @@ class PhotosActivity : AppCompatActivity() {
 
     private fun clearTagg(tagg: Tagg){
         tagg.id?.let { viewModel.clearTagg(it) }
+        for(i in 0 until adapter.itemCount){
+            adapter.getPhoto(i).let { it1 ->
+                viewModel.delPhoto(
+                    it1,
+                    (it1.path!!.toUri().toFile().length()/(1024*1024)))
+                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+            }
+        }
         finish()
         startActivity(intent)
     }
@@ -293,13 +306,13 @@ class PhotosActivity : AppCompatActivity() {
     private fun deleteTagg(tagg: Tagg){
         tagg.id?.let { viewModel.delTagg(it) }
         for(i in 0 until adapter.itemCount){
-                adapter.getPhoto(i).let { it1 ->
-                        viewModel.delPhoto(
-                            it1,
-                            (it1.path!!.toUri().toFile().length()/(1024*1024)).toInt())
-                                applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
-                }
+            adapter.getPhoto(i).let { it1 ->
+                viewModel.delPhoto(
+                    it1,
+                    (it1.path!!.toUri().toFile().length()/(1024*1024)))
+                        applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                            .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+            }
         }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
@@ -390,7 +403,7 @@ class PhotosActivity : AppCompatActivity() {
                                 adapter.getPhoto(i).path!!.toUri().toFile(),
                                 System.currentTimeMillis().toString())
                                 viewModel.insertPhoto(adapter.getPhoto(i),
-                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()/(1024*1024)).toInt())
+                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()/(1024*1024)))
                             }
                         }
                         finish()
@@ -417,7 +430,7 @@ class PhotosActivity : AppCompatActivity() {
 
     fun moveToTagg(tagg: Tagg, photo: Photo){
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
-        (photo.path!!.toUri().toFile().length()/(1024*1024)).toInt(), this.tagg.id!!)
+        (photo.path!!.toUri().toFile().length()/(1024*1024)), this.tagg.id!!)
     }
 
     override fun onBackPressed() {

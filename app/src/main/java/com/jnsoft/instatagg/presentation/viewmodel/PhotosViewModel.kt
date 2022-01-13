@@ -33,7 +33,7 @@ class PhotosViewModel(
     }
 
     fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long,
-                  size: Int, oldTaggId: Long){
+                  size: Long, oldTaggId: Long){
         viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id,
                                                          size, oldTaggId) }
     }
@@ -42,7 +42,7 @@ class PhotosViewModel(
         emit(mainRepository.getTagg(id))
     }
 
-    fun delPhoto(photo: Photo, size: Int){
+    fun delPhoto(photo: Photo, size: Long){
         viewModelScope.launch { mainRepository.delPhoto(photo, size) }
     }
 
@@ -57,7 +57,7 @@ class PhotosViewModel(
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
         emit(mainRepository.getTaggs())
     }
-    fun insertPhoto(photo: Photo, size: Int){
+    fun insertPhoto(photo: Photo, size: Long){
         viewModelScope.launch { mainRepository.insertPhoto(photo, size) }
     }
 

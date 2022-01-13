@@ -9,9 +9,9 @@ class MainRepository(
     private val photosDao: PhotosDao,
     private val taggsDao: TaggsDao
 ) {
-    suspend fun insertPhoto(photo: Photo, size: Int) {
+    suspend fun insertPhoto(photo: Photo, size: Long) {
         photosDao.insert(Converters.toPhotoEntity(photo))
-        photo.tagg!!.id?.let { taggsDao.increaseTaggSize(size, it) }
+        photo.tagg!!.id?.let { increaseTaggSize(size, it) }
     }
 
     suspend fun getPhotos(id: Long): List<Photo> {
@@ -20,9 +20,9 @@ class MainRepository(
         }
     }
 
-    suspend fun delPhoto(photo: Photo, size: Int) {
+    suspend fun delPhoto(photo: Photo, size: Long) {
         photo.id?.let { photosDao.delPhoto(it) }
-        photo.tagg!!.id?.let{taggsDao.decreaseTaggSize(size, it)}
+        photo.tagg!!.id?.let{decreaseTaggSize(size, it)}
     }
 
     suspend fun clearTagg(id: Long) {
@@ -30,10 +30,10 @@ class MainRepository(
     }
 
     suspend fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long,
-                          id: Long, size: Int, oldTaggId: Long) {
+                          id: Long, size: Long, oldTaggId: Long) {
         photosDao.movePhoto(newTaggName, newTaggColor, newTaggId, id)
-        taggsDao.decreaseTaggSize(size, oldTaggId)
-        taggsDao.increaseTaggSize(size, newTaggId)
+        decreaseTaggSize(size, oldTaggId)
+        increaseTaggSize(size, newTaggId)
     }
 
     suspend fun importPhoto(path: String, name: String, color: String) {
@@ -57,5 +57,10 @@ class MainRepository(
     suspend fun getTagg(id: Long): Tagg{
         return taggsDao.getTagg(id)
     }
-
+    suspend fun increaseTaggSize(size: Long, taggId: Long){
+        taggsDao.increaseTaggSize(size, taggId)
+    }
+    suspend fun decreaseTaggSize(size: Long, taggId: Long){
+        taggsDao.decreaseTaggSize(size, taggId)
+    }
 }
