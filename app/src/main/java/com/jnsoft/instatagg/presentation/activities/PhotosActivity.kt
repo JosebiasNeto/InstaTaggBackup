@@ -104,7 +104,7 @@ class PhotosActivity : AppCompatActivity() {
                 if(adapter.getPhoto(i).checked) {
                     adapter.getPhoto(i).let { it1 ->
                         viewModel.delPhoto(it1,(it1.path!!.toUri()
-                            .toFile().length()/(1024*1024)))
+                            .toFile().length()))
                     }
                     adapter.getPhoto(i).path?.let { it1 ->
                         applicationContext.deleteFile(adapter.getPhoto(i).path!!
@@ -164,7 +164,7 @@ class PhotosActivity : AppCompatActivity() {
                     val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)),
                         System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(filePhoto, tagg, null),
-                        (filePhoto.toUri().toFile().length()/(1024*1024)))
+                        (filePhoto.toUri().toFile()).length())
                     eventImportPhoto()
                     finish()
                     startActivity(this.intent)
@@ -179,7 +179,7 @@ class PhotosActivity : AppCompatActivity() {
                     val newPhoto = copyFile(File(getPath(applicationContext, it)),
                         System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(newPhoto, tagg, null),
-                        (newPhoto.toUri().toFile().length()/(1024*1024)))
+                        (newPhoto.toUri().toFile()).length())
                     eventImportPhoto()
                     finish()
                     startActivity(this.intent)
@@ -294,7 +294,7 @@ class PhotosActivity : AppCompatActivity() {
             adapter.getPhoto(i).let { it1 ->
                 viewModel.delPhoto(
                     it1,
-                    (it1.path!!.toUri().toFile().length()/(1024*1024)))
+                    (it1.path!!.toUri().toFile().length()))
                 applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
@@ -309,7 +309,7 @@ class PhotosActivity : AppCompatActivity() {
             adapter.getPhoto(i).let { it1 ->
                 viewModel.delPhoto(
                     it1,
-                    (it1.path!!.toUri().toFile().length()/(1024*1024)))
+                    (it1.path!!.toUri().toFile().length()))
                         applicationContext.deleteFile(adapter.getPhoto(i).path!!
                             .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
@@ -403,7 +403,7 @@ class PhotosActivity : AppCompatActivity() {
                                 adapter.getPhoto(i).path!!.toUri().toFile(),
                                 System.currentTimeMillis().toString())
                                 viewModel.insertPhoto(adapter.getPhoto(i),
-                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()/(1024*1024)))
+                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()))
                             }
                         }
                         finish()
@@ -430,7 +430,7 @@ class PhotosActivity : AppCompatActivity() {
 
     fun moveToTagg(tagg: Tagg, photo: Photo){
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
-        (photo.path!!.toUri().toFile().length()/(1024*1024)), this.tagg.id!!)
+        (photo.path!!.toUri().toFile().length()), this.tagg.id!!)
     }
 
     override fun onBackPressed() {

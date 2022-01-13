@@ -60,7 +60,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
             getPhotoFullscreen().let { it ->
                     viewModel.delPhoto(
                         it,
-                        (it.path!!.toUri().toFile().length()/(1024*1024)))
+                        (it.path!!.toUri().toFile().length()))
             }
             getPhotoFullscreen().path?.let { it1 ->
                         applicationContext.deleteFile(getPhotoFullscreen().path!!
@@ -155,7 +155,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
                             System.currentTimeMillis().toString() + ".jpg")
                         val photosActivity = Intent(this@FullscreenPhotoActivity, PhotosActivity::class.java)
                         viewModel.insertPhoto(photo,
-                            (photo.path!!.toUri().toFile().length()/(1024*1024)))
+                            (photo.path!!.toUri().toFile().length()))
                         photosActivity.putExtra("tagg", oldTagg)
                         startActivity(photosActivity)
                     }
@@ -174,7 +174,7 @@ class FullscreenPhotoActivity : AppCompatActivity() {
     fun moveToTagg(tagg: Tagg){
         val photo = getPhotoFullscreen()
         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
-            (photo.path!!.toUri().toFile().length()/(1024*1024)), photo.tagg!!.id!!)
+            (photo.path!!.toUri().toFile().length()), photo.tagg!!.id!!)
     }
     override fun onBackPressed() {
         if(binding.cvChooseTagg.isVisible) {
