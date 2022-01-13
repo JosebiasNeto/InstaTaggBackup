@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity() {
                 }
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetResolution(Size(outMetrics.xdpi.toInt(), outMetrics.ydpi.toInt()))
+                .setTargetResolution(Size(outMetrics.widthPixels, outMetrics.heightPixels))
                 .build()
                 cameraProvider.unbindAll()
                 camera = cameraProvider.bindToLifecycle(
