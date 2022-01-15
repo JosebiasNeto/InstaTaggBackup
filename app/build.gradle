@@ -16,8 +16,8 @@ android {
         applicationId "com.jnsoft.instatagg"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 10
-        versionName "1.03"
+        versionCode 11
+        versionName "1.04"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
