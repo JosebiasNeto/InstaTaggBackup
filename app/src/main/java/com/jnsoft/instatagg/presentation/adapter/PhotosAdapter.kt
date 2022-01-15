@@ -1,10 +1,13 @@
 package com.jnsoft.instatagg.presentation.adapter
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.jnsoft.instatagg.R
@@ -12,15 +15,30 @@ import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.presentation.activities.PhotosActivity
 import com.squareup.picasso.Picasso
 
+
 class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosActivity, val width: Int) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
     class PhotosHolder(itemView: View, private val activity: PhotosActivity, private val width: Int) : RecyclerView.ViewHolder(itemView) {
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
         private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
-            Picasso.get().load(photo.path).noFade().resize(width/3, width/3).into(ivPhoto)
+            if(portraitVerify(photo.path!!) > 1){
+                Picasso.get().load(photo.path).noFade().resize(width/3,
+                    (width.toFloat() * portraitVerify(photo.path!!)/3).toInt()).into(ivPhoto)
+            } else {
+                Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portraitVerify(
+                    photo.path!!))).toInt(), width/3).into(ivPhoto)
+            }
             checkBox.isVisible = photo.checkboxVisibility
             checkBox.isChecked = photo.checked
+        }
+        fun portraitVerify(photoPath: String):Float{
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(photoPath.toUri().toFile().absolutePath, options)
+            val imageHeight = options.outHeight.toFloat()
+            val imageWidth = options.outWidth.toFloat()
+            return imageHeight/imageWidth
         }
     }
 
