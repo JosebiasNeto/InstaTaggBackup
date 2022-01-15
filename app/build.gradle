@@ -16,7 +16,7 @@ android {
         applicationId "com.jnsoft.instatagg"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 6
+        versionCode 10
         versionName "1.03"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -97,7 +98,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.2')
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //Zoom

@@ -11,38 +11,22 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 object Modules {
-    val ui = module {
-        viewModel {
-            MainViewModel(
-                MainRepository(
-                    MainDatabase.getDatabase(androidApplication()).photosDao(),
-                    MainDatabase.getDatabase(androidApplication()).taggsDao()
-                )
-            )
+    val data = module {
+        factory {
+            MainRepository(MainDatabase.getDatabase(androidApplication()).photosDao(),
+                MainDatabase.getDatabase(androidApplication()).taggsDao())
         }
         viewModel {
-            TaggsViewModel(
-                MainRepository(
-                    MainDatabase.getDatabase(androidApplication()).photosDao(),
-                    MainDatabase.getDatabase(androidApplication()).taggsDao()
-                )
-            )
+            MainViewModel(get())
         }
         viewModel {
-            PhotosViewModel(
-                MainRepository(
-                    MainDatabase.getDatabase(androidApplication()).photosDao(),
-                    MainDatabase.getDatabase(androidApplication()).taggsDao()
-                )
-            )
+            TaggsViewModel(get())
         }
         viewModel {
-            FullscreanPhotoViewModel(
-                MainRepository(
-                    MainDatabase.getDatabase(androidApplication()).photosDao(),
-                    MainDatabase.getDatabase(androidApplication()).taggsDao()
-                )
-            )
+            PhotosViewModel(get())
+        }
+        viewModel {
+            FullscreanPhotoViewModel(get())
         }
     }
 }

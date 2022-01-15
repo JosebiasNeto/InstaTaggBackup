@@ -1,7 +1,7 @@
 package com.jnsoft.instatagg.di
 
 import android.app.Application
-import com.jnsoft.instatagg.di.Modules.ui
+import com.jnsoft.instatagg.di.Modules.data
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -11,7 +11,7 @@ class InstaTagg : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@InstaTagg)
-            modules(ui)
+            modules(data)
         }
     }
 
