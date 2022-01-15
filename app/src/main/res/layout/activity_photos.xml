@@ -77,6 +77,16 @@
         tools:listitem="@layout/photo_item"
         />
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_fullscreen_photo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/cv_bottom"
+        android:visibility="gone"
+        />
+
     <ImageView
         android:id="@+id/iv_no_photos"
         android:layout_width="match_parent"

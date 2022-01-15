@@ -23,5 +23,4 @@ class FullscreenPhotoAdapter(activity: AppCompatActivity, val photos: ArrayList<
             addAll(fullscreenPhotos)
         }
     }
-
 }

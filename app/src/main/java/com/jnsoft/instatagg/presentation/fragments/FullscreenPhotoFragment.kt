@@ -11,13 +11,13 @@ import com.jnsoft.instatagg.databinding.FragmentFullscreenPhotoBinding
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jsibbold.zoomage.ZoomageView
 
-class FullscreenPhotoFragment() : Fragment() {
+class FullscreenPhotoFragment : Fragment() {
     private lateinit var binding: FragmentFullscreenPhotoBinding
     private lateinit var photo: Photo
     private lateinit var imageView: ZoomageView
 
     companion object {
-        fun newInstance(photo: Photo): Fragment {
+        fun newInstance(photo: Photo): FullscreenPhotoFragment{
             val fragment = FullscreenPhotoFragment()
             val savePhoto = Bundle()
             savePhoto.putParcelable("photo", photo)
@@ -32,7 +32,7 @@ class FullscreenPhotoFragment() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        photo = requireArguments().getParcelable<Photo>("photo")!!
+        photo = requireArguments().getParcelable("photo")!!
         binding = FragmentFullscreenPhotoBinding.inflate(layoutInflater)
         imageView = binding.ivFullscreanPhoto
         imageView.setImageURI(photo.path!!.toUri())

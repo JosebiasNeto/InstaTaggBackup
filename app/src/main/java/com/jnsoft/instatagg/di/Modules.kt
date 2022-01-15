@@ -2,7 +2,6 @@ package com.jnsoft.instatagg.di
 
 import com.jnsoft.instatagg.data.database.MainDatabase
 import com.jnsoft.instatagg.domain.repository.MainRepository
-import com.jnsoft.instatagg.presentation.viewmodel.FullscreanPhotoViewModel
 import com.jnsoft.instatagg.presentation.viewmodel.MainViewModel
 import com.jnsoft.instatagg.presentation.viewmodel.PhotosViewModel
 import com.jnsoft.instatagg.presentation.viewmodel.TaggsViewModel
@@ -24,9 +23,6 @@ object Modules {
         }
         viewModel {
             PhotosViewModel(get())
-        }
-        viewModel {
-            FullscreanPhotoViewModel(get())
         }
     }
 }
