@@ -22,12 +22,13 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
         private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
-            if(portraitVerify(photo.path!!) > 1){
-                Picasso.get().load(photo.path).noFade().resize(width/3,
-                    (width.toFloat() * portraitVerify(photo.path!!)/3).toInt()).into(ivPhoto)
+            val portrait = portraitVerify(photo.path!!)
+            if(portrait > 1){
+                Picasso.get().load(photo.path).noFade().resize(0,
+                    (width.toFloat() * portrait/3).toInt()).into(ivPhoto)
             } else {
-                Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portraitVerify(
-                    photo.path!!))).toInt(), width/3).into(ivPhoto)
+                Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portrait))
+                    .toInt(), 0).into(ivPhoto)
             }
             checkBox.isVisible = photo.checkboxVisibility
             checkBox.isChecked = photo.checked
@@ -35,7 +36,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
         fun portraitVerify(photoPath: String):Float{
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(photoPath.toUri().toFile().absolutePath, options)
+            BitmapFactory.decodeFile(photoPath.toUri().toFile().path, options)
             val imageHeight = options.outHeight.toFloat()
             val imageWidth = options.outWidth.toFloat()
             return imageHeight/imageWidth
