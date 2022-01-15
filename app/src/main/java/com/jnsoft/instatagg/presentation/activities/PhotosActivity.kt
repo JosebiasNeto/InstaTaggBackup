@@ -14,6 +14,7 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -56,27 +57,9 @@ class PhotosActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         firebaseAnalytics = Firebase.analytics
         tagg = intent.getParcelableExtra<Tagg>("tagg")!!
-        tagg.id?.let {
-            viewModel.getTagg(it).observe(this,{
-                supportActionBar!!.title = it.name
-                binding.toolbar.setBackgroundColor(it.color)
-                if(it.size.toString().length > 6){
-                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
-                } else binding.tvTotalSize.text = "0"
-            })
-        }
+        setTagg(tagg.id)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        val outMetrics = DisplayMetrics()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = this.display
-            display?.getRealMetrics(outMetrics)
-        } else {
-            @Suppress("DEPRECATION")
-            val display = this.windowManager.defaultDisplay
-            @Suppress("DEPRECATION")
-            display.getMetrics(outMetrics)
-        }
-        adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
+        setPhotosAdapter()
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
         if (tagg != null) {
@@ -88,56 +71,15 @@ class PhotosActivity : AppCompatActivity() {
         }
         binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
-                if(view.findViewById<CheckBox>(R.id.checkBox).isVisible){
-                    view.findViewById<CheckBox>(R.id.checkBox).isChecked =
-                            !view.findViewById<CheckBox>(R.id.checkBox).isChecked
-                   adapter.getPhoto(position).checked =
-                           !adapter.getPhoto(position).checked
-                } else {
-                    openFullscreen(position)
-                    this@PhotosActivity.finish()
-                }
+                removePhotos(position, view)
             }
         })
         binding.ibDelete.setOnClickListener {
-            for(i in 0 until adapter.itemCount){
-                if(adapter.getPhoto(i).checked) {
-                    adapter.getPhoto(i).let { it1 ->
-                        viewModel.delPhoto(it1,(it1.path!!.toUri()
-                            .toFile().length()))
-                    }
-                    adapter.getPhoto(i).path?.let { it1 ->
-                        applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                            .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
-                    }
-                    eventDeletePhoto()
-                }
-            }
-            finish()
-            overridePendingTransition(0,0)
-            startActivity(intent)
-            overridePendingTransition(0,0)
+            deletePhotos()
         }
 
         binding.ibShare.setOnClickListener {
-            val contentUris = arrayListOf<Uri>()
-            for(i in 0 until adapter.itemCount){
-                var uri = FileProvider.getUriForFile(
-                    applicationContext,
-                    "com.jnsoft.instatagg.fileprovider",
-                    File(Uri.parse(adapter.getPhoto(i).path).path))
-                if(adapter.getPhoto(i).checked){
-                    contentUris.add(uri)
-                    eventSharePhoto()
-                }
-            }
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SEND_MULTIPLE
-                putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUris)
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                type = "image/jpg"
-            }
-            startActivity(Intent.createChooser(shareIntent, "shareImage"))
+            sharePhotos()
         }
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
@@ -158,17 +100,22 @@ class PhotosActivity : AppCompatActivity() {
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult())
         { result ->
-            if(result.resultCode == RESULT_OK){
-                if (result.data!!.data != null){
-                    val uriPhoto = result.data!!.data!!
-                    val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)),
-                        System.currentTimeMillis().toString() + ".jpg")
-                    viewModel.insertPhoto(Photo(filePhoto, tagg, null),
-                        (filePhoto.toUri().toFile()).length())
-                    eventImportPhoto()
-                    finish()
-                    startActivity(this.intent)
-                }
+            getImportPhotos(result)
+        }
+    }
+
+    private fun getImportPhotos(result: ActivityResult) {
+        if(result.resultCode == RESULT_OK){
+            if (result.data!!.data != null){
+                val uriPhoto = result.data!!.data!!
+                val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)),
+                    System.currentTimeMillis().toString() + ".jpg")
+                viewModel.insertPhoto(Photo(filePhoto, tagg, null),
+                    (filePhoto.toUri().toFile()).length())
+                eventImportPhoto()
+                finish()
+                startActivity(this.intent)
+            }
             else if (result.data!!.clipData != null){
                 val newPhotos = arrayListOf<Uri>()
                 val mClipData = result.data!!.clipData
@@ -187,7 +134,6 @@ class PhotosActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "No images picked", Toast.LENGTH_LONG).show()
             }}
-        }
     }
     fun getPath(context: Context, uri: Uri): String {
         val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
@@ -288,6 +234,126 @@ class PhotosActivity : AppCompatActivity() {
         }
     }
 
+    private fun sharePhotos() {
+        val contentUris = arrayListOf<Uri>()
+        for(i in 0 until adapter.itemCount){
+            var uri = FileProvider.getUriForFile(
+                applicationContext,
+                "com.jnsoft.instatagg.fileprovider",
+                File(Uri.parse(adapter.getPhoto(i).path).path))
+            if(adapter.getPhoto(i).checked){
+                contentUris.add(uri)
+                eventSharePhoto()
+            }
+        }
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND_MULTIPLE
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, contentUris)
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            type = "image/jpg"
+        }
+        startActivity(Intent.createChooser(shareIntent, "shareImage"))
+    }
+
+    private fun removePhotos(position: Int, view: View) {
+        if(view.findViewById<CheckBox>(R.id.checkBox).isVisible){
+            view.findViewById<CheckBox>(R.id.checkBox).isChecked =
+                !view.findViewById<CheckBox>(R.id.checkBox).isChecked
+            adapter.getPhoto(position).checked =
+                !adapter.getPhoto(position).checked
+        } else {
+            openFullscreen(position)
+            this@PhotosActivity.finish()
+        }
+    }
+
+    private fun deletePhotos(){
+        for(i in 0 until adapter.itemCount){
+            if(adapter.getPhoto(i).checked) {
+                adapter.getPhoto(i).let { it1 ->
+                    viewModel.delPhoto(it1,(it1.path!!.toUri()
+                        .toFile().length()))
+                }
+                adapter.getPhoto(i).path?.let { it1 ->
+                    applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                        .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+                }
+                eventDeletePhoto()
+            }
+        }
+        finish()
+        overridePendingTransition(0,0)
+        startActivity(intent)
+        overridePendingTransition(0,0)
+    }
+
+    private fun setPhotosAdapter() {
+        val outMetrics = DisplayMetrics()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display = this.display
+            display?.getRealMetrics(outMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            val display = this.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
+            display.getMetrics(outMetrics)
+        }
+        adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
+    }
+
+    private fun setTagg(id: Long?) {
+        if (id != null) {
+            viewModel.getTagg(id).observe(this,{
+                supportActionBar!!.title = it.name
+                binding.toolbar.setBackgroundColor(it.color)
+                if(it.size.toString().length > 6){
+                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
+                } else binding.tvTotalSize.text = "0"
+            })
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.tagg_option_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
+        when (item.itemId) {
+            R.id.import_photos -> {
+                val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                galery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                galery.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                galery.type = "image/*"
+                activityResultLauncher.launch(galery)
+                }
+            android.R.id.home -> {
+                startActivity(Intent(this, TaggsActivity::class.java))
+                return true
+            }
+            R.id.tagg_edit -> {
+                editTagg(tagg)
+                return true
+            }
+            R.id.clear_tagg -> {
+                clearTagg(tagg)
+                return true
+            }
+            R.id.delete_tagg -> {
+                deleteTagg(tagg)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun editTagg(tagg: Tagg){
+        val editTaggFragment = EditTaggFragment.newInstance(tagg)
+        editTaggFragment.show(supportFragmentManager,"editTagg")
+    }
+
     private fun clearTagg(tagg: Tagg){
         tagg.id?.let { viewModel.clearTagg(it) }
         for(i in 0 until adapter.itemCount){
@@ -310,54 +376,13 @@ class PhotosActivity : AppCompatActivity() {
                 viewModel.delPhoto(
                     it1,
                     (it1.path!!.toUri().toFile().length()))
-                        applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                            .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
+                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                    .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
         val taggsActivity = Intent(this, TaggsActivity::class.java)
         startActivity(taggsActivity)
         eventDeleteTagg(adapter.itemCount)
-    }
-    private fun editTagg(tagg: Tagg){
-        val editTaggFragment = EditTaggFragment.newInstance(tagg)
-        editTaggFragment.show(supportFragmentManager,"editTagg")
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.tagg_option_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
-        when (item.itemId) {
-            R.id.import_photos -> {
-                val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                galery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                galery.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-                galery.type = "image/*"
-                activityResultLauncher.launch(galery)
-                }
-
-            android.R.id.home -> {
-                startActivity(Intent(this, TaggsActivity::class.java))
-                return true
-            }
-            R.id.tagg_edit -> {
-                editTagg(tagg)
-                return true
-            }
-            R.id.clear_tagg -> {
-                clearTagg(tagg)
-                return true
-            }
-            R.id.delete_tagg -> {
-                deleteTagg(tagg)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateContextMenu(
@@ -379,37 +404,11 @@ class PhotosActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.move_to_tagg -> {
-                binding.cvChooseTagg.isVisible = true
-                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
-                    override fun onItemClicked(position: Int, view: View) {
-                        for(i in 0 until adapter.itemCount){
-                            if(adapter.getPhoto(i).checked)
-                                moveToTagg(adapterMain.getTagg(position), adapter.getPhoto(i))
-                        }
-                        finish()
-                        startActivity(intent)
-                    }
-                })
+                moveToTagg(this.tagg.id!!)
                 return true
             }
             R.id.copy_to_tagg -> {
-                binding.cvChooseTagg.isVisible = true
-                binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
-                    override fun onItemClicked(position: Int, view: View) {
-                        for(i in 0 until adapter.itemCount){
-                            if(adapter.getPhoto(i).checked) {
-                                adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
-                                adapter.getPhoto(i).path = copyFile(
-                                adapter.getPhoto(i).path!!.toUri().toFile(),
-                                System.currentTimeMillis().toString())
-                                viewModel.insertPhoto(adapter.getPhoto(i),
-                                    (adapter.getPhoto(i).path!!.toUri().toFile().length()))
-                            }
-                        }
-                        finish()
-                        startActivity(intent)
-                    }
-                })
+                copyToTagg()
                 return true
             }
             R.id.select_all -> {
@@ -423,14 +422,47 @@ class PhotosActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
+    fun moveToTagg(oldTaggId: Long){
+        binding.cvChooseTagg.isVisible = true
+        binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View) {
+                for(i in 0 until adapter.itemCount){
+                    if(adapter.getPhoto(i).checked){
+                        val photo = adapter.getPhoto(i)
+                        val tagg = adapterMain.getTagg(position)
+                        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
+                            (photo.path!!.toUri().toFile().length()), oldTaggId)
+                    }
+                }
+                finish()
+                startActivity(intent)
+            }
+        })
+    }
+
+    private fun copyToTagg() {
+        binding.cvChooseTagg.isVisible = true
+        binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View) {
+                for(i in 0 until adapter.itemCount){
+                    if(adapter.getPhoto(i).checked) {
+                        adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
+                        adapter.getPhoto(i).path = copyFile(
+                            adapter.getPhoto(i).path!!.toUri().toFile(),
+                            System.currentTimeMillis().toString())
+                        viewModel.insertPhoto(adapter.getPhoto(i),
+                            (adapter.getPhoto(i).path!!.toUri().toFile().length()))
+                    }
+                }
+                finish()
+                startActivity(intent)
+            }
+        })
+    }
+
     private fun copyFile(currentFile: File, newFileName: String): String {
         val newFile = File(applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
-    }
-
-    fun moveToTagg(tagg: Tagg, photo: Photo){
-        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
-        (photo.path!!.toUri().toFile().length()), this.tagg.id!!)
     }
 
     override fun onBackPressed() {
