@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Build
@@ -23,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -73,14 +75,18 @@ class MainActivity : AppCompatActivity() {
         }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
-
         adapter = MainAdapter(arrayListOf())
+        val orientation = this.resources.configuration.orientation
         val llm = LinearLayoutManager(this)
         llm.reverseLayout = true
-
+        if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            llm.orientation = RecyclerView.VERTICAL
+        } else {
+            llm.orientation = RecyclerView.HORIZONTAL
+        }
+        binding.rvChangeTagg.layoutManager = llm
         binding.rvChangeTagg.isVisible = false
         binding.rvChangeTagg.adapter = adapter
-        binding.rvChangeTagg.layoutManager = llm
         binding.rvChangeTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
                 choseTagg(position)
