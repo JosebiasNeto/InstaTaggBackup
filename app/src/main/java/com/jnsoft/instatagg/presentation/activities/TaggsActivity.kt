@@ -2,6 +2,7 @@ package com.jnsoft.instatagg.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,7 +31,7 @@ class TaggsActivity : AppCompatActivity() {
             createTaggFragment.show(supportFragmentManager,"createTagg")
         }
         binding.rvTaggs.layoutManager = GridLayoutManager(this,3)
-        adapter = TaggsAdapter(arrayListOf())
+        setTaggsAdapter()
         binding.rvTaggs.adapter = adapter
 
         viewModel.getTaggs().observe(this,{
@@ -43,6 +44,20 @@ class TaggsActivity : AppCompatActivity() {
                 openPhotosActivity(position)
             }
         })
+    }
+
+    private fun setTaggsAdapter() {
+        val outMetrics = DisplayMetrics()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display = this.display
+            display?.getRealMetrics(outMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            val display = this.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
+            display.getMetrics(outMetrics)
+        }
+        adapter = TaggsAdapter(arrayListOf(),outMetrics.widthPixels)
     }
 
     private fun setTotalSize(taggs: List<Tagg>) {

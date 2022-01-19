@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso
 
 class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosActivity, val width: Int) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
-    class PhotosHolder(itemView: View, private val activity: PhotosActivity, private val width: Int) : RecyclerView.ViewHolder(itemView) {
+    class PhotosHolder(itemView: View, private val width: Int) : RecyclerView.ViewHolder(itemView) {
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
         private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
@@ -46,7 +46,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapter.PhotosHolder =
         PhotosAdapter.PhotosHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.photo_item, parent, false), activity, width)
+                .inflate(R.layout.photo_item, parent, false), width)
 
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])

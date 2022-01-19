@@ -201,7 +201,7 @@ class PhotosActivity : AppCompatActivity() {
                 activityResultLauncher.launch(galery)
                 }
             android.R.id.home -> {
-                startActivity(Intent(this, TaggsActivity::class.java))
+                onBackPressed()
                 return true
             }
             R.id.tagg_edit -> {
