@@ -18,13 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaTagg"
         android:requestLegacyExternalStorage="true">
+        <activity android:name="com.jnsoft.instatagg.presentation.photos.PhotosActivity" />
+        <activity android:name="com.jnsoft.instatagg.presentation.taggs.TaggsActivity" />
         <activity
-            android:name="com.jnsoft.instatagg.presentation.activities.FullscreenPhotoActivity"
-            android:exported="false" />
-        <activity android:name="com.jnsoft.instatagg.presentation.activities.PhotosActivity" />
-        <activity android:name="com.jnsoft.instatagg.presentation.activities.TaggsActivity" />
-        <activity
-            android:name="com.jnsoft.instatagg.presentation.activities.MainActivity"
+            android:name="com.jnsoft.instatagg.presentation.camera.CameraActivity"
             tools:ignore="MissingClass"
             android:exported="true">
             <intent-filter>

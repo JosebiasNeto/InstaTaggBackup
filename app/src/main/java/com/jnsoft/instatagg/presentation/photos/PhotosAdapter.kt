@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.adapter
+package com.jnsoft.instatagg.presentation.photos
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -12,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.domain.model.Photo
-import com.jnsoft.instatagg.presentation.activities.PhotosActivity
 import com.squareup.picasso.Picasso
 
 
@@ -43,8 +42,8 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosAdapter.PhotosHolder =
-        PhotosAdapter.PhotosHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotosHolder =
+        PhotosHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.photo_item, parent, false), width)
 

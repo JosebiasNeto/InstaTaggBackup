@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.activities
+package com.jnsoft.instatagg.presentation.photos
 
 import android.content.ContentUris
 import android.content.Context
@@ -25,18 +25,18 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.ActivityPhotosBinding
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.adapter.FullscreenPhotoAdapter
-import com.jnsoft.instatagg.presentation.adapter.MainAdapter
-import com.jnsoft.instatagg.presentation.adapter.PhotosAdapter
-import com.jnsoft.instatagg.presentation.fragments.EditTaggFragment
-import com.jnsoft.instatagg.presentation.viewmodel.PhotosViewModel
+import com.jnsoft.instatagg.presentation.camera.CameraActivity
+import com.jnsoft.instatagg.presentation.camera.MiniTaggsAdapter
+import com.jnsoft.instatagg.presentation.taggs.EditTaggFragment
+import com.jnsoft.instatagg.presentation.taggs.TaggsActivity
+import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventDeletePhoto
+import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventDeleteTagg
+import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventImportPhoto
+import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventSharePhoto
 import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -46,12 +46,11 @@ class PhotosActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
     private lateinit var adapter: PhotosAdapter
-    private lateinit var adapterMain: MainAdapter
+    private lateinit var adapterMiniTaggs: MiniTaggsAdapter
     private lateinit var pageAdapter: FullscreenPhotoAdapter
     private lateinit var tagg: Tagg
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var viewPager: ViewPager2
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +60,6 @@ class PhotosActivity : AppCompatActivity() {
         viewPager = binding.vpFullscreenPhoto
         pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
         viewPager.adapter = pageAdapter
-        firebaseAnalytics = Firebase.analytics
         tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         setTagg(tagg.id)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -92,13 +90,13 @@ class PhotosActivity : AppCompatActivity() {
         binding.ibMore.setOnClickListener { openContextMenu(it) }
 
         binding.fabFromTaggToCamera.setOnClickListener {
-            val mainActivity = Intent(this, MainActivity::class.java)
+            val mainActivity = Intent(this, CameraActivity::class.java)
             mainActivity.putExtra("tagg", tagg)
             startActivity(mainActivity)
             overridePendingTransition(0,0)
         }
-        adapterMain = MainAdapter(arrayListOf())
-        binding.rvChooseTagg.adapter = adapterMain
+        adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = adapterMiniTaggs
         binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
         viewModel.getTaggs().observe(this, {
             refreshAdapterMain(it)
@@ -152,7 +150,7 @@ class PhotosActivity : AppCompatActivity() {
         }
     }
     private fun refreshAdapterMain(taggs: List<Tagg>){
-        adapterMain.apply {
+        adapterMiniTaggs.apply {
             addTaggs(taggs)
             notifyDataSetChanged()
         }
@@ -451,7 +449,7 @@ class PhotosActivity : AppCompatActivity() {
                 for(i in 0 until adapter.itemCount){
                     if(adapter.getPhoto(i).checked){
                         val photo = adapter.getPhoto(i)
-                        val tagg = adapterMain.getTagg(position)
+                        val tagg = adapterMiniTaggs.getTagg(position)
                         viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
                             (photo.path!!.toUri().toFile().length()), oldTaggId)
                     }
@@ -469,7 +467,7 @@ class PhotosActivity : AppCompatActivity() {
             override fun onItemClicked(position: Int, view: View) {
                 for(i in 0 until adapter.itemCount){
                     if(adapter.getPhoto(i).checked) {
-                        adapter.getPhoto(i).tagg = adapterMain.getTagg(position)
+                        adapter.getPhoto(i).tagg = adapterMiniTaggs.getTagg(position)
                         adapter.getPhoto(i).path = copyFile(
                             adapter.getPhoto(i).path!!.toUri().toFile(),
                             System.currentTimeMillis().toString())
@@ -498,26 +496,5 @@ class PhotosActivity : AppCompatActivity() {
     private fun copyFile(currentFile: File, newFileName: String): String {
         val newFile = File(applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
-    }
-
-    private fun eventDeleteTagg(photosCount: Int){
-        val params = Bundle()
-        params.putInt("tagg_size", photosCount)
-        firebaseAnalytics.logEvent("delete_tagg", params)
-    }
-    private fun eventDeletePhoto(){
-        val params = Bundle()
-        params.putString("photo", "delete_photo")
-        firebaseAnalytics.logEvent("delete_photo", params)
-    }
-    private fun eventSharePhoto(){
-        val params = Bundle()
-        params.putString("photo", "share_photo")
-        firebaseAnalytics.logEvent("share_photo", params)
-    }
-    private fun eventImportPhoto(){
-        val params = Bundle()
-        params.putString("photo", "import_photo")
-        firebaseAnalytics.logEvent("import_photo", params)
     }
 }

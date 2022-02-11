@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.fragments
+package com.jnsoft.instatagg.presentation.taggs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -7,7 +7,7 @@ import android.text.Editable
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.viewmodel.PhotosViewModel
+import com.jnsoft.instatagg.presentation.photos.PhotosViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditTaggFragment : BaseTaggFragment() {

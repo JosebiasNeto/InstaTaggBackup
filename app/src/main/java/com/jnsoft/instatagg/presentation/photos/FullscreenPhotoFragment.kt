@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.fragments
+package com.jnsoft.instatagg.presentation.photos
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -17,7 +17,7 @@ class FullscreenPhotoFragment : Fragment() {
     private lateinit var imageView: ZoomageView
 
     companion object {
-        fun newInstance(photo: Photo): FullscreenPhotoFragment{
+        fun newInstance(photo: Photo): FullscreenPhotoFragment {
             val fragment = FullscreenPhotoFragment()
             val savePhoto = Bundle()
             savePhoto.putParcelable("photo", photo)

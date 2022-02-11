@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.adapter
+package com.jnsoft.instatagg.presentation.camera
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.domain.model.Tagg
 
-class MainAdapter(private val taggs: ArrayList<Tagg>):
-    RecyclerView.Adapter<MainAdapter.MainHolder>(){
+class MiniTaggsAdapter(private val taggs: ArrayList<Tagg>):
+    RecyclerView.Adapter<MiniTaggsAdapter.MainHolder>(){
 
     class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(tagg: Tagg){

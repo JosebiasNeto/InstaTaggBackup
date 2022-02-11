@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.fragments
+package com.jnsoft.instatagg.presentation.taggs
 
 import android.app.AlertDialog
 import android.view.View

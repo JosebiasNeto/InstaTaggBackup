@@ -1,10 +1,9 @@
-package com.jnsoft.instatagg.presentation.adapter
+package com.jnsoft.instatagg.presentation.photos
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.jnsoft.instatagg.domain.model.Photo
-import com.jnsoft.instatagg.presentation.fragments.FullscreenPhotoFragment
 
 class FullscreenPhotoAdapter(activity: AppCompatActivity, val photos: ArrayList<Photo>):
       FragmentStateAdapter(activity){

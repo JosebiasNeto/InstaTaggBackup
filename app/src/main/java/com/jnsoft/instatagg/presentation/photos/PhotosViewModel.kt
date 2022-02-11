@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.viewmodel
+package com.jnsoft.instatagg.presentation.photos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

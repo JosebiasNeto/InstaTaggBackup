@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.adapter
+package com.jnsoft.instatagg.presentation.taggs
 
 import android.view.LayoutInflater
 import android.view.View

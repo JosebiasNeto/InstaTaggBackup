@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.presentation.activities
+package com.jnsoft.instatagg.presentation.taggs
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,9 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.jnsoft.instatagg.databinding.ActivityTaggsBinding
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.adapter.TaggsAdapter
-import com.jnsoft.instatagg.presentation.fragments.CreateTaggFragment
-import com.jnsoft.instatagg.presentation.viewmodel.TaggsViewModel
+import com.jnsoft.instatagg.presentation.camera.CameraActivity
+import com.jnsoft.instatagg.presentation.photos.PhotosActivity
 import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -85,6 +84,6 @@ class TaggsActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, CameraActivity::class.java))
     }
 }
