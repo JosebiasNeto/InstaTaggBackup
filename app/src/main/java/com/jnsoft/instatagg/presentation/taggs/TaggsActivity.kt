@@ -14,7 +14,7 @@ import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TaggsActivity : AppCompatActivity() {
+class TaggsActivity : AppCompatActivity(), CreateTaggFragment.CreatedTagg {
 
     private lateinit var binding: ActivityTaggsBinding
     private val viewModel: TaggsViewModel by viewModel()
@@ -25,27 +25,23 @@ class TaggsActivity : AppCompatActivity() {
         binding = ActivityTaggsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupTaggs()
+
         binding.btnCreateTagg.setOnClickListener {
-            val createTaggFragment = CreateTaggFragment()
+            val createTaggFragment = CreateTaggFragment(this)
             createTaggFragment.show(supportFragmentManager,"createTagg")
         }
-        binding.rvTaggs.layoutManager = GridLayoutManager(this,3)
-        setTaggsAdapter()
-        binding.rvTaggs.adapter = adapter
-
-        viewModel.getTaggs().observe(this,{
-            refreshAdapter(it.reversed())
-            setTotalSize(it)
-        })
 
         binding.rvTaggs.addOnItemClickListener(object : OnItemClickListener{
             override fun onItemClicked(position: Int, view: View) {
                 openPhotosActivity(position)
+                finish()
             }
         })
     }
 
-    private fun setTaggsAdapter() {
+    private fun setupTaggs() {
+        binding.rvTaggs.layoutManager = GridLayoutManager(this,3)
         val outMetrics = DisplayMetrics()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             val display = this.display
@@ -57,6 +53,13 @@ class TaggsActivity : AppCompatActivity() {
             display.getMetrics(outMetrics)
         }
         adapter = TaggsAdapter(arrayListOf(),outMetrics.widthPixels)
+        binding.rvTaggs.adapter = adapter
+
+        viewModel.getTaggs()
+        viewModel.taggs.observe(this,{
+            refreshAdapter(it.reversed())
+            setTotalSize(it)
+        })
     }
 
     private fun setTotalSize(taggs: List<Tagg>) {
@@ -75,6 +78,11 @@ class TaggsActivity : AppCompatActivity() {
         }
     }
 
+    override fun createTagg(name: String, color: Int) {
+        viewModel.insertTagg(Tagg(null, name, color, 0))
+        viewModel.getTaggs()
+    }
+
     private fun openPhotosActivity(idTagg: Int) {
         val photosActivity = Intent(this, PhotosActivity::class.java)
         val tagg = adapter.getTagg(idTagg)
@@ -85,5 +93,6 @@ class TaggsActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         startActivity(Intent(this, CameraActivity::class.java))
+        finish()
     }
 }

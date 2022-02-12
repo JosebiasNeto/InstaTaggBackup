@@ -52,6 +52,7 @@ class TaggsAdapter(private val taggs: ArrayList<Tagg>, val width: Int) :
     fun getTagg(position: Int) = taggs[position]
 
     fun addTaggs(taggs: List<Tagg>) {
+        this.taggs.clear()
         this.taggs.addAll(taggs)
     }
 }

@@ -6,15 +6,16 @@ import android.app.Dialog
 import android.os.Bundle
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
-import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventCreateTagg
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CreateTaggFragment : BaseTaggFragment() {
+class CreateTaggFragment(val createdTagg: CreatedTagg) : BaseTaggFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
-    private val viewModel: TaggsViewModel by viewModel()
+
+    interface CreatedTagg{
+        fun createTagg(name: String, color: Int)
+    }
 
     @SuppressLint("RestrictedApi")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -32,16 +33,10 @@ class CreateTaggFragment : BaseTaggFragment() {
         _binding!!.confirmButton.setOnClickListener {
                 if(binding?.etTaggName!!.text.isEmpty()){
                 } else {
-                    viewModel.insertTagg(
-                        Tagg(
-                            null,
-                            binding?.etTaggName!!.text.toString(),
-                            binding?.btnChoseColor!!.currentHintTextColor,
-                            0
-                        )
-                    )
-                    startActivity(requireActivity().intent)
+                    createdTagg.createTagg(binding?.etTaggName!!.text.toString(),
+                        binding?.btnChoseColor!!.currentHintTextColor)
                     eventCreateTagg()
+                    dialog!!.cancel()
                 }
         }}
         setEditText(binding!!)
