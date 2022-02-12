@@ -8,13 +8,22 @@ import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventCreateTagg
 
-class CreateTaggFragment(val createdTagg: CreatedTagg) : BaseTaggFragment() {
+class CreateTaggFragment() : BaseTaggFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
+    private lateinit var createdTagg: CreatedTagg
 
     interface CreatedTagg{
         fun createTagg(name: String, color: Int)
+    }
+
+    companion object {
+        fun newInstance(createdTagg: CreatedTagg): CreateTaggFragment {
+            val fragment = CreateTaggFragment()
+            fragment.createdTagg = createdTagg
+            return fragment
+        }
     }
 
     @SuppressLint("RestrictedApi")

@@ -28,7 +28,7 @@ class TaggsActivity : AppCompatActivity(), CreateTaggFragment.CreatedTagg {
         setupTaggs()
 
         binding.btnCreateTagg.setOnClickListener {
-            val createTaggFragment = CreateTaggFragment(this)
+            val createTaggFragment = CreateTaggFragment.newInstance(this)
             createTaggFragment.show(supportFragmentManager,"createTagg")
         }
 

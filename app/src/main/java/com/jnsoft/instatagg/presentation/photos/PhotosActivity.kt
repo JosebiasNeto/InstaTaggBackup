@@ -490,6 +490,7 @@ class PhotosActivity : AppCompatActivity() {
         } else {
             startActivity(Intent(this, TaggsActivity::class.java))
             overridePendingTransition(0,0)
+            finish()
         }
     }
 
