@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.Toast
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventCreateTagg
+import java.io.Serializable
 
 class CreateTaggFragment() : BaseTaggFragment() {
 
@@ -14,14 +16,16 @@ class CreateTaggFragment() : BaseTaggFragment() {
     private val binding get() = _binding
     private lateinit var createdTagg: CreatedTagg
 
-    interface CreatedTagg{
+    interface CreatedTagg:Serializable{
         fun createTagg(name: String, color: Int)
     }
 
     companion object {
         fun newInstance(createdTagg: CreatedTagg): CreateTaggFragment {
             val fragment = CreateTaggFragment()
-            fragment.createdTagg = createdTagg
+            val save = Bundle()
+            save.putSerializable("createdTagg", createdTagg)
+            fragment.arguments = save
             return fragment
         }
     }
@@ -33,6 +37,7 @@ class CreateTaggFragment() : BaseTaggFragment() {
         binding?.btnChoseColor?.setOnClickListener {
             choseColor(_binding!!)
         }
+        createdTagg = requireArguments().getSerializable("createdTagg") as CreatedTagg
         val builder = AlertDialog.Builder(context, R.style.style_dialog)
         builder.apply {
         setView(binding?.root)
@@ -41,6 +46,7 @@ class CreateTaggFragment() : BaseTaggFragment() {
         }
         _binding!!.confirmButton.setOnClickListener {
                 if(binding?.etTaggName!!.text.isEmpty()){
+                    Toast.makeText(context, "Name can't be empty!", Toast.LENGTH_SHORT).show()
                 } else {
                     createdTagg.createTagg(binding?.etTaggName!!.text.toString(),
                         binding?.btnChoseColor!!.currentHintTextColor)

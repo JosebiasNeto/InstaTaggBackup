@@ -2,6 +2,7 @@ package com.jnsoft.instatagg.presentation.taggs
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -80,7 +81,9 @@ class TaggsActivity : AppCompatActivity(), CreateTaggFragment.CreatedTagg {
 
     override fun createTagg(name: String, color: Int) {
         viewModel.insertTagg(Tagg(null, name, color, 0))
-        viewModel.getTaggs()
+        Handler().postDelayed({
+            viewModel.getTaggs()
+        }, 500)
     }
 
     private fun openPhotosActivity(idTagg: Int) {
