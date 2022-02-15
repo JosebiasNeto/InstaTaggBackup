@@ -1,9 +1,6 @@
 package com.jnsoft.instatagg.presentation.photos
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.domain.repository.MainRepository
@@ -13,6 +10,12 @@ import kotlinx.coroutines.launch
 class PhotosViewModel(
     private val mainRepository: MainRepository
 ) : ViewModel() {
+
+    private val _tagg = MutableLiveData<Tagg>()
+    val tagg: LiveData<Tagg> = _tagg
+
+    private val _photos = MutableLiveData<List<Photo>>()
+    val photos: LiveData<List<Photo>> = _photos
 
     fun getPhotos(id: Long) = liveData(Dispatchers.IO) {
         emit(mainRepository.getPhotos(id))
@@ -38,8 +41,8 @@ class PhotosViewModel(
                                                          size, oldTaggId) }
     }
 
-    fun getTagg(id: Long): LiveData<Tagg> = liveData(Dispatchers.IO) {
-        emit(mainRepository.getTagg(id))
+    fun getTagg(id: Long){
+        viewModelScope.launch { _tagg.value = mainRepository.getTagg(id) }
     }
 
     fun delPhoto(photo: Photo, size: Long){
@@ -48,10 +51,6 @@ class PhotosViewModel(
 
     fun clearTagg(id: Long) {
         viewModelScope.launch { mainRepository.clearTagg(id) }
-    }
-
-    fun importPhoto(path: String, name: String, color: String) = liveData(Dispatchers.IO) {
-        emit(mainRepository.importPhoto(path, name, color))
     }
 
     fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {

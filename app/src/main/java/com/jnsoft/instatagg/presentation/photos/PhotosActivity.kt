@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -42,7 +43,7 @@ import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class PhotosActivity : AppCompatActivity() {
+class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
     private lateinit var binding: ActivityPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
     private lateinit var adapter: PhotosAdapter
@@ -172,7 +173,8 @@ class PhotosActivity : AppCompatActivity() {
 
     private fun setTagg(id: Long?) {
         if (id != null) {
-            viewModel.getTagg(id).observe(this,{
+            viewModel.getTagg(id)
+            viewModel.tagg.observe(this, {
                 supportActionBar!!.title = it.name
                 binding.toolbar.setBackgroundColor(it.color)
                 if(it.size.toString().length > 6){
@@ -327,8 +329,15 @@ class PhotosActivity : AppCompatActivity() {
     }
 
     private fun editTagg(tagg: Tagg){
-        val editTaggFragment = EditTaggFragment.newInstance(tagg)
+        val editTaggFragment = EditTaggFragment.newInstance(tagg, this)
         editTaggFragment.show(supportFragmentManager,"editTagg")
+    }
+    override fun editTagg(name: String, color: Int) {
+        tagg.id?.let { viewModel.changeTaggName(it, name) }
+        tagg.id?.let { viewModel.changeTaggColor(it, color) }
+        Handler().postDelayed({
+            tagg.id?.let { viewModel.getTagg(it) }
+        }, 500)
     }
 
     private fun clearTagg(tagg: Tagg){

@@ -4,25 +4,30 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
+import android.widget.Toast
 import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.photos.PhotosViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.Serializable
 
 class EditTaggFragment : BaseTaggFragment() {
 
     private var _binding: FragmentCreateEditTaggBinding? = null
     private val binding get() = _binding
-    private val viewModel: PhotosViewModel by viewModel()
     private lateinit var tagg: Tagg
+    private lateinit var editedTagg: EditedTagg
+
+    interface EditedTagg:Serializable{
+        fun editTagg(name: String, color: Int)
+    }
 
     companion object {
-        fun newInstance(tagg: Tagg): EditTaggFragment {
+        fun newInstance(tagg: Tagg, editedTagg: EditedTagg): EditTaggFragment {
             val fragment = EditTaggFragment()
-            val saveTagg: Bundle = Bundle()
-            saveTagg.putParcelable("tagg", tagg)
-            fragment.arguments = saveTagg
+            val save = Bundle()
+            save.putParcelable("tagg", tagg)
+            save.putSerializable("editedTagg", editedTagg)
+            fragment.arguments = save
             return fragment
         }
     }
@@ -30,6 +35,7 @@ class EditTaggFragment : BaseTaggFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         tagg = requireArguments().getParcelable<Tagg>("tagg")!!
+        editedTagg = requireArguments().getSerializable("editedTagg") as EditedTagg
         _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
         binding!!.confirmButton.text = getString(R.string.txt_edit)
         binding!!.tvCreateTagg.text = getString(R.string.edit_tagg)
@@ -43,28 +49,16 @@ class EditTaggFragment : BaseTaggFragment() {
         builder.apply {
             setView(binding?.root)
             _binding!!.confirmButton.setOnClickListener {
-                if(binding!!.etTaggName.text.isEmpty()){} else {
-                if (binding!!.etTaggName.text.toString() != tagg.name) {
-                    viewModel.changeTaggName(
-                        tagg.id!!,
-                        binding!!.etTaggName.text.toString()
-                    )
+                if(binding!!.etTaggName.text.isEmpty()){
+                    Toast.makeText(context, "Name can't be empty!",Toast.LENGTH_SHORT).show()
+                } else {
+                    editedTagg.editTagg(binding!!.etTaggName.text.toString(),
+                    binding!!.btnChoseColor.currentHintTextColor)
+                    dialog?.cancel()
                 }
-                if (binding!!.btnChoseColor.currentHintTextColor != tagg.color) {
-                    viewModel.changeTaggColor(
-                        tagg.id!!,
-                        binding!!.btnChoseColor.currentHintTextColor)
-                }
-                tagg.name = binding!!.etTaggName.text.toString()
-                tagg.color = binding!!.btnChoseColor.currentHintTextColor
-                activity?.intent?.putExtra("tagg", tagg)
-                activity?.finish()
-                activity?.overridePendingTransition(0, 0)
-                startActivity(activity?.intent)
-                activity?.overridePendingTransition(0, 0)
-            }}
+            }
             _binding!!.cancelButton.setOnClickListener {
-                getDialog()?.cancel()
+                dialog?.cancel()
             }
         }
         setEditText(binding!!)
