@@ -1,6 +1,9 @@
 package com.jnsoft.instatagg.presentation.photos
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.domain.repository.MainRepository
@@ -14,11 +17,16 @@ class PhotosViewModel(
     private val _tagg = MutableLiveData<Tagg>()
     val tagg: LiveData<Tagg> = _tagg
 
+    private val _taggs = MutableLiveData<List<Tagg>>()
+    val taggs: LiveData<List<Tagg>> = _taggs
+
     private val _photos = MutableLiveData<List<Photo>>()
     val photos: LiveData<List<Photo>> = _photos
 
-    fun getPhotos(id: Long) = liveData(Dispatchers.IO) {
-        emit(mainRepository.getPhotos(id))
+    fun getPhotos(id: Long) {
+        viewModelScope.launch {
+            _photos.value = mainRepository.getPhotos(id)
+        }
     }
 
     fun changeTaggName(id: Long, newTagg: String){
@@ -53,8 +61,8 @@ class PhotosViewModel(
         viewModelScope.launch { mainRepository.clearTagg(id) }
     }
 
-    fun getTaggs(): LiveData<List<Tagg>> = liveData(Dispatchers.IO) {
-        emit(mainRepository.getTaggs())
+    fun getTaggs(){
+        viewModelScope.launch { _taggs.value = mainRepository.getTaggs() }
     }
     fun insertPhoto(photo: Photo, size: Long){
         viewModelScope.launch { mainRepository.insertPhoto(photo, size) }

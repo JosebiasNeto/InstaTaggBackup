@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.data.database
+package com.jnsoft.instatagg.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert

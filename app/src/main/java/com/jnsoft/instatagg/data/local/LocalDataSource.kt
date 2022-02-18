@@ -1,10 +1,9 @@
-package com.jnsoft.instatagg.domain.repository
+package com.jnsoft.instatagg.data.local
 
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
 
-interface MainRepository{
-
+interface LocalDataSource {
     suspend fun insertPhoto(photo: Photo, size: Long)
 
     suspend fun getPhotos(id: Long): List<Photo>

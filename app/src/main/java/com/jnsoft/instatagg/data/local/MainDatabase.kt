@@ -1,4 +1,4 @@
-package com.jnsoft.instatagg.data.database
+package com.jnsoft.instatagg.data.local
 
 import android.content.Context
 import androidx.room.AutoMigration

@@ -58,28 +58,19 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         binding = ActivityPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        viewPager = binding.vpFullscreenPhoto
-        pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
-        viewPager.adapter = pageAdapter
-        tagg = intent.getParcelableExtra<Tagg>("tagg")!!
-        setTagg(tagg.id)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        setPhotosAdapter()
-        binding.rvPhotos.adapter = adapter
-        binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
-        if (tagg != null) {
-            tagg.id?.let {
-                viewModel.getPhotos(it).observe(this, {
-                    refreshAdapter(it.reversed())
-                    refreshPagerAdapter(it.reversed())
-                })
-            }
-        }
+
+        setTagg()
+        setPhotos()
+        setFullscreenPhotos()
+        setTaggs()
+
         binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
                 selectPhoto(position, view)
             }
         })
+
         binding.ibDelete.setOnClickListener {
             deletePhotos()
         }
@@ -87,6 +78,7 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         binding.ibShare.setOnClickListener {
             sharePhotos()
         }
+
         registerForContextMenu(binding.ibMore)
         binding.ibMore.setOnClickListener { openContextMenu(it) }
 
@@ -96,18 +88,68 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
             startActivity(mainActivity)
             overridePendingTransition(0,0)
         }
-        adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
-        binding.rvChooseTagg.adapter = adapterMiniTaggs
-        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
-        viewModel.getTaggs().observe(this, {
-            refreshAdapterMain(it)
-        })
 
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult())
         { result ->
             getImportPhotos(result)
         }
+    }
+
+    private fun setTagg() {
+        tagg = intent.getParcelableExtra<Tagg>("tagg")!!
+        val id = tagg.id
+        if (id != null) {
+            viewModel.getTagg(id)
+            viewModel.tagg.observe(this, {
+                supportActionBar!!.title = it.name
+                binding.toolbar.setBackgroundColor(it.color)
+                if(it.size.toString().length > 6){
+                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
+                } else binding.tvTotalSize.text = "0"
+            })
+        }
+    }
+
+    private fun setPhotos() {
+        val outMetrics = DisplayMetrics()
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display = this.display
+            display?.getRealMetrics(outMetrics)
+        } else {
+            @Suppress("DEPRECATION")
+            val display = this.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
+            display.getMetrics(outMetrics)
+        }
+        adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
+        binding.rvPhotos.adapter = adapter
+        binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
+        if (tagg != null) {
+            tagg.id?.let {
+                viewModel.getPhotos(it)
+                viewModel.photos.observe(this, {
+                    refreshAdapter(it.reversed())
+                    refreshPagerAdapter(it.reversed())
+                })
+            }
+        }
+    }
+
+    private fun setFullscreenPhotos(){
+        viewPager = binding.vpFullscreenPhoto
+        pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
+        viewPager.adapter = pageAdapter
+    }
+
+    private fun setTaggs(){
+        adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
+        binding.rvChooseTagg.adapter = adapterMiniTaggs
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
+        viewModel.getTaggs()
+        viewModel.taggs.observe(this, {
+            refreshAdapterMain(it)
+        })
     }
 
     private fun selectPhoto(position: Int, view: View) {
@@ -128,6 +170,7 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         changeBottomOptionsVisibility()
 
     }
+
     private fun checkCurrentPhotoViewPager(){
         if(binding.vpFullscreenPhoto.isVisible) adapter.getPhoto(viewPager.currentItem).checked = true
     }
@@ -154,33 +197,6 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         adapterMiniTaggs.apply {
             addTaggs(taggs)
             notifyDataSetChanged()
-        }
-    }
-
-    private fun setPhotosAdapter() {
-        val outMetrics = DisplayMetrics()
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = this.display
-            display?.getRealMetrics(outMetrics)
-        } else {
-            @Suppress("DEPRECATION")
-            val display = this.windowManager.defaultDisplay
-            @Suppress("DEPRECATION")
-            display.getMetrics(outMetrics)
-        }
-        adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
-    }
-
-    private fun setTagg(id: Long?) {
-        if (id != null) {
-            viewModel.getTagg(id)
-            viewModel.tagg.observe(this, {
-                supportActionBar!!.title = it.name
-                binding.toolbar.setBackgroundColor(it.color)
-                if(it.size.toString().length > 6){
-                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
-                } else binding.tvTotalSize.text = "0"
-            })
         }
     }
 
@@ -315,15 +331,12 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         }
         return ""
     }
-
     fun isExternalStorageDocument(uri: Uri): Boolean {
         return "com.android.externalstorage.documents" == uri.authority
     }
-
     fun isDownloadsDocument(uri: Uri): Boolean {
         return "com.android.providers.downloads.documents" == uri.authority
     }
-
     fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri.authority
     }
