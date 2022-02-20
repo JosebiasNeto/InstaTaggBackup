@@ -4,17 +4,17 @@ import android.app.AlertDialog
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
+import com.jnsoft.instatagg.databinding.DialogCreateEditTaggBinding
 
-open class BaseTaggFragment : DialogFragment() {
+open class BaseTaggDialog : DialogFragment() {
 
-    protected fun changeColor(binding: FragmentCreateEditTaggBinding, color: Int) {
+    protected fun changeColor(binding: DialogCreateEditTaggBinding, color: Int) {
         binding.btnChoseColor.setBackgroundColor(color)
         binding.btnChoseColor.setHintTextColor(color)
         binding.cvChoseColor.visibility = View.GONE
     }
 
-    protected fun choseColor(binding: FragmentCreateEditTaggBinding) {
+    protected fun choseColor(binding: DialogCreateEditTaggBinding) {
         binding.cvChoseColor.visibility = View.VISIBLE
         binding.cvChoseColor.setOnClickListener {  }
         binding.cvColor1.setOnClickListener { changeColor(binding, binding.cvColor1.cardBackgroundColor.defaultColor) }
@@ -49,7 +49,7 @@ open class BaseTaggFragment : DialogFragment() {
         }
         return dialog
     }
-    protected fun setEditText(binding: FragmentCreateEditTaggBinding){
+    protected fun setEditText(binding: DialogCreateEditTaggBinding){
         binding.etTaggName.requestFocus()
     }
 }

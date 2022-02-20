@@ -1,5 +1,6 @@
 package com.jnsoft.instatagg.presentation.photos
 
+import android.app.Activity.RESULT_OK
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -12,28 +13,29 @@ import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.jnsoft.instatagg.R
-import com.jnsoft.instatagg.databinding.ActivityPhotosBinding
+import com.jnsoft.instatagg.databinding.FragmentPhotosBinding
 import com.jnsoft.instatagg.domain.model.Photo
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.camera.CameraActivity
 import com.jnsoft.instatagg.presentation.camera.MiniTaggsAdapter
-import com.jnsoft.instatagg.presentation.taggs.EditTaggFragment
-import com.jnsoft.instatagg.presentation.taggs.TaggsActivity
+import com.jnsoft.instatagg.presentation.taggs.EditTaggDialog
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventDeletePhoto
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventDeleteTagg
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventImportPhoto
@@ -43,26 +45,24 @@ import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
-    private lateinit var binding: ActivityPhotosBinding
+class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
+    private lateinit var binding: FragmentPhotosBinding
     private val viewModel: PhotosViewModel by viewModel()
     private lateinit var adapter: PhotosAdapter
     private lateinit var adapterMiniTaggs: MiniTaggsAdapter
-    private lateinit var pageAdapter: FullscreenPhotoAdapter
     private lateinit var tagg: Tagg
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var viewPager: ViewPager2
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPhotosBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPhotosBinding.inflate(inflater, container, false)
 
+        setToolbar()
         setTagg()
         setPhotos()
-        setFullscreenPhotos()
         setTaggs()
 
         binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
@@ -80,13 +80,11 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         }
 
         registerForContextMenu(binding.ibMore)
-        binding.ibMore.setOnClickListener { openContextMenu(it) }
+        binding.ibMore.setOnClickListener { activity!!.openContextMenu(it) }
 
         binding.fabFromTaggToCamera.setOnClickListener {
-            val mainActivity = Intent(this, CameraActivity::class.java)
-            mainActivity.putExtra("tagg", tagg)
-            startActivity(mainActivity)
-            overridePendingTransition(0,0)
+            it.findNavController().navigate(PhotosFragmentDirections
+                .actionPhotosFragmentToCameraFragement(tagg.id!!))
         }
 
         activityResultLauncher = registerForActivityResult(
@@ -94,16 +92,21 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         { result ->
             getImportPhotos(result)
         }
+        return binding.root
+    }
+
+    private fun setToolbar(){
+        
     }
 
     private fun setTagg() {
-        tagg = intent.getParcelableExtra<Tagg>("tagg")!!
+        tagg = arguments!!.getParcelable("tagg")!!
         val id = tagg.id
         if (id != null) {
             viewModel.getTagg(id)
             viewModel.tagg.observe(this, {
-                supportActionBar!!.title = it.name
-                binding.toolbar.setBackgroundColor(it.color)
+                activity!!.actionBar!!.title = it.name
+                binding.tbPhotos.setBackgroundColor(it.color)
                 if(it.size.toString().length > 6){
                     binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
                 } else binding.tvTotalSize.text = "0"
@@ -114,38 +117,31 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
     private fun setPhotos() {
         val outMetrics = DisplayMetrics()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = this.display
+            val display = context!!.display
             display?.getRealMetrics(outMetrics)
         } else {
             @Suppress("DEPRECATION")
-            val display = this.windowManager.defaultDisplay
+            val display = activity!!.windowManager.defaultDisplay
             @Suppress("DEPRECATION")
             display.getMetrics(outMetrics)
         }
         adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
         binding.rvPhotos.adapter = adapter
-        binding.rvPhotos.layoutManager = GridLayoutManager(this, 3)
+        binding.rvPhotos.layoutManager = GridLayoutManager(context!!, 3)
         if (tagg != null) {
             tagg.id?.let {
                 viewModel.getPhotos(it)
                 viewModel.photos.observe(this, {
                     refreshAdapter(it.reversed())
-                    refreshPagerAdapter(it.reversed())
                 })
             }
         }
     }
 
-    private fun setFullscreenPhotos(){
-        viewPager = binding.vpFullscreenPhoto
-        pageAdapter = FullscreenPhotoAdapter(this, arrayListOf())
-        viewPager.adapter = pageAdapter
-    }
-
     private fun setTaggs(){
         adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
         binding.rvChooseTagg.adapter = adapterMiniTaggs
-        binding.rvChooseTagg.layoutManager = LinearLayoutManager(this)
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(context!!)
         viewModel.getTaggs()
         viewModel.taggs.observe(this, {
             refreshAdapterMain(it)
@@ -159,20 +155,9 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
             adapter.getPhoto(position).checked =
                 !adapter.getPhoto(position).checked
         } else {
-            openFullscreen(position)
+            viewModel.setFullscreenPhoto(adapter.getPhoto(position).id!!)
+            view.findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
         }
-    }
-
-    private fun openFullscreen(position: Int) {
-        viewPager.setCurrentItem(position, false)
-        binding.rvPhotos.visibility = View.GONE
-        binding.vpFullscreenPhoto.visibility = View.VISIBLE
-        changeBottomOptionsVisibility()
-
-    }
-
-    private fun checkCurrentPhotoViewPager(){
-        if(binding.vpFullscreenPhoto.isVisible) adapter.getPhoto(viewPager.currentItem).checked = true
     }
 
     fun changeBottomOptionsVisibility(){
@@ -187,12 +172,7 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
             notifyDataSetChanged()
         }
     }
-    private fun refreshPagerAdapter(photos: List<Photo>){
-        pageAdapter.apply {
-            addPhotos(photos)
-            notifyDataSetChanged()
-        }
-    }
+
     private fun refreshAdapterMain(taggs: List<Tagg>){
         adapterMiniTaggs.apply {
             addTaggs(taggs)
@@ -200,14 +180,14 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.tagg_option_menu, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.tagg_option_menu, menu)
+//        return true
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
+        //val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         when (item.itemId) {
             R.id.import_photos -> {
                 val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -217,7 +197,7 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                 activityResultLauncher.launch(galery)
                 }
             android.R.id.home -> {
-                onBackPressed()
+
                 return true
             }
             R.id.tagg_edit -> {
@@ -240,13 +220,11 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
         if(result.resultCode == RESULT_OK){
             if (result.data!!.data != null){
                 val uriPhoto = result.data!!.data!!
-                val filePhoto = copyFile(File(getPath(applicationContext, uriPhoto)),
+                val filePhoto = copyFile(File(getPath(context!!.applicationContext, uriPhoto)),
                     System.currentTimeMillis().toString() + ".jpg")
                 viewModel.insertPhoto(Photo(filePhoto, tagg, null),
                     (filePhoto.toUri().toFile()).length())
                 eventImportPhoto()
-                finish()
-                startActivity(this.intent)
             }
             else if (result.data!!.clipData != null){
                 val newPhotos = arrayListOf<Uri>()
@@ -255,16 +233,15 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                     newPhotos.add(mClipData.getItemAt(i).uri)
                 }
                 newPhotos.map {
-                    val newPhoto = copyFile(File(getPath(applicationContext, it)),
+                    val newPhoto = copyFile(File(getPath(context!!.applicationContext, it)),
                         System.currentTimeMillis().toString() + ".jpg")
                     viewModel.insertPhoto(Photo(newPhoto, tagg, null),
                         (newPhoto.toUri().toFile()).length())
                     eventImportPhoto()
-                    finish()
-                    startActivity(this.intent)
+
                 }
             } else {
-                Toast.makeText(this, "No images picked", Toast.LENGTH_LONG).show()
+                Toast.makeText(context!!, "No images picked", Toast.LENGTH_LONG).show()
             }}
     }
     fun getPath(context: Context, uri: Uri): String {
@@ -342,8 +319,8 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
     }
 
     private fun editTagg(tagg: Tagg){
-        val editTaggFragment = EditTaggFragment.newInstance(tagg, this)
-        editTaggFragment.show(supportFragmentManager,"editTagg")
+        val editTaggFragment = EditTaggDialog.newInstance(tagg, this)
+        editTaggFragment.show(activity!!.supportFragmentManager,"editTagg")
     }
     override fun editTagg(name: String, color: Int) {
         tagg.id?.let { viewModel.changeTaggName(it, name) }
@@ -360,12 +337,10 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                 viewModel.delPhoto(
                     it1,
                     (it1.path!!.toUri().toFile().length()))
-                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
-        finish()
-        startActivity(intent)
     }
 
     private fun deleteTagg(tagg: Tagg){
@@ -375,21 +350,18 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                 viewModel.delPhoto(
                     it1,
                     (it1.path!!.toUri().toFile().length()))
-                applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
-        val taggsActivity = Intent(this, TaggsActivity::class.java)
-        startActivity(taggsActivity)
         eventDeleteTagg(adapter.itemCount)
     }
 
     private fun sharePhotos() {
-        checkCurrentPhotoViewPager()
         val contentUris = arrayListOf<Uri>()
         for(i in 0 until adapter.itemCount){
             var uri = FileProvider.getUriForFile(
-                applicationContext,
+                context!!.applicationContext,
                 "com.jnsoft.instatagg.fileprovider",
                 File(Uri.parse(adapter.getPhoto(i).path).path))
             if(adapter.getPhoto(i).checked){
@@ -408,7 +380,6 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
     }
 
     private fun deletePhotos(){
-        checkCurrentPhotoViewPager()
         for(i in 0 until adapter.itemCount){
             if(adapter.getPhoto(i).checked) {
                 adapter.getPhoto(i).let { it1 ->
@@ -416,31 +387,27 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                         .toFile().length()))
                 }
                 adapter.getPhoto(i).path?.let { it1 ->
-                    applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                    context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
                         .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
                 }
                 eventDeletePhoto()
             }
         }
-        finish()
-        overridePendingTransition(0,0)
-        startActivity(intent)
-        overridePendingTransition(0,0)
     }
 
-    override fun onCreateContextMenu(
-            menu: ContextMenu?,
-            v: View?,
-            menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.photos_option_menu, menu)
-        if(viewPager.isVisible){
-            val selectAllMenu = menu!!.findItem(R.id.select_all)
-            selectAllMenu.isVisible = false
-        }
-    }
+//    override fun onCreateContextMenu(
+//            menu: ContextMenu?,
+//            v: View?,
+//            menuInfo: ContextMenu.ContextMenuInfo?
+//    ) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.photos_option_menu, menu)
+//        if(viewPager.isVisible){
+//            val selectAllMenu = menu!!.findItem(R.id.select_all)
+//            selectAllMenu.isVisible = false
+//        }
+//    }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -464,7 +431,6 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
     }
 
     fun moveToTagg(oldTaggId: Long){
-        checkCurrentPhotoViewPager()
         binding.cvChooseTagg.isVisible = true
         binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
@@ -476,14 +442,11 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                             (photo.path!!.toUri().toFile().length()), oldTaggId)
                     }
                 }
-                finish()
-                startActivity(intent)
             }
         })
     }
 
     private fun copyToTagg() {
-        checkCurrentPhotoViewPager()
         binding.cvChooseTagg.isVisible = true
         binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
@@ -497,27 +460,12 @@ class PhotosActivity : AppCompatActivity(), EditTaggFragment.EditedTagg {
                             (adapter.getPhoto(i).path!!.toUri().toFile().length()))
                     }
                 }
-                finish()
-                startActivity(intent)
             }
         })
     }
 
-    override fun onBackPressed() {
-        if(binding.cvChooseTagg.isVisible){
-            binding.cvChooseTagg.visibility = View.GONE
-        } else if(binding.cvBottom.isVisible){
-            startActivity(intent)
-            overridePendingTransition(0,0)
-        } else {
-            startActivity(Intent(this, TaggsActivity::class.java))
-            overridePendingTransition(0,0)
-            finish()
-        }
-    }
-
     private fun copyFile(currentFile: File, newFileName: String): String {
-        val newFile = File(applicationContext.filesDir, "$newFileName.jpg")
+        val newFile = File(context!!.applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
     }
 }

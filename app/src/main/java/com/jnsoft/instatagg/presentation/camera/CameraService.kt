@@ -14,14 +14,14 @@ import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.jnsoft.instatagg.databinding.ActivityCameraBinding
+import com.jnsoft.instatagg.databinding.FragmentCameraBinding
 import com.jnsoft.instatagg.utils.Constants
 import com.jnsoft.instatagg.utils.FirebaseAnalytics
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CameraControls (val context: Context, val activity: CameraActivity, val binding: ActivityCameraBinding) {
+class CameraService (val context: Context, val fragment: CameraFragment, val binding: FragmentCameraBinding) {
 
     private var camera: Camera? = null
     private lateinit var outputDirectory: File
@@ -37,7 +37,7 @@ class CameraControls (val context: Context, val activity: CameraActivity, val bi
                 display?.getRealMetrics(outMetrics)
             } else {
                 @Suppress("DEPRECATION")
-                val display = activity.windowManager.defaultDisplay
+                val display = fragment.activity!!.windowManager.defaultDisplay
                 @Suppress("DEPRECATION")
                 display.getMetrics(outMetrics)
             }
@@ -54,7 +54,7 @@ class CameraControls (val context: Context, val activity: CameraActivity, val bi
                 .build()
             cameraProvider.unbindAll()
             camera = cameraProvider.bindToLifecycle(
-                activity, cameraSelector, preview, imageCapture)
+                fragment, cameraSelector, preview, imageCapture)
         }, ContextCompat.getMainExecutor(context))
         val scaleGestureDetector = ScaleGestureDetector(context, listener)
         binding.viewFinder.setOnTouchListener { view, motionEvent ->
@@ -90,10 +90,10 @@ class CameraControls (val context: Context, val activity: CameraActivity, val bi
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Log.d(Constants.TAG, msg)
-                    if(activity.getCurrentTagg().name.isEmpty()){
+                    if(fragment.getCurrentTagg().name.isEmpty()){
                         Toast.makeText(context.applicationContext,"Photo capture failed!", Toast.LENGTH_SHORT).show()
                     } else {
-                        savedUri.toString().let {activity.insertPhoto(it, activity.getCurrentTagg(), (photoFile.length())) }
+                        savedUri.toString().let {fragment.insertPhoto(it, fragment.getCurrentTagg(), (photoFile.length())) }
                         MediaActionSound().play(MediaActionSound.SHUTTER_CLICK)
                         flashEffect()
                         if(getCurrentCamera() == CameraSelector.DEFAULT_BACK_CAMERA) FirebaseAnalytics.eventTakePhotoBack()

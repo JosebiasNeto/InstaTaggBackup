@@ -18,11 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstaTagg"
         android:requestLegacyExternalStorage="true">
-        <activity android:name="com.jnsoft.instatagg.presentation.photos.PhotosActivity" />
-        <activity android:name="com.jnsoft.instatagg.presentation.taggs.TaggsActivity" />
-        <activity
-            android:name="com.jnsoft.instatagg.presentation.camera.CameraActivity"
-            tools:ignore="MissingClass"
+
+        <activity android:name=".presentation.SingleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.jnsoft.instatagg.fileprovider"

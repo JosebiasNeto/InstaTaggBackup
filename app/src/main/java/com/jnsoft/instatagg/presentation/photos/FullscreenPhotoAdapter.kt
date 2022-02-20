@@ -13,7 +13,7 @@ class FullscreenPhotoAdapter(activity: AppCompatActivity, val photos: ArrayList<
 
     override fun createFragment(position: Int): Fragment {
         this.position = position
-        return FullscreenPhotoFragment.newInstance(photos[position])
+        return FullscreenPhotoFragment()
     }
 
     fun addPhotos(fullscreenPhotos: List<Photo>){

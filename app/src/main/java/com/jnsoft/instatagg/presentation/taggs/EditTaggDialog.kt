@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.widget.Toast
 import com.jnsoft.instatagg.R
-import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
+import com.jnsoft.instatagg.databinding.DialogCreateEditTaggBinding
 import com.jnsoft.instatagg.domain.model.Tagg
 import java.io.Serializable
 
-class EditTaggFragment : BaseTaggFragment() {
+class EditTaggDialog : BaseTaggDialog() {
 
-    private var _binding: FragmentCreateEditTaggBinding? = null
+    private var _binding: DialogCreateEditTaggBinding? = null
     private val binding get() = _binding
     private lateinit var tagg: Tagg
     private lateinit var editedTagg: EditedTagg
@@ -22,8 +22,8 @@ class EditTaggFragment : BaseTaggFragment() {
     }
 
     companion object {
-        fun newInstance(tagg: Tagg, editedTagg: EditedTagg): EditTaggFragment {
-            val fragment = EditTaggFragment()
+        fun newInstance(tagg: Tagg, editedTagg: EditedTagg): EditTaggDialog {
+            val fragment = EditTaggDialog()
             val save = Bundle()
             save.putParcelable("tagg", tagg)
             save.putSerializable("editedTagg", editedTagg)
@@ -36,7 +36,7 @@ class EditTaggFragment : BaseTaggFragment() {
 
         tagg = requireArguments().getParcelable<Tagg>("tagg")!!
         editedTagg = requireArguments().getSerializable("editedTagg") as EditedTagg
-        _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
+        _binding = DialogCreateEditTaggBinding.inflate(layoutInflater)
         binding!!.confirmButton.text = getString(R.string.txt_edit)
         binding!!.tvCreateTagg.text = getString(R.string.edit_tagg)
         binding?.etTaggName!!.text = Editable.Factory.getInstance().newEditable(tagg.name)

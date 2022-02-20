@@ -1,55 +1,59 @@
 package com.jnsoft.instatagg.presentation.taggs
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.jnsoft.instatagg.databinding.ActivityTaggsBinding
+import com.jnsoft.instatagg.databinding.FragmentTaggsBinding
 import com.jnsoft.instatagg.domain.model.Tagg
-import com.jnsoft.instatagg.presentation.camera.CameraActivity
-import com.jnsoft.instatagg.presentation.photos.PhotosActivity
 import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TaggsActivity : AppCompatActivity(), CreateTaggFragment.CreatedTagg {
+class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
 
-    private lateinit var binding: ActivityTaggsBinding
+    private lateinit var binding: FragmentTaggsBinding
     private val viewModel: TaggsViewModel by viewModel()
     private lateinit var adapter: TaggsAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityTaggsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentTaggsBinding.inflate(inflater, container, false)
 
         setupTaggs()
 
         binding.btnCreateTagg.setOnClickListener {
-            val createTaggFragment = CreateTaggFragment.newInstance(this)
-            createTaggFragment.show(supportFragmentManager,"createTagg")
+            val createTaggFragment = CreateTaggDialog.newInstance(this)
+            createTaggFragment.show(activity!!.supportFragmentManager,"createTagg")
         }
 
         binding.rvTaggs.addOnItemClickListener(object : OnItemClickListener{
             override fun onItemClicked(position: Int, view: View) {
-                openPhotosActivity(position)
-                finish()
+                view.findNavController().navigate(TaggsFragmentDirections
+                    .actionTaggsFragmentToPhotosFragment(adapter.getTagg(position).id!!))
             }
         })
+
+        return binding.root
     }
 
     private fun setupTaggs() {
-        binding.rvTaggs.layoutManager = GridLayoutManager(this,3)
+        binding.rvTaggs.layoutManager = GridLayoutManager(context,3)
         val outMetrics = DisplayMetrics()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = this.display
+            val display = context!!.display
             display?.getRealMetrics(outMetrics)
         } else {
             @Suppress("DEPRECATION")
-            val display = this.windowManager.defaultDisplay
+            val display = activity!!.windowManager.defaultDisplay
             @Suppress("DEPRECATION")
             display.getMetrics(outMetrics)
         }
@@ -84,18 +88,5 @@ class TaggsActivity : AppCompatActivity(), CreateTaggFragment.CreatedTagg {
         Handler().postDelayed({
             viewModel.getTaggs()
         }, 500)
-    }
-
-    private fun openPhotosActivity(idTagg: Int) {
-        val photosActivity = Intent(this, PhotosActivity::class.java)
-        val tagg = adapter.getTagg(idTagg)
-        photosActivity.putExtra("tagg", tagg)
-        startActivity(photosActivity)
-        overridePendingTransition(0,0)
-    }
-
-    override fun onBackPressed() {
-        startActivity(Intent(this, CameraActivity::class.java))
-        finish()
     }
 }

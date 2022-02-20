@@ -9,6 +9,9 @@ class Repository(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource
 ): MainRepository {
+
+    private val controlFiles = ControlFiles()
+
     override suspend fun insertPhoto(photo: Photo, size: Long) {
         localDataSource.insertPhoto(photo, size)
     }

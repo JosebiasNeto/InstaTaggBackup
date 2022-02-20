@@ -15,7 +15,7 @@ import com.jnsoft.instatagg.domain.model.Photo
 import com.squareup.picasso.Picasso
 
 
-class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosActivity, val width: Int) :
+class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFragment, val width: Int) :
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
     class PhotosHolder(itemView: View, private val width: Int) : RecyclerView.ViewHolder(itemView) {
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
@@ -50,7 +50,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
-            PhotosAdapter(photos, activity, width).changeCheckBoxVisibility()
+            PhotosAdapter(photos, fragment, width).changeCheckBoxVisibility()
             photos[position].checked = true
             notifyDataSetChanged()
             true }
@@ -71,6 +71,6 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val activity: PhotosAc
             photos.map { it.checkboxVisibility = false}
         } else photos.map { it.checkboxVisibility = true
         it.checked = false}
-        activity.changeBottomOptionsVisibility()
+        fragment.changeBottomOptionsVisibility()
     }
 }

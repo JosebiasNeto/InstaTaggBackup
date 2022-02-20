@@ -6,13 +6,13 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.Toast
 import com.jnsoft.instatagg.R
-import com.jnsoft.instatagg.databinding.FragmentCreateEditTaggBinding
+import com.jnsoft.instatagg.databinding.DialogCreateEditTaggBinding
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventCreateTagg
 import java.io.Serializable
 
-class CreateTaggFragment() : BaseTaggFragment() {
+class CreateTaggDialog() : BaseTaggDialog() {
 
-    private var _binding: FragmentCreateEditTaggBinding? = null
+    private var _binding: DialogCreateEditTaggBinding? = null
     private val binding get() = _binding
     private lateinit var createdTagg: CreatedTagg
 
@@ -21,8 +21,8 @@ class CreateTaggFragment() : BaseTaggFragment() {
     }
 
     companion object {
-        fun newInstance(createdTagg: CreatedTagg): CreateTaggFragment {
-            val fragment = CreateTaggFragment()
+        fun newInstance(createdTagg: CreatedTagg): CreateTaggDialog {
+            val fragment = CreateTaggDialog()
             val save = Bundle()
             save.putSerializable("createdTagg", createdTagg)
             fragment.arguments = save
@@ -33,7 +33,7 @@ class CreateTaggFragment() : BaseTaggFragment() {
     @SuppressLint("RestrictedApi")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        _binding = FragmentCreateEditTaggBinding.inflate(layoutInflater)
+        _binding = DialogCreateEditTaggBinding.inflate(layoutInflater)
         binding?.btnChoseColor?.setOnClickListener {
             choseColor(_binding!!)
         }

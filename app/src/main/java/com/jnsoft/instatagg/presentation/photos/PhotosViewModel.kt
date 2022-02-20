@@ -23,6 +23,16 @@ class PhotosViewModel(
     private val _photos = MutableLiveData<List<Photo>>()
     val photos: LiveData<List<Photo>> = _photos
 
+    private val _photosSelected = MutableLiveData<List<Photo>>()
+    val photosSelected: LiveData<List<Photo>> = _photosSelected
+
+    private val _photoFullscreen = MutableLiveData<Photo>()
+    val photoFullscreen: LiveData<Photo> = _photoFullscreen
+
+    fun setFullscreenPhoto(id: Long){
+        _photos.value!!.map { if(it.id == id) _photoFullscreen.value = it}
+    }
+
     fun getPhotos(id: Long) {
         viewModelScope.launch {
             _photos.value = mainRepository.getPhotos(id)

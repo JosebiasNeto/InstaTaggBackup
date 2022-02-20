@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/cameraFragement">
+
+    <fragment
+        android:id="@+id/cameraFragement"
+        android:name="com.jnsoft.instatagg.presentation.camera.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera">
+        <argument
+            android:name="taggid"
+            app:argType="long"
+            android:defaultValue="0L"
+            />
+        <action
+            android:id="@+id/action_cameraFragement_to_taggsFragment"
+            app:destination="@id/taggsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/taggsFragment"
+        android:name="com.jnsoft.instatagg.presentation.taggs.TaggsFragment"
+        android:label="fragment_taggs"
+        tools:layout="@layout/fragment_taggs"
+        >
+        <action
+            android:id="@+id/action_taggsFragment_to_photosFragment"
+            app:destination="@id/photosFragment" >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/photosFragment"
+        android:name="com.jnsoft.instatagg.presentation.photos.PhotosFragment"
+        android:label="fragment_photos"
+        tools:layout="@layout/fragment_photos">
+        <argument
+            android:name="taggid"
+            app:argType="long"
+            />
+        <action
+            android:id="@+id/action_photosFragment_to_fullscreenPhotoFragment"
+            app:destination="@id/fullscreenPhotoFragment" />
+        <action
+            android:id="@+id/action_photosFragment_to_cameraFragement"
+            app:destination="@id/cameraFragement" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fullscreenPhotoFragment"
+        android:name="com.jnsoft.instatagg.presentation.photos.FullscreenPhotoFragment"
+        android:label="fragment_fullscreen_photo"
+        tools:layout="@layout/fragment_fullscreen_photo">
+    </fragment>
+
+</navigation>
