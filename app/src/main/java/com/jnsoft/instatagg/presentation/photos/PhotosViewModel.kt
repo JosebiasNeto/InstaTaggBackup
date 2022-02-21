@@ -17,20 +17,20 @@ class PhotosViewModel(
     private val _tagg = MutableLiveData<Tagg>()
     val tagg: LiveData<Tagg> = _tagg
 
-    private val _taggs = MutableLiveData<List<Tagg>>()
-    val taggs: LiveData<List<Tagg>> = _taggs
-
     private val _photos = MutableLiveData<List<Photo>>()
     val photos: LiveData<List<Photo>> = _photos
+
+    private val _taggs = MutableLiveData<List<Tagg>>()
+    val taggs: LiveData<List<Tagg>> = _taggs
 
     private val _photosSelected = MutableLiveData<List<Photo>>()
     val photosSelected: LiveData<List<Photo>> = _photosSelected
 
-    private val _photoFullscreen = MutableLiveData<Photo>()
-    val photoFullscreen: LiveData<Photo> = _photoFullscreen
+    private val _photoFullscreen = MutableLiveData<Int>()
+    val photoFullscreen: LiveData<Int> = _photoFullscreen
 
-    fun setFullscreenPhoto(id: Long){
-        _photos.value!!.map { if(it.id == id) _photoFullscreen.value = it}
+    fun getTagg(id: Long){
+        viewModelScope.launch { _tagg.value = mainRepository.getTagg(id) }
     }
 
     fun getPhotos(id: Long) {
@@ -39,28 +39,32 @@ class PhotosViewModel(
         }
     }
 
+    fun getTaggs(){
+        viewModelScope.launch { _taggs.value = mainRepository.getTaggs() }
+    }
+
+    fun setFullscreenPhoto(position: Int){
+        _photoFullscreen.value = position
+    }
+
     fun changeTaggName(id: Long, newTagg: String){
         viewModelScope.launch {
             mainRepository.changeTaggName(id, newTagg)
         }
     }
-    fun delTagg(id: Long){
-        viewModelScope.launch(Dispatchers.IO) { mainRepository.delTagg(id) }
-    }
-
     fun changeTaggColor(id: Long, newColor: Int){
         viewModelScope.launch(Dispatchers.IO) {
             mainRepository.changeTaggColor(id, newColor) }
+    }
+
+    fun delTagg(id: Long){
+        viewModelScope.launch(Dispatchers.IO) { mainRepository.delTagg(id) }
     }
 
     fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long, id: Long,
                   size: Long, oldTaggId: Long){
         viewModelScope.launch { mainRepository.movePhoto(newTaggName, newTaggColor, newTaggId, id,
                                                          size, oldTaggId) }
-    }
-
-    fun getTagg(id: Long){
-        viewModelScope.launch { _tagg.value = mainRepository.getTagg(id) }
     }
 
     fun delPhoto(photo: Photo, size: Long){
@@ -71,9 +75,6 @@ class PhotosViewModel(
         viewModelScope.launch { mainRepository.clearTagg(id) }
     }
 
-    fun getTaggs(){
-        viewModelScope.launch { _taggs.value = mainRepository.getTaggs() }
-    }
     fun insertPhoto(photo: Photo, size: Long){
         viewModelScope.launch { mainRepository.insertPhoto(photo, size) }
     }

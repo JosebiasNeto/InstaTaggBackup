@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/layout/create_tagg.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_create_edit_tagg.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_fullscreen_image.xml" value="0.24365942028985507" />
         <entry key="app/src/main/res/layout/fragment_fullscreen_photo.xml" value="0.1671875" />
         <entry key="app/src/main/res/layout/fragment_photos.xml" value="0.25" />
         <entry key="app/src/main/res/layout/photo_item.xml" value="0.33" />

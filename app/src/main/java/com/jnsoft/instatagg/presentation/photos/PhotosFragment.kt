@@ -13,10 +13,7 @@ import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -28,6 +25,7 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jnsoft.instatagg.R
@@ -42,14 +40,15 @@ import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventImportPhoto
 import com.jnsoft.instatagg.utils.FirebaseAnalytics.eventSharePhoto
 import com.jnsoft.instatagg.utils.OnItemClickListener
 import com.jnsoft.instatagg.utils.addOnItemClickListener
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
 
 class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
     private lateinit var binding: FragmentPhotosBinding
-    private val viewModel: PhotosViewModel by viewModel()
+    private val viewModel: PhotosViewModel by sharedViewModel()
     private lateinit var adapter: PhotosAdapter
     private lateinit var adapterMiniTaggs: MiniTaggsAdapter
+    private val args: PhotosFragmentArgs by navArgs()
     private lateinit var tagg: Tagg
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -59,8 +58,8 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPhotosBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
-        setToolbar()
         setTagg()
         setPhotos()
         setTaggs()
@@ -80,7 +79,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         }
 
         registerForContextMenu(binding.ibMore)
-        binding.ibMore.setOnClickListener { activity!!.openContextMenu(it) }
+        binding.ibMore.setOnClickListener { view!!.showContextMenu() }
 
         binding.fabFromTaggToCamera.setOnClickListener {
             it.findNavController().navigate(PhotosFragmentDirections
@@ -95,23 +94,17 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         return binding.root
     }
 
-    private fun setToolbar(){
-        
-    }
-
     private fun setTagg() {
-        tagg = arguments!!.getParcelable("tagg")!!
-        val id = tagg.id
-        if (id != null) {
-            viewModel.getTagg(id)
-            viewModel.tagg.observe(this, {
-                activity!!.actionBar!!.title = it.name
-                binding.tbPhotos.setBackgroundColor(it.color)
-                if(it.size.toString().length > 6){
-                    binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
-                } else binding.tvTotalSize.text = "0"
-            })
-        }
+        viewModel.getTagg(args.taggid)
+        viewModel.tagg.observe(this, {
+            tagg = it
+            binding.tbPhotos.title = it.name
+            binding.tbPhotos.setBackgroundColor(it.color)
+            if(it.size.toString().length > 6){
+                binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
+            } else binding.tvTotalSize.text = "0"
+        })
+
     }
 
     private fun setPhotos() {
@@ -128,14 +121,11 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
         binding.rvPhotos.adapter = adapter
         binding.rvPhotos.layoutManager = GridLayoutManager(context!!, 3)
-        if (tagg != null) {
-            tagg.id?.let {
-                viewModel.getPhotos(it)
-                viewModel.photos.observe(this, {
-                    refreshAdapter(it.reversed())
-                })
-            }
-        }
+
+        viewModel.getPhotos(args.taggid)
+        viewModel.photos.observe(this, {
+            refreshAdapter(it.reversed())
+        })
     }
 
     private fun setTaggs(){
@@ -155,7 +145,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             adapter.getPhoto(position).checked =
                 !adapter.getPhoto(position).checked
         } else {
-            viewModel.setFullscreenPhoto(adapter.getPhoto(position).id!!)
+            viewModel.setFullscreenPhoto(position)
             view.findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
         }
     }
@@ -180,14 +170,12 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.tagg_option_menu, menu)
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.tagg_option_menu, menu)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //val tagg = intent.getParcelableExtra<Tagg>("tagg")!!
         when (item.itemId) {
             R.id.import_photos -> {
                 val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -197,19 +185,19 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 activityResultLauncher.launch(galery)
                 }
             android.R.id.home -> {
-
+                activity!!.onBackPressed()
                 return true
             }
             R.id.tagg_edit -> {
-                editTagg(tagg)
+                editTagg()
                 return true
             }
             R.id.clear_tagg -> {
-                clearTagg(tagg)
+                clearTagg()
                 return true
             }
             R.id.delete_tagg -> {
-                deleteTagg(tagg)
+                deleteTagg()
                 return true
             }
         }
@@ -242,7 +230,9 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 }
             } else {
                 Toast.makeText(context!!, "No images picked", Toast.LENGTH_LONG).show()
-            }}
+            }
+        viewModel.getPhotos(tagg.id!!)
+        }
     }
     fun getPath(context: Context, uri: Uri): String {
         val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
@@ -318,7 +308,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         return "com.android.providers.media.documents" == uri.authority
     }
 
-    private fun editTagg(tagg: Tagg){
+    private fun editTagg(){
         val editTaggFragment = EditTaggDialog.newInstance(tagg, this)
         editTaggFragment.show(activity!!.supportFragmentManager,"editTagg")
     }
@@ -330,7 +320,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         }, 500)
     }
 
-    private fun clearTagg(tagg: Tagg){
+    private fun clearTagg(){
         tagg.id?.let { viewModel.clearTagg(it) }
         for(i in 0 until adapter.itemCount){
             adapter.getPhoto(i).let { it1 ->
@@ -341,9 +331,10 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
+        viewModel.getPhotos(tagg.id!!)
     }
 
-    private fun deleteTagg(tagg: Tagg){
+    private fun deleteTagg(){
         tagg.id?.let { viewModel.delTagg(it) }
         for(i in 0 until adapter.itemCount){
             adapter.getPhoto(i).let { it1 ->
@@ -354,6 +345,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
+        activity!!.onBackPressed()
         eventDeleteTagg(adapter.itemCount)
     }
 
@@ -393,26 +385,23 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 eventDeletePhoto()
             }
         }
+        changeBottomOptionsVisibility()
+        viewModel.getPhotos(tagg.id!!)
     }
 
-//    override fun onCreateContextMenu(
-//            menu: ContextMenu?,
-//            v: View?,
-//            menuInfo: ContextMenu.ContextMenuInfo?
-//    ) {
-//        super.onCreateContextMenu(menu, v, menuInfo)
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.photos_option_menu, menu)
-//        if(viewPager.isVisible){
-//            val selectAllMenu = menu!!.findItem(R.id.select_all)
-//            selectAllMenu.isVisible = false
-//        }
-//    }
+    override fun onCreateContextMenu(
+        menu: ContextMenu,
+        v: View,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        activity!!.menuInflater.inflate(R.menu.photos_option_menu, menu)
+    }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.move_to_tagg -> {
-                moveToTagg(this.tagg.id!!)
+                moveToTagg()
                 return true
             }
             R.id.copy_to_tagg -> {
@@ -430,20 +419,21 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         return super.onContextItemSelected(item)
     }
 
-    fun moveToTagg(oldTaggId: Long){
+    fun moveToTagg(){
         binding.cvChooseTagg.isVisible = true
         binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
                 for(i in 0 until adapter.itemCount){
                     if(adapter.getPhoto(i).checked){
                         val photo = adapter.getPhoto(i)
-                        val tagg = adapterMiniTaggs.getTagg(position)
-                        viewModel.movePhoto(tagg.name, tagg.color, tagg.id!!, photo.id!!,
-                            (photo.path!!.toUri().toFile().length()), oldTaggId)
+                        val newTagg = adapterMiniTaggs.getTagg(position)
+                        viewModel.movePhoto(newTagg.name, newTagg.color, newTagg.id!!, photo.id!!,
+                            (photo.path!!.toUri().toFile().length()), tagg.id!!)
                     }
                 }
             }
         })
+        binding.cvChooseTagg.isVisible = false
     }
 
     private fun copyToTagg() {
@@ -462,6 +452,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 }
             }
         })
+        binding.cvChooseTagg.isVisible = false
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {

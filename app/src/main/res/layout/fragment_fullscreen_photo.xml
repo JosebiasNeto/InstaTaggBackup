@@ -15,14 +15,8 @@
         android:id="@+id/vp_fullscreen_photo"
         app:layout_constraintTop_toBottomOf="@id/tb_fullscreenPhoto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <com.jsibbold.zoomage.ZoomageView
-        android:id="@+id/iv_fullscrean_photo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"/>
-
-    </androidx.viewpager2.widget.ViewPager2>
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
