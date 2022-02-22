@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_photosFragment_to_cameraFragement"
             app:destination="@id/cameraFragement" />
+        <action
+            android:id="@+id/action_photosFragment_to_taggsFragment"
+            app:destination="@id/taggsFragment" />
     </fragment>
 
     <fragment

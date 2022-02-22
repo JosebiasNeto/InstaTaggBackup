@@ -19,7 +19,7 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
     RecyclerView.Adapter<PhotosAdapter.PhotosHolder>() {
     class PhotosHolder(itemView: View, private val width: Int) : RecyclerView.ViewHolder(itemView) {
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
-        private val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
+        val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
             val portrait = portraitVerify(photo.path!!)
             if(portrait > 1){
@@ -29,8 +29,13 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
                 Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portrait))
                     .toInt(), 0).into(ivPhoto)
             }
-            checkBox.isVisible = photo.checkboxVisibility
-            checkBox.isChecked = photo.checked
+            if(photo.checkboxVisibility){
+                checkBox.isVisible = true
+                checkBox.isChecked = !checkBox.isChecked
+            } else {
+                checkBox.isVisible = false
+                checkBox.isChecked = true
+            }
         }
         fun portraitVerify(photoPath: String):Float{
             val options = BitmapFactory.Options()
@@ -39,6 +44,9 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
             val imageHeight = options.outHeight.toFloat()
             val imageWidth = options.outWidth.toFloat()
             return imageHeight/imageWidth
+        }
+        fun setCheckbox(){
+            checkBox.isChecked = !checkBox.isChecked
         }
     }
 
@@ -50,10 +58,23 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
-            PhotosAdapter(photos, fragment, width).changeCheckBoxVisibility()
-            photos[position].checked = true
-            notifyDataSetChanged()
+            fragment.changeBottomOptionsVisibility()
+            if(!holder.checkBox.isVisible){
+                holder.setCheckbox()
+                fragment.selectPhoto(position)
+            }
             true }
+
+        holder.itemView.setOnClickListener {
+            if(holder.checkBox.isVisible){
+                holder.setCheckbox()
+                fragment.selectPhoto(position)
+            } else fragment.openFullscreenPhoto(position)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     override fun getItemCount(): Int = photos.size
@@ -65,12 +86,5 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
             clear()
             addAll(photos)
         }
-    }
-    fun changeCheckBoxVisibility(){
-        if(getPhoto(0).checkboxVisibility) {
-            photos.map { it.checkboxVisibility = false}
-        } else photos.map { it.checkboxVisibility = true
-        it.checked = false}
-        fragment.changeBottomOptionsVisibility()
     }
 }

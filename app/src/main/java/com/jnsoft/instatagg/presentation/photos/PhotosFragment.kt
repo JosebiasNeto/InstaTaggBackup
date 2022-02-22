@@ -13,9 +13,11 @@ import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.view.*
-import android.widget.CheckBox
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,6 +53,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
     private val args: PhotosFragmentArgs by navArgs()
     private lateinit var tagg: Tagg
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var selectedPhotos: MutableList<Photo>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,17 +61,12 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPhotosBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
 
+        setToolbar()
         setTagg()
         setPhotos()
         setTaggs()
-
-        binding.rvPhotos.addOnItemClickListener(object : OnItemClickListener {
-            override fun onItemClicked(position: Int, view: View) {
-                selectPhoto(position, view)
-            }
-        })
+        setOnBackPressed()
 
         binding.ibDelete.setOnClickListener {
             deletePhotos()
@@ -78,8 +76,8 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             sharePhotos()
         }
 
-        registerForContextMenu(binding.ibMore)
-        binding.ibMore.setOnClickListener { view!!.showContextMenu() }
+//        registerForContextMenu(binding.ibMore)
+//        binding.ibMore.setOnClickListener { view!!.showContextMenu() }
 
         binding.fabFromTaggToCamera.setOnClickListener {
             it.findNavController().navigate(PhotosFragmentDirections
@@ -92,6 +90,39 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             getImportPhotos(result)
         }
         return binding.root
+    }
+
+    private fun setToolbar(){
+        binding.tbPhotos.inflateMenu(R.menu.tagg_option_menu)
+        binding.tbPhotos.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+        binding.tbPhotos.setNavigationOnClickListener {
+           activity!!.onBackPressed()
+        }
+        binding.tbPhotos.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.import_photos -> {
+                    val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    galery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                    galery.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                    galery.type = "image/*"
+                    activityResultLauncher.launch(galery)
+                    true
+                }
+                R.id.tagg_edit -> {
+                    editTagg()
+                    true
+                }
+                R.id.clear_tagg -> {
+                    clearTagg()
+                    true
+                }
+                R.id.delete_tagg -> {
+                    deleteTagg()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setTagg() {
@@ -126,6 +157,9 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         viewModel.photos.observe(this, {
             refreshAdapter(it.reversed())
         })
+        viewModel.photosSelected.observe(this, {
+            selectedPhotos = it
+        })
     }
 
     private fun setTaggs(){
@@ -138,22 +172,28 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         })
     }
 
-    private fun selectPhoto(position: Int, view: View) {
-        if(view.findViewById<CheckBox>(R.id.checkBox).isVisible){
-            view.findViewById<CheckBox>(R.id.checkBox).isChecked =
-                !view.findViewById<CheckBox>(R.id.checkBox).isChecked
-            adapter.getPhoto(position).checked =
-                !adapter.getPhoto(position).checked
-        } else {
-            viewModel.setFullscreenPhoto(position)
-            view.findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
-        }
+    fun openFullscreenPhoto(position: Int){
+        viewModel.setFullscreenPhoto(position)
+        view!!.findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
+    }
+
+    fun selectPhoto(position: Int) {
+        viewModel.addOrRemovePhotoSelected(adapter.getPhoto(position).id!!)
     }
 
     fun changeBottomOptionsVisibility(){
         binding.cvBottom.isVisible = !binding.cvBottom.isVisible
         binding.fabFromTaggToCamera.isVisible = !binding.fabFromTaggToCamera.isVisible
         binding.cvTotalSize.isVisible = !binding.cvTotalSize.isVisible
+        if(adapter.getPhoto(0).checkboxVisibility){
+            viewModel.setCheckboxPhotosInvisible()
+            viewModel.photosSelected.value!!.clear()
+            adapter.notifyDataSetChanged()
+        }
+        else {
+            viewModel.setCheckboxPhotosVisible()
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun refreshAdapter(photos: List<Photo>){
@@ -168,40 +208,6 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             addTaggs(taggs)
             notifyDataSetChanged()
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.tagg_option_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.import_photos -> {
-                val galery = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                galery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                galery.putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-                galery.type = "image/*"
-                activityResultLauncher.launch(galery)
-                }
-            android.R.id.home -> {
-                activity!!.onBackPressed()
-                return true
-            }
-            R.id.tagg_edit -> {
-                editTagg()
-                return true
-            }
-            R.id.clear_tagg -> {
-                clearTagg()
-                return true
-            }
-            R.id.delete_tagg -> {
-                deleteTagg()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun getImportPhotos(result: ActivityResult) {
@@ -345,22 +351,19 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
-        activity!!.onBackPressed()
+        view!!.findNavController().navigate(R.id.action_photosFragment_to_taggsFragment)
         eventDeleteTagg(adapter.itemCount)
     }
 
     private fun sharePhotos() {
         val contentUris = arrayListOf<Uri>()
-        for(i in 0 until adapter.itemCount){
+        selectedPhotos.map {
             var uri = FileProvider.getUriForFile(
-                context!!.applicationContext,
-                "com.jnsoft.instatagg.fileprovider",
-                File(Uri.parse(adapter.getPhoto(i).path).path))
-            if(adapter.getPhoto(i).checked){
-                contentUris.add(uri)
-                eventSharePhoto()
-                adapter.getPhoto(i).checked = false
-            }
+            context!!.applicationContext,
+            "com.jnsoft.instatagg.fileprovider",
+            File(Uri.parse(it.path).path))
+            contentUris.add(uri)
+            eventSharePhoto()
         }
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND_MULTIPLE
@@ -369,94 +372,87 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             type = "image/jpg"
         }
         startActivity(Intent.createChooser(shareIntent, "shareImage"))
+        viewModel.photosSelected.value!!.clear()
     }
 
     private fun deletePhotos(){
-        for(i in 0 until adapter.itemCount){
-            if(adapter.getPhoto(i).checked) {
-                adapter.getPhoto(i).let { it1 ->
-                    viewModel.delPhoto(it1,(it1.path!!.toUri()
-                        .toFile().length()))
-                }
-                adapter.getPhoto(i).path?.let { it1 ->
-                    context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
-                        .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
-                }
-                eventDeletePhoto()
-            }
+        selectedPhotos.map {
+            viewModel.delPhoto(it,(it.path!!.toUri().toFile().length()))
+            context!!.applicationContext.deleteFile(it.path!!
+                .substring(it.path!!.lastIndexOf("/")+1))
+            eventDeletePhoto()
         }
         changeBottomOptionsVisibility()
         viewModel.getPhotos(tagg.id!!)
+        viewModel.photosSelected.value!!.clear()
     }
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu,
-        v: View,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        activity!!.menuInflater.inflate(R.menu.photos_option_menu, menu)
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.move_to_tagg -> {
-                moveToTagg()
-                return true
-            }
-            R.id.copy_to_tagg -> {
-                copyToTagg()
-                return true
-            }
-            R.id.select_all -> {
-                for(i in 0 until adapter.itemCount){
-                    adapter.getPhoto(i).checked = true
-                    adapter.notifyDataSetChanged()
-                }
-                return true
-            }
-        }
-        return super.onContextItemSelected(item)
-    }
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.move_to_tagg -> {
+//                moveToTagg()
+//                return true
+//            }
+//            R.id.copy_to_tagg -> {
+//                copyToTagg()
+//                return true
+//            }
+//            R.id.select_all -> {
+//                for(i in 0 until adapter.itemCount){
+//                    adapter.getPhoto(i).checked = true
+//                    adapter.notifyDataSetChanged()
+//                }
+//                return true
+//            }
+//        }
+//        return super.onContextItemSelected(item)
+//    }
 
     fun moveToTagg(){
         binding.cvChooseTagg.isVisible = true
         binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
-                for(i in 0 until adapter.itemCount){
-                    if(adapter.getPhoto(i).checked){
-                        val photo = adapter.getPhoto(i)
-                        val newTagg = adapterMiniTaggs.getTagg(position)
-                        viewModel.movePhoto(newTagg.name, newTagg.color, newTagg.id!!, photo.id!!,
-                            (photo.path!!.toUri().toFile().length()), tagg.id!!)
-                    }
-                }
-            }
-        })
+                val newTagg = adapterMiniTaggs.getTagg(position)
+                selectedPhotos.map {
+                    viewModel.movePhoto(newTagg.name, newTagg.color, newTagg.id!!, it.id!!,
+                        (it.path!!.toUri().toFile().length()), tagg.id!!)
+                }}})
         binding.cvChooseTagg.isVisible = false
+        changeBottomOptionsVisibility()
+        viewModel.photosSelected.value!!.clear()
     }
 
     private fun copyToTagg() {
         binding.cvChooseTagg.isVisible = true
         binding.rvChooseTagg.addOnItemClickListener(object: OnItemClickListener {
             override fun onItemClicked(position: Int, view: View) {
-                for(i in 0 until adapter.itemCount){
-                    if(adapter.getPhoto(i).checked) {
-                        adapter.getPhoto(i).tagg = adapterMiniTaggs.getTagg(position)
-                        adapter.getPhoto(i).path = copyFile(
-                            adapter.getPhoto(i).path!!.toUri().toFile(),
-                            System.currentTimeMillis().toString())
-                        viewModel.insertPhoto(adapter.getPhoto(i),
-                            (adapter.getPhoto(i).path!!.toUri().toFile().length()))
-                    }
-                }
-            }
-        })
+                selectedPhotos.map {
+                    it.tagg = adapterMiniTaggs.getTagg(position)
+                    it.path = copyFile(it.path!!.toUri().toFile(),
+                    System.currentTimeMillis().toString())
+                    viewModel.insertPhoto(it, it.path!!.toUri().toFile().length())
+                }}})
         binding.cvChooseTagg.isVisible = false
+        changeBottomOptionsVisibility()
+        viewModel.photosSelected.value!!.clear()
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {
         val newFile = File(context!!.applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
+    }
+
+    private fun setOnBackPressed(){
+        activity!!.onBackPressedDispatcher.addCallback(this){
+            if(binding.cvChooseTagg.isVisible){
+                binding.cvChooseTagg.isVisible = false
+            } else if(binding.cvBottom.isVisible){
+                changeBottomOptionsVisibility()
+                viewModel.setCheckboxPhotosInvisible()
+                adapter.notifyDataSetChanged()
+            } else {
+                view!!.findNavController().navigate(R.id.action_photosFragment_to_taggsFragment)
+            }
+        }
     }
 }

@@ -23,8 +23,8 @@ class PhotosViewModel(
     private val _taggs = MutableLiveData<List<Tagg>>()
     val taggs: LiveData<List<Tagg>> = _taggs
 
-    private val _photosSelected = MutableLiveData<List<Photo>>()
-    val photosSelected: LiveData<List<Photo>> = _photosSelected
+    private val _photosSelected = MutableLiveData<ArrayList<Photo>>(arrayListOf())
+    val photosSelected: LiveData<ArrayList<Photo>> = _photosSelected
 
     private val _photoFullscreen = MutableLiveData<Int>()
     val photoFullscreen: LiveData<Int> = _photoFullscreen
@@ -45,6 +45,19 @@ class PhotosViewModel(
 
     fun setFullscreenPhoto(position: Int){
         _photoFullscreen.value = position
+    }
+
+    fun setCheckboxPhotosVisible(){
+        _photos.value!!.map { it.checkboxVisibility = true }
+    }
+    fun setCheckboxPhotosInvisible(){
+        _photos.value!!.map { it.checkboxVisibility = false }
+    }
+
+    fun addOrRemovePhotoSelected(photoId: Long){
+        val photo = _photos.value!!.find { it.id == photoId }
+        if(_photosSelected.value!!.contains(photo)) _photosSelected.value!!.remove(photo)
+        else _photosSelected.value!!.add(photo!!)
     }
 
     fun changeTaggName(id: Long, newTagg: String){
