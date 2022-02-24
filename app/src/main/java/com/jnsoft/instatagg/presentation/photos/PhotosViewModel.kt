@@ -56,8 +56,19 @@ class PhotosViewModel(
 
     fun addOrRemovePhotoSelected(photoId: Long){
         val photo = _photos.value!!.find { it.id == photoId }
-        if(_photosSelected.value!!.contains(photo)) _photosSelected.value!!.remove(photo)
-        else _photosSelected.value!!.add(photo!!)
+        if(_photosSelected.value!!.contains(photo)){
+            _photosSelected.value!!.remove(photo)
+            photo!!.isChecked = false
+        }
+        else {
+            _photosSelected.value!!.add(photo!!)
+            photo.isChecked = true
+        }
+    }
+
+    fun uncheckAll(){
+        _photosSelected.value!!.clear()
+        _photos.value!!.map { it.isChecked = false }
     }
 
     fun changeTaggName(id: Long, newTagg: String){

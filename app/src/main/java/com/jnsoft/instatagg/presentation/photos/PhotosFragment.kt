@@ -16,6 +16,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
@@ -67,17 +69,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         setPhotos()
         setTaggs()
         setOnBackPressed()
-
-        binding.ibDelete.setOnClickListener {
-            deletePhotos()
-        }
-
-        binding.ibShare.setOnClickListener {
-            sharePhotos()
-        }
-
-//        registerForContextMenu(binding.ibMore)
-//        binding.ibMore.setOnClickListener { view!!.showContextMenu() }
+        setBottomOptions()
 
         binding.fabFromTaggToCamera.setOnClickListener {
             it.findNavController().navigate(PhotosFragmentDirections
@@ -187,10 +179,9 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         binding.cvTotalSize.isVisible = !binding.cvTotalSize.isVisible
         if(adapter.getPhoto(0).checkboxVisibility){
             viewModel.setCheckboxPhotosInvisible()
-            viewModel.photosSelected.value!!.clear()
+            viewModel.uncheckAll()
             adapter.notifyDataSetChanged()
-        }
-        else {
+        } else {
             viewModel.setCheckboxPhotosVisible()
             adapter.notifyDataSetChanged()
         }
@@ -372,7 +363,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             type = "image/jpg"
         }
         startActivity(Intent.createChooser(shareIntent, "shareImage"))
-        viewModel.photosSelected.value!!.clear()
+        viewModel.uncheckAll()
     }
 
     private fun deletePhotos(){
@@ -382,31 +373,44 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 .substring(it.path!!.lastIndexOf("/")+1))
             eventDeletePhoto()
         }
-        changeBottomOptionsVisibility()
+        viewModel.uncheckAll()
         viewModel.getPhotos(tagg.id!!)
-        viewModel.photosSelected.value!!.clear()
+        changeBottomOptionsVisibility()
     }
 
-//    override fun onContextItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.move_to_tagg -> {
-//                moveToTagg()
-//                return true
-//            }
-//            R.id.copy_to_tagg -> {
-//                copyToTagg()
-//                return true
-//            }
-//            R.id.select_all -> {
-//                for(i in 0 until adapter.itemCount){
-//                    adapter.getPhoto(i).checked = true
-//                    adapter.notifyDataSetChanged()
-//                }
-//                return true
-//            }
-//        }
-//        return super.onContextItemSelected(item)
-//    }
+    private fun setBottomOptions(){
+        binding.ibDelete.setOnClickListener {
+            deletePhotos()
+        }
+        binding.ibShare.setOnClickListener {
+            sharePhotos()
+        }
+        binding.ibMore.setOnClickListener {
+            val moreOptions = PopupMenu(activity!!, view)
+            moreOptions.inflate(R.menu.photos_option_menu)
+            moreOptions.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.move_to_tagg -> {
+                        moveToTagg()
+                        true
+                    }
+                    R.id.copy_to_tagg -> {
+                        copyToTagg()
+                        true
+                    }
+                    R.id.select_all -> {
+                        viewModel.uncheckAll()
+                        viewModel.photosSelected.value!!.addAll(viewModel.photos.value!!)
+                        val checkBox: CheckBox = R.id.checkBox as CheckBox
+                        checkBox.isChecked = false
+                        adapter.notifyDataSetChanged()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
+    }
 
     fun moveToTagg(){
         binding.cvChooseTagg.isVisible = true
@@ -419,7 +423,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 }}})
         binding.cvChooseTagg.isVisible = false
         changeBottomOptionsVisibility()
-        viewModel.photosSelected.value!!.clear()
+        viewModel.uncheckAll()
     }
 
     private fun copyToTagg() {
@@ -434,7 +438,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 }}})
         binding.cvChooseTagg.isVisible = false
         changeBottomOptionsVisibility()
-        viewModel.photosSelected.value!!.clear()
+        viewModel.uncheckAll()
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {

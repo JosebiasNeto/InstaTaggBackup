@@ -8,5 +8,6 @@ data class Photo (
     var path: String?,
     var tagg: Tagg?,
     var id: Long?,
-    var checkboxVisibility : Boolean = false
+    var checkboxVisibility : Boolean = false,
+    var isChecked: Boolean = false
         ): Parcelable

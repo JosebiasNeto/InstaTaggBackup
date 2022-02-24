@@ -21,20 +21,17 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
         private val ivPhoto = itemView.findViewById<ImageView>(R.id.iv_photo)
         val checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
         fun bind(photo: Photo) {
-            val portrait = portraitVerify(photo.path!!)
-            if(portrait > 1){
-                Picasso.get().load(photo.path).noFade().resize(0,
-                    (width.toFloat() * portrait/3).toInt()).into(ivPhoto)
-            } else {
-                Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portrait))
-                    .toInt(), 0).into(ivPhoto)
-            }
-            if(photo.checkboxVisibility){
-                checkBox.isVisible = true
-                checkBox.isChecked = !checkBox.isChecked
-            } else {
-                checkBox.isVisible = false
-                checkBox.isChecked = true
+            if(photo.path!!.toUri().toFile().exists()){
+                val portrait = portraitVerify(photo.path!!)
+                if(portrait > 1){
+                    Picasso.get().load(photo.path).noFade().resize(0,
+                        (width.toFloat() * portrait/3).toInt()).into(ivPhoto)
+                } else {
+                    Picasso.get().load(photo.path).noFade().resize((width.toFloat()/(3*portrait))
+                        .toInt(), 0).into(ivPhoto)
+                }
+                checkBox.isVisible = photo.checkboxVisibility
+                checkBox.isChecked = photo.isChecked
             }
         }
         fun portraitVerify(photoPath: String):Float{
@@ -44,9 +41,6 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
             val imageHeight = options.outHeight.toFloat()
             val imageWidth = options.outWidth.toFloat()
             return imageHeight/imageWidth
-        }
-        fun setCheckbox(){
-            checkBox.isChecked = !checkBox.isChecked
         }
     }
 
@@ -58,17 +52,16 @@ class PhotosAdapter(private val photos: ArrayList<Photo>, val fragment: PhotosFr
     override fun onBindViewHolder(holder: PhotosHolder, position: Int) {
         holder.bind(photos[position])
         holder.itemView.setOnLongClickListener {
-            fragment.changeBottomOptionsVisibility()
             if(!holder.checkBox.isVisible){
-                holder.setCheckbox()
                 fragment.selectPhoto(position)
             }
+            fragment.changeBottomOptionsVisibility()
             true }
 
         holder.itemView.setOnClickListener {
             if(holder.checkBox.isVisible){
-                holder.setCheckbox()
                 fragment.selectPhoto(position)
+                notifyDataSetChanged()
             } else fragment.openFullscreenPhoto(position)
         }
     }
