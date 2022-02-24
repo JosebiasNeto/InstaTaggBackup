@@ -70,6 +70,11 @@ class PhotosViewModel(
         _photosSelected.value!!.clear()
         _photos.value!!.map { it.isChecked = false }
     }
+    fun checkAll(){
+        _photosSelected.value!!.clear()
+        _photosSelected.value!!.addAll(_photos.value!!)
+        _photos.value!!.map { it.isChecked = true }
+    }
 
     fun changeTaggName(id: Long, newTagg: String){
         viewModelScope.launch {
@@ -91,8 +96,9 @@ class PhotosViewModel(
                                                          size, oldTaggId) }
     }
 
-    fun delPhoto(photo: Photo, size: Long){
-        viewModelScope.launch { mainRepository.delPhoto(photo, size) }
+    fun delPhoto(idPhoto: Long, size: Long){
+        val photo = _photos.value!!.find { it.id == idPhoto }
+        viewModelScope.launch { mainRepository.delPhoto(photo!!, size) }
     }
 
     fun clearTagg(id: Long) {

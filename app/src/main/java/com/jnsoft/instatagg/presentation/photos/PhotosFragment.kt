@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -321,9 +320,11 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         tagg.id?.let { viewModel.clearTagg(it) }
         for(i in 0 until adapter.itemCount){
             adapter.getPhoto(i).let { it1 ->
-                viewModel.delPhoto(
-                    it1,
-                    (it1.path!!.toUri().toFile().length()))
+                it1.id?.let {
+                    viewModel.delPhoto(
+                        it,
+                        (it1.path!!.toUri().toFile().length()))
+                }
                 context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
@@ -336,7 +337,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         for(i in 0 until adapter.itemCount){
             adapter.getPhoto(i).let { it1 ->
                 viewModel.delPhoto(
-                    it1,
+                    it1.id!!,
                     (it1.path!!.toUri().toFile().length()))
                 context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
@@ -368,13 +369,15 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
 
     private fun deletePhotos(){
         selectedPhotos.map {
-            viewModel.delPhoto(it,(it.path!!.toUri().toFile().length()))
+            viewModel.delPhoto(it.id!!,(it.path!!.toUri().toFile().length()))
             context!!.applicationContext.deleteFile(it.path!!
                 .substring(it.path!!.lastIndexOf("/")+1))
             eventDeletePhoto()
         }
         viewModel.uncheckAll()
-        viewModel.getPhotos(tagg.id!!)
+        Handler().postDelayed({
+            viewModel.getPhotos(tagg.id!!)
+        }, 500)
         changeBottomOptionsVisibility()
     }
 
@@ -386,8 +389,9 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             sharePhotos()
         }
         binding.ibMore.setOnClickListener {
-            val moreOptions = PopupMenu(activity!!, view)
+            val moreOptions = PopupMenu(activity!!, binding.rvPhotos)
             moreOptions.inflate(R.menu.photos_option_menu)
+            moreOptions.show()
             moreOptions.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.move_to_tagg -> {
@@ -400,9 +404,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                     }
                     R.id.select_all -> {
                         viewModel.uncheckAll()
-                        viewModel.photosSelected.value!!.addAll(viewModel.photos.value!!)
-                        val checkBox: CheckBox = R.id.checkBox as CheckBox
-                        checkBox.isChecked = false
+                        viewModel.checkAll()
                         adapter.notifyDataSetChanged()
                         true
                     }
@@ -420,10 +422,11 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 selectedPhotos.map {
                     viewModel.movePhoto(newTagg.name, newTagg.color, newTagg.id!!, it.id!!,
                         (it.path!!.toUri().toFile().length()), tagg.id!!)
-                }}})
-        binding.cvChooseTagg.isVisible = false
-        changeBottomOptionsVisibility()
-        viewModel.uncheckAll()
+                }
+                binding.cvChooseTagg.isVisible = false
+                changeBottomOptionsVisibility()
+                viewModel.uncheckAll()
+            }})
     }
 
     private fun copyToTagg() {
@@ -435,10 +438,11 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                     it.path = copyFile(it.path!!.toUri().toFile(),
                     System.currentTimeMillis().toString())
                     viewModel.insertPhoto(it, it.path!!.toUri().toFile().length())
-                }}})
-        binding.cvChooseTagg.isVisible = false
-        changeBottomOptionsVisibility()
-        viewModel.uncheckAll()
+                }
+                binding.cvChooseTagg.isVisible = false
+                changeBottomOptionsVisibility()
+                viewModel.uncheckAll()
+            }})
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {

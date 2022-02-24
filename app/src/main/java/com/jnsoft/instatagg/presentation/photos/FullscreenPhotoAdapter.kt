@@ -23,4 +23,8 @@ class FullscreenPhotoAdapter(activity: AppCompatActivity, val photos: ArrayList<
             addAll(fullscreenPhotos)
         }
     }
+
+    fun getPhoto(position: Int): Photo {
+        return photos[position]
+    }
 }

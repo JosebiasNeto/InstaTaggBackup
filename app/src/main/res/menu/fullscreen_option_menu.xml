@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/delete_photo"
+        android:icon="@drawable/outline_delete_24"
+        android:visible="true"
+        tools:ignore="MenuTitle"
+        app:showAsAction="always"/>
+    <item android:id="@+id/share_photo"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:visible="true"
+        tools:ignore="MenuTitle"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/move_to_tagg"
+        android:title="@string/txt_move_to_tagg" />
+    <item
+        android:id="@+id/copy_to_tagg"
+        android:title="@string/txt_copy_to_tagg" />
+</menu>
