@@ -7,7 +7,6 @@ import com.jnsoft.instatagg.data.remote.RemoteDataSource
 import com.jnsoft.instatagg.data.remote.RemoteDatabase
 import com.jnsoft.instatagg.domain.repository.MainRepository
 import com.jnsoft.instatagg.domain.repository.Repository
-import com.jnsoft.instatagg.presentation.SingleActivity
 import com.jnsoft.instatagg.presentation.camera.CameraViewModel
 import com.jnsoft.instatagg.presentation.photos.PhotosViewModel
 import com.jnsoft.instatagg.presentation.taggs.TaggsViewModel
@@ -34,6 +33,5 @@ object Modules {
         viewModel {
             PhotosViewModel(get())
         }
-        single { SingleActivity() }
     }
 }

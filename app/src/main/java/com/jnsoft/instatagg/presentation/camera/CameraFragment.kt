@@ -259,7 +259,7 @@ class CameraFragment : Fragment() {
 
     fun insertPhoto(photoFile: String, tagg: Tagg, size: Long) {
         val photo = Photo(photoFile, tagg,null)
-        viewModel.insertPhoto(photo, size)
+        viewModel.insertPhoto(photo)
     }
 
     override fun onDestroy() {

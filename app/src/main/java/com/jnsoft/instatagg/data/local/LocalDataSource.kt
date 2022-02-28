@@ -15,8 +15,6 @@ interface LocalDataSource {
     suspend fun movePhoto(newTaggName: String, newTaggColor: Int, newTaggId: Long,
                           id: Long, size: Long, oldTaggId: Long)
 
-    suspend fun importPhoto(path: String, name: String, color: String)
-
     suspend fun insertTagg(tagg: Tagg)
 
     suspend fun getTaggs(): List<Tagg>

@@ -1,5 +1,6 @@
 package com.jnsoft.instatagg.domain.repository
 
+import androidx.activity.result.ActivityResult
 import com.jnsoft.instatagg.data.local.LocalDataSource
 import com.jnsoft.instatagg.data.remote.RemoteDataSource
 import com.jnsoft.instatagg.domain.model.Photo
@@ -10,18 +11,19 @@ class Repository(
     private val remoteDataSource: RemoteDataSource
 ): MainRepository {
 
-    private val controlFiles = ControlFiles()
+    private val localFilesControl = LocalFilesControl()
 
-    override suspend fun insertPhoto(photo: Photo, size: Long) {
-        localDataSource.insertPhoto(photo, size)
+    override suspend fun insertPhoto(photo: Photo) {
+        localDataSource.insertPhoto(photo, localFilesControl.getFileSize(photo.path!!))
     }
 
     override suspend fun getPhotos(id: Long): List<Photo> {
         return localDataSource.getPhotos(id)
     }
 
-    override suspend fun delPhoto(photo: Photo, size: Long) {
-        localDataSource.delPhoto(photo, size)
+    override suspend fun delPhoto(photo: Photo) {
+        localDataSource.delPhoto(photo, localFilesControl.getFileSize(photo.path!!))
+        localFilesControl.delFiles(photo.path!!)
     }
 
     override suspend fun clearTagg(id: Long) {
@@ -35,8 +37,12 @@ class Repository(
         localDataSource.movePhoto(newTaggName, newTaggColor, newTaggId, id, size, oldTaggId)
     }
 
-    override suspend fun importPhoto(path: String, name: String, color: String) {
-        localDataSource.importPhoto(path, name, color)
+    override suspend fun importFiles(result: ActivityResult, tagg: Tagg) {
+        localFilesControl.getImportFiles(result).map { insertPhoto(Photo(it, tagg, null)) }
+    }
+
+    override suspend fun shareFiles(files: List<String>) {
+        localFilesControl.shareFiles(files)
     }
 
     override suspend fun insertTagg(tagg: Tagg) {

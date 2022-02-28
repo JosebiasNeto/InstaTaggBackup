@@ -17,8 +17,8 @@ class CameraViewModel(
     private val _taggs = MutableLiveData<List<Tagg>>()
     val taggs: LiveData<List<Tagg>> = _taggs
 
-    fun insertPhoto(photo: Photo, size: Long){
-        viewModelScope.launch { mainRepository.insertPhoto(photo, size)}
+    fun insertPhoto(photo: Photo){
+        viewModelScope.launch { mainRepository.insertPhoto(photo)}
     }
     fun getTaggs(){
         viewModelScope.launch { _taggs.value = mainRepository.getTaggs() }

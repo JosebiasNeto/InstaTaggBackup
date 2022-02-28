@@ -1,5 +1,6 @@
 package com.jnsoft.instatagg.presentation.photos
 
+import androidx.activity.result.ActivityResult
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -86,6 +87,19 @@ class PhotosViewModel(
             mainRepository.changeTaggColor(id, newColor) }
     }
 
+    fun importPhotos(result: ActivityResult){
+        viewModelScope.launch {
+            mainRepository.importFiles(result, _tagg.value!!)
+        }
+    }
+
+    fun sharePhotos(){
+        val photos = arrayListOf<String>()
+        _photosSelected.value!!.map { photos.add(it.path!!) }
+        viewModelScope.launch { mainRepository.shareFiles(photos) }
+        _photosSelected.value!!.clear()
+    }
+
     fun delTagg(id: Long){
         viewModelScope.launch(Dispatchers.IO) { mainRepository.delTagg(id) }
     }
@@ -96,9 +110,9 @@ class PhotosViewModel(
                                                          size, oldTaggId) }
     }
 
-    fun delPhoto(idPhoto: Long, size: Long){
+    fun delPhoto(idPhoto: Long){
         val photo = _photos.value!!.find { it.id == idPhoto }
-        viewModelScope.launch { mainRepository.delPhoto(photo!!, size) }
+        viewModelScope.launch { mainRepository.delPhoto(photo!!) }
     }
 
     fun clearTagg(id: Long) {
@@ -106,7 +120,7 @@ class PhotosViewModel(
     }
 
     fun insertPhoto(photo: Photo, size: Long){
-        viewModelScope.launch { mainRepository.insertPhoto(photo, size) }
+        viewModelScope.launch { mainRepository.insertPhoto(photo) }
     }
 
 }

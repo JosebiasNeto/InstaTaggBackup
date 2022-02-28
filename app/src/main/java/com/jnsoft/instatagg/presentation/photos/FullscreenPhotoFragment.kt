@@ -60,7 +60,7 @@ class FullscreenPhotoFragment() : Fragment() {
             when (it.itemId) {
                 R.id.delete_photo -> {
                     pageAdapter.getPhoto(viewPager.currentItem).let {
-                        viewModel.delPhoto(it.id!!,(it.path!!.toUri().toFile().length()))
+                        viewModel.delPhoto(it.id!!)
                         context!!.applicationContext.deleteFile(it.path!!
                             .substring(it.path!!.lastIndexOf("/")+1))
                         FirebaseAnalytics.eventDeletePhoto()

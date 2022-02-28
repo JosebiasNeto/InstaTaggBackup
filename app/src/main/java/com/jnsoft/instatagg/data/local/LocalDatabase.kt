@@ -36,10 +36,6 @@ class LocalDatabase(
         increaseTaggSize(size, newTaggId)
     }
 
-    override suspend fun importPhoto(path: String, name: String, color: String) {
-        photosDao.importPhoto(path, name, color)
-    }
-
     override suspend fun insertTagg(tagg: Tagg){
         taggsDao.insertTagg(tagg)
     }
