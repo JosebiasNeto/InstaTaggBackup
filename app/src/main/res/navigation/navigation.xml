@@ -30,6 +30,10 @@
             android:id="@+id/action_taggsFragment_to_photosFragment"
             app:destination="@id/photosFragment" >
         </action>
+        <action
+            android:id="@+id/action_taggsFragment_to_cameraFragment"
+            app:destination="@id/cameraFragement" >
+        </action>
     </fragment>
 
     <fragment

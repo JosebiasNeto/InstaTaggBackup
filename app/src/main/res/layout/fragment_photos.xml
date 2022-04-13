@@ -107,14 +107,7 @@
         android:background="@color/primary_light"
         />
     </androidx.cardview.widget.CardView>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_from_tagg_to_camera"
-        style="@style/style_fab_main"
-        android:scaleType="center"
-        tools:ignore="MissingConstraints"
-        android:src="@drawable/ic_baseline_camera_alt_24"
-        app:maxImageSize="35dp"
-        />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_total_size"
         android:layout_width="wrap_content"

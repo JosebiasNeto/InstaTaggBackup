@@ -47,14 +47,14 @@ class CameraFragment : Fragment() {
     ): View? {
         binding = FragmentCameraBinding.inflate(inflater, container, false)
 
-        cameraService = CameraService(context!!, this, binding)
+        cameraService = CameraService(requireContext(), this, binding)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         firstOpen()
         checkPermissions()
-        setupMiniRecyclerView()
         setupSettings()
         setupTaggs()
+        setupMiniRecyclerView()
 
         binding.cameraCaptureButton.setOnClickListener {
             if(adapter.itemCount == 0){
@@ -71,7 +71,7 @@ class CameraFragment : Fragment() {
     }
 
     private fun firstOpen() {
-        val firstOpen = context!!.getSharedPreferences("firstOpen", Context.MODE_PRIVATE)
+        val firstOpen = requireContext().getSharedPreferences("firstOpen", Context.MODE_PRIVATE)
         val isFirstOpen = firstOpen.getBoolean("firstOpen", true)
         if(isFirstOpen){
             viewModel.insertTagg(Tagg(null,resources.getString(com.jnsoft.instatagg.R.string.job),
@@ -116,7 +116,6 @@ class CameraFragment : Fragment() {
         } == PackageManager.PERMISSION_GRANTED }
 
     private fun setupMiniRecyclerView() {
-        adapter = MiniTaggsAdapter(arrayListOf())
         val orientation = this.resources.configuration.orientation
         val llm = LinearLayoutManager(context)
         llm.reverseLayout = true
@@ -166,7 +165,7 @@ class CameraFragment : Fragment() {
         }
     }
     private fun getCurrentFlash(): Int {
-        val currentFlash = context!!.getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
+        val currentFlash = requireContext().getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
         return when (currentFlash.getInt("currentFlash", ImageCapture.FLASH_MODE_OFF)) {
             ImageCapture.FLASH_MODE_ON -> ImageCapture.FLASH_MODE_ON
             ImageCapture.FLASH_MODE_AUTO -> ImageCapture.FLASH_MODE_AUTO
@@ -175,7 +174,7 @@ class CameraFragment : Fragment() {
     }
 
     private fun setCurrentFlash(flashMode: Int){
-        val currentFlash = context!!.getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
+        val currentFlash = requireContext().getSharedPreferences("currentFlash", Context.MODE_PRIVATE)
         val save = currentFlash.edit()
         when(flashMode){
             ImageCapture.FLASH_MODE_ON -> save.putInt("currentFlash", ImageCapture.FLASH_MODE_ON)
@@ -193,26 +192,35 @@ class CameraFragment : Fragment() {
     }
 
     private fun setupTaggs() {
+        viewModel.getTaggs()
+        adapter = MiniTaggsAdapter(arrayListOf())
         binding.cvChoseTagg!!.setOnClickListener {
             binding.rvChangeTagg.isVisible = !binding.rvChangeTagg.isVisible
         }
-        viewModel.taggs.observe(this, {
+        viewModel.taggs.observe(viewLifecycleOwner) {
             refreshAdapter(it)
-            if(it.isEmpty()){
+            if (it.isEmpty()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    saveCurrentTagg(Tagg(0,getString(com.jnsoft.instatagg.R.string.no_taggs), resources.getColor(com.jnsoft.instatagg.R.color.accent),0))
+                    saveCurrentTagg(
+                        Tagg(
+                            0,
+                            getString(com.jnsoft.instatagg.R.string.no_taggs),
+                            resources.getColor(com.jnsoft.instatagg.R.color.accent),
+                            0
+                        )
+                    )
                 }
             } else {
                 val listOfIds = arrayListOf<Long>()
-                for(i in it.indices){
-                    if(getCurrentTagg().id == it[i].id){
+                for (i in it.indices) {
+                    if (getCurrentTagg().id == it[i].id) {
                         saveCurrentTagg(it[i])
                         it[i].id?.let { it1 -> listOfIds.add(it1) }
                     }
                 }
-                if(listOfIds.isEmpty()) saveCurrentTagg(it[0])
+                if (listOfIds.isEmpty()) saveCurrentTagg(it[0])
             }
-        })
+        }
         if(args.taggid != 0L){
             viewModel.taggs.value!!.map { if(it.id == args.taggid) saveCurrentTagg(it) }
         }
@@ -239,7 +247,7 @@ class CameraFragment : Fragment() {
     }
 
     fun saveCurrentTagg(tagg: Tagg){
-        val currentTagg = context!!.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
+        val currentTagg = requireContext().getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
         val save = currentTagg.edit()
         tagg.id?.let { save.putLong("currentTaggId", it) }
         tagg.name?.let { save.putString("currentTaggName", it) }
@@ -249,7 +257,7 @@ class CameraFragment : Fragment() {
     }
 
     fun getCurrentTagg(): Tagg{
-        val currentTagg = context!!.getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
+        val currentTagg = requireContext().getSharedPreferences("currentTagg", Context.MODE_PRIVATE)
         val tagg: Tagg = Tagg(0,"", resources.getColor(android.R.color.white), 0)
         tagg.id = currentTagg.getLong("currentTaggId", 0)
         tagg.name = currentTagg.getString("currentTaggName", "")!!

@@ -6,9 +6,12 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.jnsoft.instatagg.R
 import com.jnsoft.instatagg.databinding.FragmentTaggsBinding
 import com.jnsoft.instatagg.domain.model.Tagg
 import com.jnsoft.instatagg.utils.OnItemClickListener
@@ -32,7 +35,7 @@ class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
 
         binding.btnCreateTagg.setOnClickListener {
             val createTaggFragment = CreateTaggDialog.newInstance(this)
-            createTaggFragment.show(activity!!.supportFragmentManager,"createTagg")
+            createTaggFragment.show(requireActivity().supportFragmentManager,"createTagg")
         }
 
         binding.rvTaggs.addOnItemClickListener(object : OnItemClickListener{
@@ -42,6 +45,8 @@ class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
             }
         })
 
+        setOnBackPressed()
+
         return binding.root
     }
 
@@ -49,11 +54,11 @@ class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
         binding.rvTaggs.layoutManager = GridLayoutManager(context,3)
         val outMetrics = DisplayMetrics()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = context!!.display
+            val display = requireContext().display
             display?.getRealMetrics(outMetrics)
         } else {
             @Suppress("DEPRECATION")
-            val display = activity!!.windowManager.defaultDisplay
+            val display = requireActivity().windowManager.defaultDisplay
             @Suppress("DEPRECATION")
             display.getMetrics(outMetrics)
         }
@@ -61,10 +66,10 @@ class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
         binding.rvTaggs.adapter = adapter
 
         viewModel.getTaggs()
-        viewModel.taggs.observe(this,{
+        viewModel.taggs.observe(viewLifecycleOwner) {
             refreshAdapter(it.reversed())
             setTotalSize(it)
-        })
+        }
     }
 
     private fun setTotalSize(taggs: List<Tagg>) {
@@ -88,5 +93,11 @@ class TaggsFragment : Fragment(), CreateTaggDialog.CreatedTagg {
         Handler().postDelayed({
             viewModel.getTaggs()
         }, 500)
+    }
+
+    private fun setOnBackPressed(){
+        requireActivity().onBackPressedDispatcher.addCallback(this){
+            requireView().findNavController().navigate(R.id.action_taggsFragment_to_cameraFragment)
+        }
     }
 }

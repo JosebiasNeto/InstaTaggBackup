@@ -37,7 +37,7 @@ class CameraService (val context: Context, val fragment: CameraFragment, val bin
                 display?.getRealMetrics(outMetrics)
             } else {
                 @Suppress("DEPRECATION")
-                val display = fragment.activity!!.windowManager.defaultDisplay
+                val display = fragment.requireActivity().windowManager.defaultDisplay
                 @Suppress("DEPRECATION")
                 display.getMetrics(outMetrics)
             }

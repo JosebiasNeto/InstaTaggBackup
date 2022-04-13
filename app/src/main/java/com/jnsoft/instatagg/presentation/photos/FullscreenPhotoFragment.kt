@@ -54,14 +54,14 @@ class FullscreenPhotoFragment() : Fragment() {
         binding.tbFullscreenPhoto.title = viewModel.tagg.value!!.name
         binding.tbFullscreenPhoto.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
         binding.tbFullscreenPhoto.setNavigationOnClickListener {
-            activity!!.onBackPressed()
+            requireActivity().onBackPressed()
         }
         binding.tbFullscreenPhoto.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.delete_photo -> {
                     pageAdapter.getPhoto(viewPager.currentItem).let {
                         viewModel.delPhoto(it.id!!)
-                        context!!.applicationContext.deleteFile(it.path!!
+                        requireContext().applicationContext.deleteFile(it.path!!
                             .substring(it.path!!.lastIndexOf("/")+1))
                         FirebaseAnalytics.eventDeletePhoto()
                         viewModel.getPhotos(it.tagg!!.id!!)
@@ -73,7 +73,7 @@ class FullscreenPhotoFragment() : Fragment() {
                     val contentUris = arrayListOf<Uri>()
                     pageAdapter.getPhoto(viewPager.currentItem).let {
                         var uri = FileProvider.getUriForFile(
-                            context!!.applicationContext,
+                            requireContext().applicationContext,
                             "com.jnsoft.instatagg.fileprovider",
                             File(Uri.parse(it.path).path)
                         )
@@ -122,10 +122,10 @@ class FullscreenPhotoFragment() : Fragment() {
     }
 
     private fun setViewPager() {
-        pageAdapter = FullscreenPhotoAdapter(activity!! as AppCompatActivity, arrayListOf())
+        pageAdapter = FullscreenPhotoAdapter(requireActivity() as AppCompatActivity, arrayListOf())
         viewPager = binding.vpFullscreenPhoto
         viewPager.adapter = pageAdapter
-        viewModel.photos.observe(this, {
+        viewModel.photos.observe(viewLifecycleOwner, {
             refreshPagerAdapter(it.reversed())
         })
     }
@@ -142,16 +142,16 @@ class FullscreenPhotoFragment() : Fragment() {
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {
-        val newFile = File(context!!.applicationContext.filesDir, "$newFileName.jpg")
+        val newFile = File(requireContext().applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
     }
 
     private fun setTaggs(){
         adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
         binding.rvChooseTagg.adapter = adapterMiniTaggs
-        binding.rvChooseTagg.layoutManager = LinearLayoutManager(context!!)
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(requireContext())
         viewModel.getTaggs()
-        viewModel.taggs.observe(this, {
+        viewModel.taggs.observe(viewLifecycleOwner, {
             refreshAdapterMain(it)
         })
     }

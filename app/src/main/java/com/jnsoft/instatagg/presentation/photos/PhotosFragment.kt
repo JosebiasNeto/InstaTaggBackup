@@ -59,11 +59,6 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         setOnBackPressed()
         setBottomOptions()
 
-        binding.fabFromTaggToCamera.setOnClickListener {
-            it.findNavController().navigate(PhotosFragmentDirections
-                .actionPhotosFragmentToCameraFragement(tagg.id!!))
-        }
-
         activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult())
         { result ->
@@ -76,7 +71,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
         binding.tbPhotos.inflateMenu(R.menu.tagg_option_menu)
         binding.tbPhotos.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
         binding.tbPhotos.setNavigationOnClickListener {
-           activity!!.onBackPressed()
+           requireActivity().onBackPressed()
         }
         binding.tbPhotos.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -107,54 +102,55 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
 
     private fun setTagg() {
         viewModel.getTagg(args.taggid)
-        viewModel.tagg.observe(this, {
+        viewModel.tagg.observe(viewLifecycleOwner) {
             tagg = it
             binding.tbPhotos.title = it.name
             binding.tbPhotos.setBackgroundColor(it.color)
-            if(it.size.toString().length > 6){
-                binding.tvTotalSize.text = it.size.toString().substring(0, it.size.toString().length - 6)
+            if (it.size.toString().length > 6) {
+                binding.tvTotalSize.text =
+                    it.size.toString().substring(0, it.size.toString().length - 6)
             } else binding.tvTotalSize.text = "0"
-        })
+        }
 
     }
 
     private fun setPhotos() {
         val outMetrics = DisplayMetrics()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display = context!!.display
+            val display = requireContext().display
             display?.getRealMetrics(outMetrics)
         } else {
             @Suppress("DEPRECATION")
-            val display = activity!!.windowManager.defaultDisplay
+            val display = requireActivity().windowManager.defaultDisplay
             @Suppress("DEPRECATION")
             display.getMetrics(outMetrics)
         }
         adapter = PhotosAdapter(arrayListOf(), this, outMetrics.widthPixels)
         binding.rvPhotos.adapter = adapter
-        binding.rvPhotos.layoutManager = GridLayoutManager(context!!, 3)
+        binding.rvPhotos.layoutManager = GridLayoutManager(requireContext(), 3)
 
         viewModel.getPhotos(args.taggid)
-        viewModel.photos.observe(this, {
+        viewModel.photos.observe(viewLifecycleOwner) {
             refreshAdapter(it.reversed())
-        })
-        viewModel.photosSelected.observe(this, {
+        }
+        viewModel.photosSelected.observe(viewLifecycleOwner) {
             selectedPhotos = it
-        })
+        }
     }
 
     private fun setTaggs(){
         adapterMiniTaggs = MiniTaggsAdapter(arrayListOf())
         binding.rvChooseTagg.adapter = adapterMiniTaggs
-        binding.rvChooseTagg.layoutManager = LinearLayoutManager(context!!)
+        binding.rvChooseTagg.layoutManager = LinearLayoutManager(requireContext())
         viewModel.getTaggs()
-        viewModel.taggs.observe(this, {
+        viewModel.taggs.observe(viewLifecycleOwner) {
             refreshAdapterMain(it)
-        })
+        }
     }
 
     fun openFullscreenPhoto(position: Int){
         viewModel.setFullscreenPhoto(position)
-        view!!.findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
+        requireView().findNavController().navigate(R.id.action_photosFragment_to_fullscreenPhotoFragment)
     }
 
     fun selectPhoto(position: Int) {
@@ -163,7 +159,6 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
 
     fun changeBottomOptionsVisibility(){
         binding.cvBottom.isVisible = !binding.cvBottom.isVisible
-        binding.fabFromTaggToCamera.isVisible = !binding.fabFromTaggToCamera.isVisible
         binding.cvTotalSize.isVisible = !binding.cvTotalSize.isVisible
         if(adapter.getPhoto(0).checkboxVisibility){
             viewModel.setCheckboxPhotosInvisible()
@@ -197,7 +192,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
 
     private fun editTagg(){
         val editTaggFragment = EditTaggDialog.newInstance(tagg, this)
-        editTaggFragment.show(activity!!.supportFragmentManager,"editTagg")
+        editTaggFragment.show(requireActivity().supportFragmentManager,"editTagg")
     }
     override fun editTagg(name: String, color: Int) {
         tagg.id?.let { viewModel.changeTaggName(it, name) }
@@ -213,7 +208,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             adapter.getPhoto(i).let { it1 ->
                 it1.id?.let {
                     viewModel.delPhoto(it) }
-                context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                requireContext().applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
@@ -226,11 +221,11 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             adapter.getPhoto(i).let { it1 ->
                 viewModel.delPhoto(
                     it1.id!!)
-                context!!.applicationContext.deleteFile(adapter.getPhoto(i).path!!
+                requireContext().applicationContext.deleteFile(adapter.getPhoto(i).path!!
                     .substring(adapter.getPhoto(i).path!!.lastIndexOf("/")+1))
             }
         }
-        view!!.findNavController().navigate(R.id.action_photosFragment_to_taggsFragment)
+        setOnBackPressed()
         eventDeleteTagg(adapter.itemCount)
     }
 
@@ -258,7 +253,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
             sharePhotos()
         }
         binding.ibMore.setOnClickListener {
-            val moreOptions = PopupMenu(activity!!, binding.rvPhotos)
+            val moreOptions = PopupMenu(requireActivity(), binding.rvPhotos)
             moreOptions.inflate(R.menu.photos_option_menu)
             moreOptions.show()
             moreOptions.setOnMenuItemClickListener {
@@ -315,12 +310,12 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
     }
 
     private fun copyFile(currentFile: File, newFileName: String): String {
-        val newFile = File(context!!.applicationContext.filesDir, "$newFileName.jpg")
+        val newFile = File(requireContext().applicationContext.filesDir, "$newFileName.jpg")
         return Uri.fromFile(currentFile.copyTo(newFile)).toString()
     }
 
     private fun setOnBackPressed(){
-        activity!!.onBackPressedDispatcher.addCallback(this){
+        requireActivity().onBackPressedDispatcher.addCallback(this){
             if(binding.cvChooseTagg.isVisible){
                 binding.cvChooseTagg.isVisible = false
             } else if(binding.cvBottom.isVisible){
@@ -328,7 +323,7 @@ class PhotosFragment : Fragment(), EditTaggDialog.EditedTagg {
                 viewModel.setCheckboxPhotosInvisible()
                 adapter.notifyDataSetChanged()
             } else {
-                view!!.findNavController().navigate(R.id.action_photosFragment_to_taggsFragment)
+                requireView().findNavController().navigate(R.id.action_photosFragment_to_taggsFragment)
             }
         }
     }
